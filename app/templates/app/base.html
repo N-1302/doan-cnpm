@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="{%static 'app/css/style.css' %}" rel="stylesheet" />
+    <link href="{%static 'app/css/all.min.css' %}" rel="stylesheet" />
+    <link href="{%static 'app/css/owl.carousel.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/css/main.css' %}">
+<!--<link rel="stylesheet" href="{% static 'app/css/style.css' %}">--> 
+    <!-- js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+    <script src="{%static 'app/js/s3.js' %}" >  </script>
+    <script src="{%static 'app/js/all.min.js' %}" >  </script>
+    <script src="{%static 'app/js/myscript.js' %}" >  </script>
+    <script type="text/javascript">
+      var user = '{{request.user}}'
+      function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+    </script>
+
+    <title> WEB BÁN BÁNH ONLINE</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+<body>
+
+    <script src="" async defer></script>
+    <!-- demo thanh header -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <!-- cú pháp để trỏ tới là h r e f ... bên trong là phần đã định nghĩa ở view -->
+    <a class="navbar-brand" href="{% url 'home' %}"> 
+      <img src="{% static 'app/images/looogoo.png' %}" width="200" height="100" >
+      HOME
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">        
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Trang chủ </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Sản phẩm
+          </a>
+          <ul class="dropdown-menu">
+          {% for i in categories %} 
+            <li><a class="dropdown-item" href="{% url 'category' %}?category={{i.slug}}"> {{i.name}}</a></li>
+          {% endfor %}
+
+          </ul>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" href="{% url 'cart' %}">cart </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="#">Liên hệ </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search" method="POST" action="{% url 'search' %}">
+        {% csrf_token %}
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name = "searched">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+
+       
+       <div class="form-inline my-2 mu-lg-0" style = "visibility: {{user_login}}">
+        <span>hello!{{request.user}}</span>
+        <span><a href="{% url 'logout' %}"> Logout</a></span>
+       </div>
+      <div class="form-inline my-2 mu-lg-0" style = "visibility: {{user_not_login}}">
+          <a class="nav-link" href="{% url 'login'%}">Đăng nhập </a>
+          <a class="nav-link" href="{% url 'register'%}">Đăng kí </a>
+      </div>
+     <div class="form-inline my-2 mu-lg-0">
+
+      <a href="{% url 'cart' %}"><img id="cart-icon" src="{% static 'app/images/cart.png'%}"> </a>
+      <p id='cart-total'>{{cartItems}}</p>
+     </div>
+     
+  </div>
+</nav>
+<!-- end demo thanh menu -->
+ <!-- main body (link từ các trang khác vào đây)-->
+  {%block banner_slider %}  {% endblock banner_slider %}
+  {% block main_content %}   {% endblock main_content  %}
+  <!-- này giao diện cart á nha -->
+  {% block cart_content %}    {% endblock cart_content %}
+<!-- này là giao diện checkout -->
+  {% block content_checkout %} {% endblock content_checkout %}
+  {% block register %} {% endblock register %}
+  {% block login %} {% endblock login %}
+
+  <!-- footer ( phần này là phần chân trang)-->
+   <!-- <footer class="container--fluid bg-success text-center fixed-bottom p-2 mt-5">
+    HÃY LIÊN HỆ CHO CHÚNG TÔI THEO SĐT 0123456789 HOẶC EMAIL:tiembannhangot@gmail.com
+   </footer> -->
+   <footer class="footer">
+  <!-- <div class="footer-container">
+    
+    <div class="footer-col">
+      <img src="{% static 'app/images/looogoo.png' %}" alt="Givral" class="logo">
+    </div>
+
+    <div class="footer-col">
+      <h3>Công ty cổ phần Bánh KEM TƯƠI</h3>
+      <p>Mã số doanh nghiệp: 0123456789</p>
+      <p>Trụ sở: Lô II-1B Lê Trọng Tấn, TP.HCM</p>
+      <p>Điện thoại: (028) 3979 7350</p>
+      <p>Fax: (028) 3979 7403</p>
+      <p>Email: info@saigongivral.com</p>
+    </div>
+
+    <div class="footer-col">
+      <h3>Hotline:</h3>
+      <p>Hồ Chí Minh: 0944 630 055</p>
+      <p>(028) 3979 7350</p>
+      <p>CSKH: 0906 990 898</p>
+
+      <h3>Kết nối với chúng tôi</h3>
+      <div class="social">
+        <i class="fa-brands fa-facebook"> Facebook</i>
+        <a href="#">Facebook</a>
+        <a href="#">YouTube</a>
+        <a href="#">TikTok</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </div> -->
+</footer>
+<!-- để ở cuối vì sau khi load hết sp mới load tới cái này -->
+<script src="{%static 'app/js/cart.js' %}" >  </script>
+</body>
+</html>
