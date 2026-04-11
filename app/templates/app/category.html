@@ -1,35 +1,59 @@
-{% extends 'app/base.html' %} <!-- từ trang chủ trỏ tới base.html-->
-{% load static %}
+{% extends 'app/base.html' %} {% load static %} {% block main_content %}
 
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-</head>
-<body>
-      {%block register %}
-     <div class="row" style='width: 100%'>
- {% for product in products %} 
-<div class="col-lg-3">
-    <div class="box-element product">
-        <img class="thumbnail" src="{{product.ImageURL}}">
-        <h6><strong>{{ product.name }}</strong></h6>
-        <hr>
+<div class="container py-4">
+  <div class="mb-4">
+    <h2 class="section-title">Danh mục sản phẩm</h2>
 
-        <button data-product={{product.id}} data-action = "add" class="btn btn-outline-secondary add-btn update-cart">add</button>
-        <a class="btn btn-outline-success" href="#">View</a>
+    {% if active_category %}
+    <p class="text-center text-muted">
+      Bạn đang xem danh mục: <strong>{{ active_category }}</strong>
+    </p>
+    {% endif %}
+  </div>
 
-        <h4 style="display: inline-block; float: right">
-            <strong>{{ product.price |floatformat:0 }} VND</strong>
-        </h4>
+  <div class="row">
+    {% for product in products %}
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+      <div class="card h-100 shadow-sm">
+        {% if product.hinh_anh %}
+        <img
+          src="{{ product.hinh_anh }}"
+          class="card-img-top"
+          alt="{{ product.ten_banh }}"
+          style="height: 250px; object-fit: cover"
+        />
+        {% else %}
+        <img
+          src="{% static 'app/images/looogoo.png' %}"
+          class="card-img-top"
+          alt="{{ product.ten_banh }}"
+          style="height: 250px; object-fit: cover"
+        />
+        {% endif %}
+
+        <div class="card-body">
+          <h5 class="card-title">{{ product.ten_banh }}</h5>
+
+          <p class="card-text">{{ product.mo_ta|default:"Chưa có mô tả" }}</p>
+
+          <p class="product-price">{{ product.gia }} VNĐ</p>
+          <p class="product-stock">Số lượng: {{ product.so_luong }}</p>
+        </div>
+
+        <div class="card-footer bg-white border-0 text-center">
+          <button class="btn btn-outline-secondary" disabled>
+            Thêm vào giỏ
+          </button>
+          <a href="#" class="btn btn-outline-success"> Xem chi tiết </a>
+        </div>
+      </div>
     </div>
+    {% empty %}
+    <div class="col-12 text-center">
+      <p>Không có sản phẩm nào trong danh mục này.</p>
+    </div>
+    {% endfor %}
+  </div>
 </div>
-{% endfor %}
-</div>
-      {% endblock register %}
-</body>
-</html>
+
+{% endblock %}

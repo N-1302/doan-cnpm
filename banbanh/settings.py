@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'banbanh.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'banbanh',
+        'NAME': 'sqlcuahangbanbanh',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
@@ -92,7 +92,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
-   
+
 ]
 
 

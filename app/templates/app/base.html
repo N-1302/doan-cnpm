@@ -1,166 +1,260 @@
 {% load static %}
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- css -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link href="{%static 'app/css/style.css' %}" rel="stylesheet" />
-    <link href="{%static 'app/css/all.min.css' %}" rel="stylesheet" />
-    <link href="{%static 'app/css/owl.carousel.min.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="{% static 'app/css/main.css' %}">
-<!--<link rel="stylesheet" href="{% static 'app/css/style.css' %}">--> 
-    <!-- js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    <script src="{%static 'app/js/s3.js' %}" >  </script>
-    <script src="{%static 'app/js/all.min.js' %}" >  </script>
-    <script src="{%static 'app/js/myscript.js' %}" >  </script>
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WEB BÁN BÁNH ONLINE</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+
+    <!-- CSS riêng -->
+    <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'app/css/main.css' %}" />
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="{% static 'app/js/s3.js' %}"></script>
+    <script src="{% static 'app/js/all.min.js' %}"></script>
+    <script src="{% static 'app/js/myscript.js' %}"></script>
+
     <script type="text/javascript">
-      var user = '{{request.user}}'
+      var user = "{{ ten_dang_nhap|default:'' }}";
+
       function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1),
+              );
+              break;
             }
+          }
         }
-    }
-    return cookieValue;
-}
-const csrftoken = getCookie('csrftoken');
+        return cookieValue;
+      }
+
+      const csrftoken = getCookie("csrftoken");
     </script>
+  </head>
 
-    <title> WEB BÁN BÁNH ONLINE</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-</head>
-<body>
+  <body style="background-color: #f7f3ea">
+    <!-- Header trên -->
+    <header class="border-bottom bg-white">
+      <div class="container py-3">
+        <div class="row align-items-center">
+          <div class="col-lg-2 col-md-3 col-6">
+            <a href="{% url 'home' %}" class="text-decoration-none">
+              <img
+                src="{% static 'app/images/looogoo.png' %}"
+                alt="Logo"
+                class="img-fluid"
+                style="max-height: 80px"
+              />
+            </a>
+          </div>
 
-    <script src="" async defer></script>
-    <!-- demo thanh header -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <!-- cú pháp để trỏ tới là h r e f ... bên trong là phần đã định nghĩa ở view -->
-    <a class="navbar-brand" href="{% url 'home' %}"> 
-      <img src="{% static 'app/images/looogoo.png' %}" width="200" height="100" >
-      HOME
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">        
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">Trang chủ </a>
-        </li>
+          <div class="col-lg-6 col-md-5 d-none d-md-block">
+            <form method="POST" action="{% url 'search' %}">
+              {% csrf_token %}
+              <div class="input-group">
+                <input
+                  type="search"
+                  class="form-control rounded-pill"
+                  placeholder="Bạn muốn tìm bánh gì..."
+                  name="searched"
+                />
+                <button
+                  class="btn btn-outline-secondary ms-2 rounded-pill px-4"
+                  type="submit"
+                >
+                  Tìm
+                </button>
+              </div>
+            </form>
+          </div>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Sản phẩm
-          </a>
-          <ul class="dropdown-menu">
-          {% for i in categories %} 
-            <li><a class="dropdown-item" href="{% url 'category' %}?category={{i.slug}}"> {{i.name}}</a></li>
-          {% endfor %}
+          <div class="col-lg-4 col-md-4 col-6 text-end">
+            <a
+              href="{% url 'cart' %}"
+              class="btn btn-danger rounded-pill px-3 me-2"
+            >
+              Đặt bánh
+            </a>
 
+            {% if da_dang_nhap %}
+            <span class="me-2">Xin chào, {{ ten_dang_nhap }}</span>
+            <a href="{% url 'logout' %}" class="text-decoration-none">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="text-decoration-none me-2"
+              >Đăng nhập</a
+            >
+            <a href="{% url 'register' %}" class="text-decoration-none"
+              >Đăng kí</a
+            >
+            {% endif %}
+
+            <a
+              href="{% url 'cart' %}"
+              class="ms-3 text-decoration-none position-relative"
+            >
+              <img
+                id="cart-icon"
+                src="{% static 'app/images/cart.png' %}"
+                alt="cart"
+                style="width: 28px"
+              />
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              >
+                {{ cartItems|default:0 }}
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Menu danh mục -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom">
+      <div class="container">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+          class="collapse navbar-collapse justify-content-center"
+          id="mainNavbar"
+        >
+          <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-3">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Trang chủ</a>
+            </li>
+
+            {% for i in categories %}
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{% url 'category' %}?category={{ i.ma_loai }}"
+              >
+                {{ i.ten_loai }}
+              </a>
+            </li>
+            {% endfor %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cart' %}">Giỏ hàng</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'checkout' %}">Thanh toán</a>
+            </li>
           </ul>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link" href="{% url 'cart' %}">cart </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Liên hệ </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="d-flex" role="search" method="POST" action="{% url 'search' %}">
-        {% csrf_token %}
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name = "searched">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-
-       
-       <div class="form-inline my-2 mu-lg-0" style = "visibility: {{user_login}}">
-        <span>hello!{{request.user}}</span>
-        <span><a href="{% url 'logout' %}"> Logout</a></span>
-       </div>
-      <div class="form-inline my-2 mu-lg-0" style = "visibility: {{user_not_login}}">
-          <a class="nav-link" href="{% url 'login'%}">Đăng nhập </a>
-          <a class="nav-link" href="{% url 'register'%}">Đăng kí </a>
+        </div>
       </div>
-     <div class="form-inline my-2 mu-lg-0">
+    </nav>
 
-      <a href="{% url 'cart' %}"><img id="cart-icon" src="{% static 'app/images/cart.png'%}"> </a>
-      <p id='cart-total'>{{cartItems}}</p>
-     </div>
-     
-  </div>
-</nav>
-<!-- end demo thanh menu -->
- <!-- main body (link từ các trang khác vào đây)-->
-  {%block banner_slider %}  {% endblock banner_slider %}
-  {% block main_content %}   {% endblock main_content  %}
-  <!-- này giao diện cart á nha -->
-  {% block cart_content %}    {% endblock cart_content %}
-<!-- này là giao diện checkout -->
-  {% block content_checkout %} {% endblock content_checkout %}
-  {% block register %} {% endblock register %}
-  {% block login %} {% endblock login %}
+    <!-- Nội dung trang -->
+    <main class="pb-5">{% block main_content %} {% endblock %}</main>
 
-  <!-- footer ( phần này là phần chân trang)-->
-   <!-- <footer class="container--fluid bg-success text-center fixed-bottom p-2 mt-5">
-    HÃY LIÊN HỆ CHO CHÚNG TÔI THEO SĐT 0123456789 HOẶC EMAIL:tiembannhangot@gmail.com
-   </footer> -->
-   <footer class="footer">
-  <!-- <div class="footer-container">
-    
-    <div class="footer-col">
-      <img src="{% static 'app/images/looogoo.png' %}" alt="Givral" class="logo">
-    </div>
+    <!-- Footer -->
+    <footer class="footer-givral text-black mt-5">
+      <div class="container py-5">
+        <div class="row gy-4">
+          <!-- Logo -->
+          <div class="col-lg-3 col-md-12 text-center text-lg-start">
+            <div class="footer-logo">
+              <img
+                src="{% static 'app/images/looogoo.png' %}"
+                alt="Logo"
+                class="img-fluid mb-3"
+                style="max-height: 120px"
+              />
+              <p class="footer-since mb-0">since 1950</p>
+            </div>
+          </div>
 
-    <div class="footer-col">
-      <h3>Công ty cổ phần Bánh KEM TƯƠI</h3>
-      <p>Mã số doanh nghiệp: 0123456789</p>
-      <p>Trụ sở: Lô II-1B Lê Trọng Tấn, TP.HCM</p>
-      <p>Điện thoại: (028) 3979 7350</p>
-      <p>Fax: (028) 3979 7403</p>
-      <p>Email: info@saigongivral.com</p>
-    </div>
+          <!-- Thông tin công ty -->
+          <div class="col-lg-5 col-md-7">
+            <div class="footer-menu mb-4">
+              <a href="{% url 'home' %}">Giới thiệu</a>
+              <a href="#">Sản phẩm</a>
+              <a href="#">Hệ thống</a>
+              <a href="#">Tin tức</a>
+              <a href="#">Chính sách giao hàng</a>
+              <a href="#">Liên hệ</a>
+            </div>
 
-    <div class="footer-col">
-      <h3>Hotline:</h3>
-      <p>Hồ Chí Minh: 0944 630 055</p>
-      <p>(028) 3979 7350</p>
-      <p>CSKH: 0906 990 898</p>
+            <hr class="footer-line" />
 
-      <h3>Kết nối với chúng tôi</h3>
-      <div class="social">
-        <i class="fa-brands fa-facebook"> Facebook</i>
-        <a href="#">Facebook</a>
-        <a href="#">YouTube</a>
-        <a href="#">TikTok</a>
-        <a href="#">Instagram</a>
+            <h4 class="fw-bold mb-3">Công ty cổ phần Bánh Givral</h4>
+            <p class="mb-3">
+              Mã số doanh nghiệp: 0311426136 do Sở Kế Hoạch và Đầu Tư TP.Hồ Chí
+              Minh cấp lần đầu ngày 19/12/2011. Đăng ký thay đổi lần thứ 22,
+              ngày 31/07/2025.
+            </p>
+            <p class="mb-3">
+              Trụ sở: Lô II-1B Lê Trọng Tấn, KCN Tân Bình, P. Tây Thạnh, TP.HCM
+            </p>
+            <p class="mb-2">Điện thoại: (028) 3979 7350</p>
+            <p class="mb-2">Fax: (028) 3979 7403</p>
+            <p class="mb-0">Email: info@saigongivral.com</p>
+          </div>
+
+          <!-- Hotline + social -->
+          <div class="col-lg-4 col-md-5">
+            <h4 class="fw-bold mb-3">Hotline:</h4>
+            <p class="mb-2"><strong>Hồ Chí Minh:</strong> 0944 630 055</p>
+            <p class="mb-2"><strong>(028) 3979 7350</strong></p>
+            <p class="mb-4"><strong>CSKH:</strong> 0906 990 898</p>
+
+            <h4 class="fw-bold mb-3 mt-4">Kết nối với chúng tôi</h4>
+            <div class="footer-social d-flex gap-3 flex-wrap">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+              <a href="#"><i class="fab fa-tiktok"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <hr class="footer-line my-4" />
+
+        <div
+          class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 footer-bottom"
+        >
+          <p class="mb-0">© All Right Reserved / Bản quyền thuộc về Givral</p>
+          <div class="footer-bottom-links d-flex gap-3 flex-wrap">
+            <a href="#">Bảo mật thông tin</a>
+            <a href="#">Điều khoản sử dụng</a>
+            <a href="#">Xem bản đồ</a>
+          </div>
+        </div>
       </div>
-    </div>
-  </div> -->
-</footer>
-<!-- để ở cuối vì sau khi load hết sp mới load tới cái này -->
-<script src="{%static 'app/js/cart.js' %}" >  </script>
-</body>
+    </footer>
+  </body>
 </html>

@@ -1,11 +1,6 @@
 from django.contrib import admin
-from .models import *
+from .models import TaiKhoan, LoaiBanh, Banh
 
-# Register your models here.
-
-admin.site.register(Sanpham)
-admin.site.register(Category)
-admin.site.register(Donhang)
-admin.site.register(Donhangsanpham)
-admin.site.register(Diachi)
-    
+admin.site.register(TaiKhoan)
+admin.site.register(LoaiBanh)
+admin.site.register(Banh)
