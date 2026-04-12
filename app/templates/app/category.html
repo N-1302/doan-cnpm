@@ -1,59 +1,74 @@
-{% extends 'app/base.html' %} {% load static %} {% block main_content %}
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
 
-<div class="container py-4">
-  <div class="mb-4">
-    <h2 class="section-title">Danh mục sản phẩm</h2>
+<section class="product-section category-page">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-subtitle">Danh mục bánh</p>
+      <h2 class="section-title">Danh mục sản phẩm</h2>
 
-    {% if active_category %}
-    <p class="text-center text-muted">
-      Bạn đang xem danh mục: <strong>{{ active_category }}</strong>
-    </p>
-    {% endif %}
-  </div>
+      {% if active_category %}
+      <p class="category-active-text">
+        Bạn đang xem danh mục: <strong>{{ active_category }}</strong>
+      </p>
+      {% endif %}
+    </div>
 
-  <div class="row">
-    {% for product in products %}
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-      <div class="card h-100 shadow-sm">
-        {% if product.hinh_anh %}
-        <img
-          src="{{ product.hinh_anh }}"
-          class="card-img-top"
-          alt="{{ product.ten_banh }}"
-          style="height: 250px; object-fit: cover"
-        />
-        {% else %}
-        <img
-          src="{% static 'app/images/looogoo.png' %}"
-          class="card-img-top"
-          alt="{{ product.ten_banh }}"
-          style="height: 250px; object-fit: cover"
-        />
-        {% endif %}
+    <div class="shopee-grid">
+      {% for product in products %}
+      <div class="shopee-card">
+        <div class="product-badge">Yêu thích</div>
 
-        <div class="card-body">
-          <h5 class="card-title">{{ product.ten_banh }}</h5>
-
-          <p class="card-text">{{ product.mo_ta|default:"Chưa có mô tả" }}</p>
-
-          <p class="product-price">{{ product.gia }} VNĐ</p>
-          <p class="product-stock">Số lượng: {{ product.so_luong }}</p>
+        <div class="shopee-image-wrap">
+          {% if product.hinh_anh %}
+          <img
+            src="{% static 'app/images/' %}{{ product.hinh_anh }}"
+            class="shopee-image"
+            alt="{{ product.ten_banh }}"
+          />
+          {% else %}
+          <img
+            src="{% static 'app/images/looogoo.png' %}"
+            class="shopee-image"
+            alt="{{ product.ten_banh }}"
+          />
+          {% endif %}
         </div>
 
-        <div class="card-footer bg-white border-0 text-center">
-          <button class="btn btn-outline-secondary" disabled>
-            Thêm vào giỏ
-          </button>
-          <a href="#" class="btn btn-outline-success"> Xem chi tiết </a>
+        <div class="shopee-info">
+          <h5 class="shopee-name">{{ product.ten_banh }}</h5>
+
+          <p class="shopee-desc">{{ product.mo_ta|default:"Bánh ngon mỗi ngày" }}</p>
+
+          <div class="shopee-rating">★★★★★</div>
+
+          <div class="shopee-old-price">
+            {{ product.gia }} VNĐ
+            <span class="discount-tag">-20%</span>
+          </div>
+
+          <div class="shopee-price">
+            {{ product.gia }} <span>đ</span>
+          </div>
+
+          <div class="shopee-stock">
+            Còn lại: {{ product.so_luong }}
+          </div>
+
+          <div class="shopee-bottom">
+            <div class="shopee-hot">ĐANG BÁN CHẠY</div>
+            <a href="#" class="buy-now-btn">Mua Ngay</a>
+          </div>
         </div>
       </div>
+      {% empty %}
+      <div class="col-12 text-center">
+        <p>Không có sản phẩm nào trong danh mục này.</p>
+      </div>
+      {% endfor %}
     </div>
-    {% empty %}
-    <div class="col-12 text-center">
-      <p>Không có sản phẩm nào trong danh mục này.</p>
-    </div>
-    {% endfor %}
   </div>
-</div>
+</section>
 
 {% endblock %}
