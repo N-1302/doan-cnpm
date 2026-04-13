@@ -1,20 +1,25 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
+  <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WEB BÁN BÁNH ONLINE</title>
 
     <!-- Bootstrap -->
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
     />
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- CSS riêng -->
 
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}" />
     <!-- CSS chung -->
     <link rel="stylesheet" href="{% static 'app/css/main.css' %}" />
 
@@ -31,7 +36,9 @@
           for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === name + "=") {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1),
+              );
               break;
             }
           }
@@ -41,9 +48,9 @@
 
       const csrftoken = getCookie("csrftoken");
     </script>
-</head>
+  </head>
 
-<body style="background-color: #f7f3ea">
+  <body style="background-color: #f7f3ea">
     <!-- Header trên -->
     <header class="border-bottom bg-white">
       <div class="container py-3">
@@ -51,10 +58,10 @@
           <div class="col-lg-2 col-md-3 col-6">
             <a href="{% url 'home' %}" class="text-decoration-none">
               <img
-                src="{% static 'app/images/looogoo.png' %}"
+                src="{% static 'app/images/logo.png' %}"
                 alt="Logo"
                 class="img-fluid"
-                style="max-height: 80px"
+                style="max-height: 120px"
               />
             </a>
           </div>
@@ -91,8 +98,12 @@
             <span class="me-2">Xin chào, {{ ten_dang_nhap }}</span>
             <a href="{% url 'logout' %}" class="text-decoration-none">Logout</a>
             {% else %}
-            <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
-            <a href="{% url 'register' %}" class="text-decoration-none">Đăng kí</a>
+            <a href="{% url 'login' %}" class="text-decoration-none me-2"
+              >Đăng nhập</a
+            >
+            <a href="{% url 'register' %}" class="text-decoration-none"
+              >Đăng kí</a
+            >
             {% endif %}
 
             <a
@@ -146,7 +157,8 @@
                 class="nav-link"
                 href="{% url 'category' %}?category={{ i.ma_loai }}"
               >
-                {{ i.ten_loai }}
+                <!--{{ i.ma_loai_banh }} -->
+                {{ i.ten_loai_banh }}
               </a>
             </li>
             {% endfor %}
@@ -164,9 +176,7 @@
     </nav>
 
     <!-- Nội dung trang -->
-    <main class="pb-5">
-      {% block main_content %}{% endblock %}
-    </main>
+    <main class="pb-5">{% block main_content %}{% endblock %}</main>
 
     <!-- Footer -->
     <footer class="footer-givral text-black mt-5">
@@ -175,10 +185,10 @@
           <div class="col-lg-3 col-md-12 text-center text-lg-start">
             <div class="footer-logo">
               <img
-                src="{% static 'app/images/looogoo.png' %}"
+                src="{% static 'app/images/logo_white.png' %}"
                 alt="Logo"
                 class="img-fluid mb-3"
-                style="max-height: 120px"
+                style="max-height: 235px"
               />
               <p class="footer-since mb-0">since 1950</p>
             </div>
@@ -189,20 +199,22 @@
               <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
               <a href="{% url 'san_pham' %}">Sản phẩm</a>
               <a href="{% url 'tin_tuc' %}">Tin tức</a>
-              <a href="{% url 'chinh_sach_giao_hang' %}">Chính sách giao hàng</a>
+              <a href="{% url 'chinh_sach_giao_hang' %}"
+                >Chính sách giao hàng</a
+              >
               <a href="{% url 'lien_he' %}">Liên hệ</a>
             </div>
 
             <hr class="footer-line" />
 
-            <h4 class="fw-bold mb-3">Công ty cổ phần Bánh SprintTeam</h4>
+            <h4 class="fw-bold mb-3">Công ty cổ phần Bánh SprintTeam,</h4>
             <p class="mb-3">
               Mã số doanh nghiệp: 0311426136 do Sở Kế Hoạch và Đầu Tư TP.Hồ Chí
               Minh cấp lần đầu ngày 19/12/2011. Đăng ký thay đổi lần thứ 22,
               ngày 31/07/2025.
             </p>
             <p class="mb-3">
-              Trụ sở: 280 An Dương Vương, Phường Chợ Quán, Quận 5, TP.Hồ Chí Minh.
+              Trụ sở: 280 An Dương Vương, Phường Chợ Quán, TP.Hồ Chí Minh.
             </p>
             <p class="mb-2">Điện thoại: (028) 3979 7350</p>
             <p class="mb-2">Fax: (028) 3979 7403</p>
@@ -218,7 +230,8 @@
             <h4 class="fw-bold mb-3 mt-4">Kết nối với chúng tôi</h4>
             <div class="footer-social d-flex gap-3 flex-wrap">
               <a href="#"><i class="fab fa-facebook-f"></i></a>
-              <a href="#"><i class="fab fa-zalo"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+              <a href="#"><i class="fab fa-tiktok"></i></a>
               <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
           </div>
@@ -240,11 +253,21 @@
 
     <!-- Nút liên hệ nổi -->
     <div class="floating-contact">
-      <a href="https://m.me/https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank" class="float-btn messenger-btn" title="Messenger">
+      <a
+        href="https://m.me/nguyen.dang.khoi.130206"
+        target="_blank"
+        class="float-btn messenger-btn"
+        title="Messenger"
+      >
         <i class="fab fa-facebook-messenger"></i>
       </a>
 
-      <a href="https://zalo.me/0849130206" target="_blank" class="float-btn zalo-btn" title="Zalo">
+      <a
+        href="https://zalo.me/0849130206"
+        target="_blank"
+        class="float-btn zalo-btn"
+        title="Zalo"
+      >
         <span>Zalo</span>
       </a>
 
@@ -252,7 +275,12 @@
         <i class="fas fa-phone-alt"></i>
       </a>
 
-      <button type="button" class="float-btn back-top-btn" id="backToTop" title="Lên đầu trang">
+      <button
+        type="button"
+        class="float-btn back-top-btn"
+        id="backToTop"
+        title="Lên đầu trang"
+      >
         <i class="fas fa-chevron-up"></i>
         <i class="fas fa-chevron-up"></i>
       </button>
@@ -264,5 +292,5 @@
     <script src="{% static 'app/js/myscript.js' %}"></script>
     <script src="{% static 'app/js/floating-contact.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </body>
 </html>
