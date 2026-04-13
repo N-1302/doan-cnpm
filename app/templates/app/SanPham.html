@@ -1,0 +1,133 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}">
+
+<section class="product-page">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="product-breadcrumb">
+            <a href="{% url 'home' %}">Trang chủ</a>
+            <span>/</span>
+            <span>Sản phẩm</span>
+        </div>
+
+        <!-- Tiêu đề -->
+        <div class="product-page-header">
+            <p class="product-page-subtitle">Bánh tươi mỗi ngày</p>
+            <h1 class="product-page-title">Tất cả sản phẩm</h1>
+            <p class="product-page-desc">
+                Khám phá các dòng bánh thơm ngon, tươi mới, phù hợp cho mọi dịp đặc biệt và nhu cầu hằng ngày.
+            </p>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="product-top-bar">
+            <div class="product-filter-left">
+                <a href="{% url 'san_pham' %}" class="filter-btn active">Tất cả</a>
+
+                {% if loai_banh_list %}
+                    {% for loai in loai_banh_list %}
+                        <a href="{% url 'category' loai.MaLoaiBanh %}" class="filter-btn">
+                            {{ loai.TenLoaiBanh }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="product-filter-right">
+                <span>{{ products|length }} sản phẩm</span>
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-badge">Yêu thích</div>
+
+                <a href="{% url 'product_detail' product.MaBanh %}" class="product-image-wrap">
+                    {% if product.HinhAnh %}
+                        <img src="{{ product.HinhAnh.url }}" alt="{{ product.TenBanh }}" class="product-image">
+                    {% else %}
+                        <img src="{% static 'app/images/no-image.png' %}" alt="{{ product.TenBanh }}" class="product-image">
+                    {% endif %}
+                </a>
+
+                <div class="product-info">
+                    <h3 class="product-name">
+                        <a href="{% url 'product_detail' product.MaBanh %}">
+                            {{ product.TenBanh }}
+                        </a>
+                    </h3>
+
+                    {% if product.MoTa %}
+                    <p class="product-desc">
+                        {{ product.MoTa|truncatechars:70 }}
+                    </p>
+                    {% endif %}
+
+                    <div class="product-meta">
+                        <div class="product-price">
+                            {{ product.Gia|floatformat:0 }} đ
+                        </div>
+
+                        <div class="product-stock">
+                            Còn: {{ product.SoLuongTon }}
+                        </div>
+                    </div>
+
+                    <div class="product-actions">
+                        <a href="{% url 'product_detail' product.MaBanh %}" class="btn-view">
+                            Xem chi tiết
+                        </a>
+                        <a href="{% url 'product_detail' product.MaBanh %}" class="btn-buy">
+                            Mua ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-product">
+                <p>Hiện chưa có sản phẩm nào.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Phân trang -->
+        {% if products.has_other_pages %}
+        <div class="pagination-wrap">
+            <div class="pagination">
+
+                {% if products.has_previous %}
+                    <a href="?page={{ products.previous_page_number }}" class="page-btn">‹</a>
+                {% else %}
+                    <span class="page-btn disabled">‹</span>
+                {% endif %}
+
+                {% for num in products.paginator.page_range %}
+                    {% if products.number == num %}
+                        <span class="page-btn active">{{ num }}</span>
+                    {% elif num > products.number|add:'-2' and num < products.number|add:'2' %}
+                        <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+                    {% elif num == 1 or num == products.paginator.num_pages %}
+                        <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}" class="page-btn">›</a>
+                {% else %}
+                    <span class="page-btn disabled">›</span>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock main_content %}

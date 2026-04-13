@@ -1,0 +1,173 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/QuanLyBanh.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<section class="qlb-page">
+    <div class="qlb-container">
+
+        <div class="qlb-top">
+            <div>
+                <p class="qlb-subtitle">SPRINTTEAM ADMIN</p>
+                <h1 class="qlb-title">Quản lý bánh</h1>
+                <p class="qlb-desc">Thêm, sửa, xóa thông tin bánh, giá bán, tồn kho, hình ảnh và mô tả sản phẩm.</p>
+            </div>
+
+            <div class="qlb-top-actions">
+                <a href="{% url 'admin_dashboard' %}" class="qlb-back-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Về dashboard
+                </a>
+                <button type="button" class="qlb-add-btn" id="openAddModal">
+                    <i class="fa-solid fa-plus"></i> Thêm bánh
+                </button>
+            </div>
+        </div>
+
+        <div class="qlb-toolbar">
+            <div class="qlb-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Tìm theo tên bánh...">
+            </div>
+
+            <div class="qlb-filter-box">
+                <select id="categoryFilter">
+                    <option value="">Tất cả danh mục</option>
+                    {% for loai in ds_loai_banh %}
+                    <option value="{{ loai.ten_loai_banh }}">{{ loai.ten_loai_banh }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="qlb-table-wrap">
+            <table class="qlb-table" id="cakeTable">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Hình</th>
+                        <th>Tên bánh</th>
+                        <th>Loại bánh</th>
+                        <th>Giá</th>
+                        <th>Tồn kho</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for banh in ds_banh %}
+                    <tr>
+                        <td>{{ banh.ma_banh }}</td>
+                        <td>
+                            {% if banh.hinh_anh %}
+                                <img src="{{ banh.hinh_anh }}" alt="{{ banh.ten_banh }}" class="qlb-thumb">
+                            {% else %}
+                                <div class="qlb-no-image">No image</div>
+                            {% endif %}
+                        </td>
+                        <td class="cake-name">{{ banh.ten_banh }}</td>
+                        <td class="cake-category">
+                            {% if banh.ma_loai_banh %}
+                                {{ banh.ma_loai_banh.ten_loai_banh }}
+                            {% else %}
+                                Chưa có
+                            {% endif %}
+                        </td>
+                        <td>{{ banh.gia }}</td>
+                        <td>{{ banh.so_luong_ton }}</td>
+                        <td>
+                            <span class="qlb-status">
+                                {{ banh.trang_thai|default:"Đang bán" }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="qlb-actions">
+                                <a href="{% url 'sua_banh' banh.ma_banh %}" class="qlb-action edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="{% url 'xoa_banh' banh.ma_banh %}" class="qlb-action delete" onclick="return confirm('Bạn có chắc muốn xóa bánh này?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="qlb-empty">Chưa có dữ liệu bánh</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="qlb-modal" id="addCakeModal">
+            <div class="qlb-modal-content">
+                <div class="qlb-modal-head">
+                    <h2>Thêm bánh mới</h2>
+                    <button type="button" class="qlb-close" id="closeAddModal">&times;</button>
+                </div>
+
+                <form method="POST" action="{% url 'them_banh' %}" class="qlb-form">
+                    {% csrf_token %}
+
+                    <div class="qlb-form-grid">
+                        <div class="qlb-form-group">
+                            <label>Tên bánh</label>
+                            <input type="text" name="ten_banh" required>
+                        </div>
+
+                        <div class="qlb-form-group">
+                            <label>Loại bánh</label>
+                            <select name="ma_loai_banh" required>
+                                <option value="">-- Chọn loại bánh --</option>
+                                {% for loai in ds_loai_banh %}
+                                <option value="{{ loai.ma_loai_banh }}">{{ loai.ten_loai_banh }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="qlb-form-group">
+                            <label>Giá</label>
+                            <input type="number" name="gia" min="0" required>
+                        </div>
+
+                        <div class="qlb-form-group">
+                            <label>Số lượng tồn</label>
+                            <input type="number" name="so_luong_ton" min="0" required>
+                        </div>
+
+                        <div class="qlb-form-group qlb-form-group-full">
+                            <label>Hình ảnh (link)</label>
+                            <input type="text" name="hinh_anh" placeholder="Dán link hình ảnh">
+                        </div>
+
+                        <div class="qlb-form-group qlb-form-group-full">
+                            <label>Mô tả</label>
+                            <textarea name="mo_ta" rows="4"></textarea>
+                        </div>
+
+                        <div class="qlb-form-group">
+                            <label>Trạng thái</label>
+                            <select name="trang_thai">
+                                <option value="Đang bán">Đang bán</option>
+                                <option value="Tạm hết">Tạm hết</option>
+                                <option value="Ngừng bán">Ngừng bán</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="qlb-form-actions">
+                        <button type="button" class="qlb-cancel-btn" id="cancelAddModal">Hủy</button>
+                        <button type="submit" class="qlb-save-btn">Lưu bánh</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="{% static 'app/js/QuanLyBanh.js' %}"></script>
+
+{% endblock %}

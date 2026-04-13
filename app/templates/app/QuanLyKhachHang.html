@@ -1,0 +1,108 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/QuanLyKhachHang.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<section class="qlkh-page">
+    <div class="qlkh-container">
+
+        <div class="qlkh-top">
+            <div>
+                <p class="qlkh-subtitle">SPRINTTEAM ADMIN</p>
+                <h1 class="qlkh-title">Quản lý khách hàng</h1>
+                <p class="qlkh-desc">
+                    Xem danh sách tài khoản, theo dõi thông tin người dùng và khóa hoặc mở tài khoản khi cần.
+                </p>
+            </div>
+
+            <div class="qlkh-top-actions">
+                <a href="{% url 'admin_dashboard' %}" class="qlkh-back-btn">
+                    ← Về dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="qlkh-toolbar">
+            <div class="qlkh-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Tìm theo tên, tài khoản, email...">
+            </div>
+
+            <div class="qlkh-filter-box">
+                <select id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Hoạt động">Hoạt động</option>
+                    <option value="Bị khóa">Bị khóa</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="qlkh-table-wrap">
+            <table class="qlkh-table" id="userTable">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Họ tên</th>
+                        <th>Tài khoản</th>
+                        <th>Email</th>
+                        <th>SĐT</th>
+                        <th>Giới tính</th>
+                        <th>Quyền</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tk in ds_tai_khoan %}
+                    <tr>
+                        <td>{{ tk.ma_tai_khoan }}</td>
+                        <td class="user-name">{{ tk.ho_ten }}</td>
+                        <td class="user-username">{{ tk.ten_dang_nhap }}</td>
+                        <td class="user-email">{{ tk.email }}</td>
+                        <td>{{ tk.sdt|default:"-" }}</td>
+                        <td>{{ tk.gioi_tinh|default:"-" }}</td>
+                        <td>
+                            {% if tk.ma_quyen %}
+                                {{ tk.ma_quyen.ten_quyen }}
+                            {% else %}
+                                User
+                            {% endif %}
+                        </td>
+                        <td class="user-status">
+                            {% if tk.random_key == "LOCKED" %}
+                                <span class="qlkh-status qlkh-locked">Bị khóa</span>
+                            {% else %}
+                                <span class="qlkh-status qlkh-active">Hoạt động</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="qlkh-actions">
+                                {% if tk.random_key == "LOCKED" %}
+                                    <a href="{% url 'mo_tai_khoan' tk.ma_tai_khoan %}" class="qlkh-action unlock">
+                                        <i class="fa-solid fa-lock-open"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'khoa_tai_khoan' tk.ma_tai_khoan %}" class="qlkh-action lock" onclick="return confirm('Bạn có chắc muốn khóa tài khoản này?')">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="qlkh-empty">Chưa có tài khoản nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<script src="{% static 'app/js/QuanLyKhachHang.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/DatLaiMatKhau.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<section class="dlmk-page">
+    <div class="dlmk-wrapper">
+        <div class="dlmk-card">
+            <h2 class="dlmk-title">Đặt lại mật khẩu</h2>
+
+            {% if loi %}
+                <div class="dlmk-alert dlmk-error">{{ loi }}</div>
+            {% endif %}
+
+            {% if thanhcong %}
+                <div class="dlmk-alert dlmk-success">{{ thanhcong }}</div>
+            {% endif %}
+
+            <form method="POST" class="dlmk-form" id="datLaiMatKhauForm">
+                {% csrf_token %}
+
+                <div class="dlmk-group">
+                    <label for="otp">Mã OTP</label>
+                    <input type="text" id="otp" name="otp" placeholder="Nhập mã OTP" required>
+                </div>
+
+                <div class="dlmk-group">
+                    <label for="new_password">Mật khẩu mới</label>
+                    <div class="dlmk-password-box">
+                        <input type="password" id="new_password" name="new_password" placeholder="Nhập mật khẩu mới" required>
+                        <button type="button" class="dlmk-toggle-password" data-target="new_password">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dlmk-group">
+                    <label for="confirm_password">Xác nhận mật khẩu mới</label>
+                    <div class="dlmk-password-box">
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Nhập lại mật khẩu mới" required>
+                        <button type="button" class="dlmk-toggle-password" data-target="confirm_password">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dlmk-options">
+                    <a href="{% url 'login' %}" class="dlmk-back-link">Quay lại đăng nhập</a>
+                </div>
+
+                <button type="submit" class="dlmk-submit-btn">Đổi mật khẩu</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'app/js/DatLaiMatKhau.js' %}"></script>
+
+{% endblock %}

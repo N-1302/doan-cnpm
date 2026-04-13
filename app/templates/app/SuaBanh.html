@@ -1,0 +1,148 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/SuaBanh.css' %}">
+
+<section class="sb-page">
+    <div class="sb-container">
+
+        <div class="sb-top">
+            <div>
+                <p class="sb-subtitle">SPRINTTEAM ADMIN</p>
+                <h1 class="sb-title">Sửa thông tin bánh</h1>
+                <p class="sb-desc">
+                    Cập nhật tên bánh, loại bánh, giá bán, tồn kho, hình ảnh và trạng thái sản phẩm.
+                </p>
+            </div>
+
+            <div class="sb-top-actions">
+                <a href="{% url 'quan_ly_banh' %}" class="sb-back-btn">
+                    ← Quay lại quản lý bánh
+                </a>
+            </div>
+        </div>
+
+        <div class="sb-card">
+            <div class="sb-card-left">
+                <div class="sb-image-box">
+                    {% if banh.hinh_anh %}
+                        <img src="{{ banh.hinh_anh }}" alt="{{ banh.ten_banh }}">
+                    {% else %}
+                        <div class="sb-no-image">Chưa có hình ảnh</div>
+                    {% endif %}
+                </div>
+
+                <div class="sb-product-info">
+                    <h3>{{ banh.ten_banh }}</h3>
+                    <p><strong>Mã bánh:</strong> {{ banh.ma_banh }}</p>
+                    <p>
+                        <strong>Loại bánh:</strong>
+                        {% if banh.ma_loai_banh %}
+                            {{ banh.ma_loai_banh.ten_loai_banh }}
+                        {% else %}
+                            Chưa có
+                        {% endif %}
+                    </p>
+                    <p><strong>Trạng thái:</strong> {{ banh.trang_thai|default:"Đang bán" }}</p>
+                </div>
+            </div>
+
+            <div class="sb-card-right">
+                <form method="POST" class="sb-form">
+                    {% csrf_token %}
+
+                    <div class="sb-form-grid">
+                        <div class="sb-form-group">
+                            <label for="ten_banh">Tên bánh</label>
+                            <input
+                                type="text"
+                                id="ten_banh"
+                                name="ten_banh"
+                                value="{{ banh.ten_banh }}"
+                                required
+                            >
+                        </div>
+
+                        <div class="sb-form-group">
+                            <label for="ma_loai_banh">Loại bánh</label>
+                            <select id="ma_loai_banh" name="ma_loai_banh" required>
+                                {% for loai in ds_loai_banh %}
+                                    <option value="{{ loai.ma_loai_banh }}"
+                                        {% if banh.ma_loai_banh and banh.ma_loai_banh.ma_loai_banh == loai.ma_loai_banh %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ loai.ten_loai_banh }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="sb-form-group">
+                            <label for="gia">Giá bán</label>
+                            <input
+                                type="number"
+                                id="gia"
+                                name="gia"
+                                value="{{ banh.gia }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="sb-form-group">
+                            <label for="so_luong_ton">Số lượng tồn</label>
+                            <input
+                                type="number"
+                                id="so_luong_ton"
+                                name="so_luong_ton"
+                                value="{{ banh.so_luong_ton }}"
+                                min="0"
+                                required
+                            >
+                        </div>
+
+                        <div class="sb-form-group sb-full">
+                            <label for="hinh_anh">Link hình ảnh</label>
+                            <input
+                                type="text"
+                                id="hinh_anh"
+                                name="hinh_anh"
+                                value="{{ banh.hinh_anh|default:'' }}"
+                                placeholder="Dán link hình ảnh"
+                            >
+                        </div>
+
+                        <div class="sb-form-group sb-full">
+                            <label for="mo_ta">Mô tả</label>
+                            <textarea
+                                id="mo_ta"
+                                name="mo_ta"
+                                rows="5"
+                                placeholder="Nhập mô tả sản phẩm"
+                            >{{ banh.mo_ta|default:'' }}</textarea>
+                        </div>
+
+                        <div class="sb-form-group">
+                            <label for="trang_thai">Trạng thái</label>
+                            <select id="trang_thai" name="trang_thai">
+                                <option value="Đang bán" {% if banh.trang_thai == "Đang bán" %}selected{% endif %}>Đang bán</option>
+                                <option value="Tạm hết" {% if banh.trang_thai == "Tạm hết" %}selected{% endif %}>Tạm hết</option>
+                                <option value="Ngừng bán" {% if banh.trang_thai == "Ngừng bán" %}selected{% endif %}>Ngừng bán</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sb-actions">
+                        <a href="{% url 'quan_ly_banh' %}" class="sb-cancel-btn">Hủy</a>
+                        <button type="submit" class="sb-save-btn">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

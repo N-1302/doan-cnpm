@@ -3,16 +3,21 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('trang-chu/', views.home, name='trangchu'),
 
     # Trang sản phẩm / danh mục / tìm kiếm
     path('san-pham/', views.san_pham, name='san_pham'),
-    path('category/', views.category, name='category'),
+    path('san-pham/<int:maloai>/', views.san_pham_theo_loai, name='san_pham_theo_loai'),
+    path('chi-tiet/<int:mabanh>/', views.product_detail, name='product_detail'),
     path('search/', views.search, name='search'),
+    path('danh-muc/', views.category, name='category'),
 
     # Tài khoản
     path('register/', views.register, name='register'),
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutPage, name='logout'),
+    path('quen-mat-khau/', views.quen_mat_khau, name='quen_mat_khau'),
+    path('dat-lai-mat-khau/', views.dat_lai_mat_khau, name='dat_lai_mat_khau'),
 
     # Giỏ hàng / thanh toán
     path('cart/', views.cart, name='cart'),
@@ -21,6 +26,20 @@ urlpatterns = [
 
     # Admin
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('quan-ly-banh/', views.quan_ly_banh, name='quan_ly_banh'),
+    path('them-banh/', views.them_banh, name='them_banh'),
+    path('sua-banh/<int:mabanh>/', views.sua_banh, name='sua_banh'),
+    path('xoa-banh/<int:mabanh>/', views.xoa_banh, name='xoa_banh'),
+    path('quan-ly-don-hang/', views.quan_ly_don_hang, name='quan_ly_don_hang'),
+    path('cap-nhat-don-hang/<int:madonhang>/', views.cap_nhat_don_hang, name='cap_nhat_don_hang'),
+    path('quan-ly-khuyen-mai/', views.quan_ly_khuyen_mai, name='quan_ly_khuyen_mai'),
+    path('them-khuyen-mai/', views.them_khuyen_mai, name='them_khuyen_mai'),
+    path('xoa-khuyen-mai/<int:makhuyenmai>/', views.xoa_khuyen_mai, name='xoa_khuyen_mai'),
+    path('quan-ly-khach-hang/', views.quan_ly_khach_hang, name='quan_ly_khach_hang'),
+    path('khoa-tai-khoan/<int:mataikhoan>/', views.khoa_tai_khoan, name='khoa_tai_khoan'),
+    path('mo-tai-khoan/<int:mataikhoan>/', views.mo_tai_khoan, name='mo_tai_khoan'),
+
+path('thong-ke/', views.thong_ke, name='thong_ke'),
 
     # Các trang tĩnh
     path('lien-he/', views.lien_he, name='lien_he'),
@@ -29,5 +48,4 @@ urlpatterns = [
     path('gioi-thieu/', views.gioi_thieu, name='gioi_thieu'),
     path('bao-mat-thong-tin/', views.bao_mat_thong_tin, name='bao_mat_thong_tin'),
     path('dieu-khoan-su-dung/', views.dieu_khoan_su_dung, name='dieu_khoan_su_dung'),
-    path('tin-tuc/', views.tin_tuc, name='tin_tuc'),
 ]

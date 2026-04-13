@@ -1,0 +1,133 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/QuanLyKhuyenMai.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<section class="qlkm-page">
+    <div class="qlkm-container">
+
+        <div class="qlkm-top">
+            <div>
+                <p class="qlkm-subtitle">SPRINTTEAM ADMIN</p>
+                <h1 class="qlkm-title">Quản lý khuyến mãi</h1>
+                <p class="qlkm-desc">Tạo mã giảm giá và quản lý chương trình khuyến mãi.</p>
+            </div>
+
+            <div class="qlkm-top-actions">
+                <a href="{% url 'admin_dashboard' %}" class="qlkm-back-btn">← Về dashboard</a>
+                <button type="button" class="qlkm-add-btn" id="openPromoModal">+ Thêm khuyến mãi</button>
+            </div>
+        </div>
+
+        <div class="qlkm-table-wrap">
+            <table class="qlkm-table">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Tên khuyến mãi</th>
+                        <th>Mã giảm giá</th>
+                        <th>% giảm</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Trạng thái</th>
+                        <th>Số lượng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for km in ds_khuyen_mai %}
+                    <tr>
+                        <td>{{ km.ma_khuyen_mai }}</td>
+                        <td>{{ km.ten_khuyen_mai }}</td>
+                        <td>{{ km.ma_giam_gia|default:"-" }}</td>
+                        <td>{{ km.phan_tram_giam|default:"0" }}</td>
+                        <td>{{ km.ngay_bat_dau|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ km.ngay_ket_thuc|date:"d/m/Y"|default:"-" }}</td>
+                        <td><span class="qlkm-status">{{ km.trang_thai|default:"Đang áp dụng" }}</span></td>
+                        <td>{{ km.so_luong|default:"0" }}</td>
+                        <td>
+                            <a href="{% url 'xoa_khuyen_mai' km.ma_khuyen_mai %}" class="qlkm-delete" onclick="return confirm('Bạn có chắc muốn xóa khuyến mãi này?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="qlkm-empty">Chưa có khuyến mãi nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="qlkm-modal" id="promoModal">
+            <div class="qlkm-modal-content">
+                <div class="qlkm-modal-head">
+                    <h2>Thêm khuyến mãi</h2>
+                    <button type="button" class="qlkm-close" id="closePromoModal">&times;</button>
+                </div>
+
+                <form method="POST" action="{% url 'them_khuyen_mai' %}" class="qlkm-form">
+                    {% csrf_token %}
+                    <div class="qlkm-form-grid">
+                        <div class="qlkm-form-group">
+                            <label>Tên khuyến mãi</label>
+                            <input type="text" name="ten_khuyen_mai" required>
+                        </div>
+
+                        <div class="qlkm-form-group">
+                            <label>Mã giảm giá</label>
+                            <input type="text" name="ma_giam_gia">
+                        </div>
+
+                        <div class="qlkm-form-group">
+                            <label>% giảm</label>
+                            <input type="number" name="phan_tram_giam" min="0" max="100">
+                        </div>
+
+                        <div class="qlkm-form-group">
+                            <label>Số lượng</label>
+                            <input type="number" name="so_luong" min="0">
+                        </div>
+
+                        <div class="qlkm-form-group">
+                            <label>Ngày bắt đầu</label>
+                            <input type="date" name="ngay_bat_dau">
+                        </div>
+
+                        <div class="qlkm-form-group">
+                            <label>Ngày kết thúc</label>
+                            <input type="date" name="ngay_ket_thuc">
+                        </div>
+
+                        <div class="qlkm-form-group qlkm-full">
+                            <label>Điều kiện áp dụng</label>
+                            <textarea name="dieu_kien_ap_dung" rows="4"></textarea>
+                        </div>
+
+                        <div class="qlkm-form-group">
+                            <label>Trạng thái</label>
+                            <select name="trang_thai">
+                                <option value="Đang áp dụng">Đang áp dụng</option>
+                                <option value="Tạm dừng">Tạm dừng</option>
+                                <option value="Kết thúc">Kết thúc</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="qlkm-form-actions">
+                        <button type="button" class="qlkm-cancel" id="cancelPromoModal">Hủy</button>
+                        <button type="submit" class="qlkm-save">Lưu khuyến mãi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="{% static 'app/js/QuanLyKhuyenMai.js' %}"></script>
+
+{% endblock %}

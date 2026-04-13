@@ -1,0 +1,161 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/ChiTietSanPham.css' %}">
+
+<section class="detail-page">
+    <div class="detail-container">
+
+        <div class="detail-breadcrumb">
+            <a href="/">TRANG CHỦ</a>
+            <span>›</span>
+            <a href="{% url 'category' %}">DANH SÁCH SẢN PHẨM</a>
+            <span>›</span>
+            <a href="{% url 'san_pham' %}">SẢN PHẨM</a>
+            <span>›</span>
+            {% if product %}
+                <span class="active">{{ product.TenBanh|upper }}</span>
+            {% else %}
+                <span class="active">CHI TIẾT SẢN PHẨM</span>
+            {% endif %}
+        </div>
+
+        {% if product %}
+        <div class="detail-main">
+            <div class="detail-left">
+                <div class="detail-image-box">
+                    {% if product.HinhAnh %}
+                        <img src="{% static 'app/images/' %}{{ product.HinhAnh }}" alt="{{ product.TenBanh }}">
+                    {% else %}
+                        <img src="{% static 'app/images/looogoo.png' %}" alt="{{ product.TenBanh }}">
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="detail-right">
+                <h1 class="detail-title">{{ product.TenBanh }}</h1>
+
+                <div class="detail-price">
+                    {{ product.Gia }} đ
+                </div>
+
+                <div class="detail-meta">
+                    <p>
+                        <strong>Tình trạng:</strong>
+                        {% if product.SoLuongTon > 0 %}
+                            Còn hàng
+                        {% else %}
+                            Hết hàng
+                        {% endif %}
+                    </p>
+                    <p><strong>Số lượng tồn:</strong> {{ product.SoLuongTon }}</p>
+                </div>
+
+                <div class="detail-desc">
+                    <h3>Mô tả sản phẩm</h3>
+                    <p>
+                        {{ product.MoTa|default:"Sản phẩm thơm ngon, phù hợp cho nhiều dịp đặc biệt." }}
+                    </p>
+                </div>
+
+                <div class="detail-qty">
+                    <label>Số lượng</label>
+                    <div class="qty-box">
+                        <button type="button" class="qty-btn" id="btnDecrease">-</button>
+                        <input type="text" id="quantity" value="1" readonly>
+                        <button type="button" class="qty-btn" id="btnIncrease">+</button>
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button type="button" class="btn-buy" id="btnBuyNow">
+                        Mua ngay
+                    </button>
+
+                    <form method="post" action="#">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" id="cartQuantity" value="1">
+                        <button type="button" class="btn-cart" id="btnAddCart">
+                            Thêm vào giỏ hàng
+                        </button>
+                    </form>
+                </div>
+
+                <div class="detail-service">
+                    <div>Giao hàng nhanh</div>
+                    <div>Ưu đãi mỗi tuần</div>
+                    <div>Bánh tươi mỗi ngày</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="related-grid">
+            {% for item in related_products %}
+            <div class="related-card">
+                <a href="{% url 'product_detail' item.MaBanh %}" class="related-link">
+                    {% if item.HinhAnh %}
+                     <img src="{% static 'app/images/' %}{{ item.HinhAnh }}" alt="{{ item.TenBanh }}">
+                     {% else %}
+                     <img src="{% static 'app/images/looogoo.png' %}" alt="{{ item.TenBanh }}">
+                     {% endif %}
+                     <h3>{{ item.TenBanh }}</h3>
+                     <p class="related-price">{{ item.Gia }} đ</p>
+                </a>
+
+                <div class="related-action">
+                    <a href="{% url 'product_detail' item.MaBanh %}" class="related-buy-btn">
+                        <span>Mua ngay</span>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <p>Chưa có sản phẩm liên quan.</p>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="detail-empty">
+            <p>Không tìm thấy sản phẩm.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<div id="buyNowModal" class="buy-modal">
+    <div class="buy-modal-content">
+        <button class="buy-modal-close" onclick="closeBuyNowModal()">×</button>
+
+        <h2 class="buy-modal-title">Mua Ngay</h2>
+
+        <div class="buy-modal-body">
+            <div class="buy-modal-product">
+                <div class="buy-modal-image">
+                    {% if product and product.HinhAnh %}
+                        <img src="{% static 'app/images/' %}{{ product.HinhAnh }}" alt="{{ product.TenBanh }}">
+                    {% else %}
+                        <img src="{% static 'app/images/looogoo.png' %}" alt="Sản phẩm">
+                    {% endif %}
+                </div>
+
+                <div class="buy-modal-info">
+                    <h3>{{ product.TenBanh }}</h3>
+                    <p class="buy-modal-price">{{ product.Gia }} đ</p>
+                    <p class="buy-modal-qty">Số lượng: <span id="modalQuantity">1</span></p>
+                </div>
+            </div>
+
+            <div class="buy-modal-action">
+                <form method="get" action="{% url 'checkout' %}">
+                    <input type="hidden" name="product_id" value="{{ product.MaBanh }}">
+                    <input type="hidden" name="quantity" id="buyNowQuantity" value="1">
+                    <button type="submit" class="buy-modal-btn">Thanh toán ngay</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'app/js/ChiTietSanPham.js' %}"></script>
+
+{% endblock %}

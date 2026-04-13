@@ -1,0 +1,99 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/QuanLyDonHang.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<section class="qldh-page">
+    <div class="qldh-container">
+
+        <div class="qldh-top">
+            <div>
+                <p class="qldh-subtitle">SPRINTTEAM ADMIN</p>
+                <h1 class="qldh-title">Quản lý đơn hàng</h1>
+                <p class="qldh-desc">Xem chi tiết đơn hàng và cập nhật trạng thái xử lý đơn.</p>
+            </div>
+
+            <div class="qldh-top-actions">
+                <a href="{% url 'admin_dashboard' %}" class="qldh-back-btn">← Về dashboard</a>
+            </div>
+        </div>
+
+        <div class="qldh-toolbar">
+            <div class="qldh-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchOrderInput" placeholder="Tìm theo mã đơn hoặc khách hàng...">
+            </div>
+
+            <div class="qldh-filter-box">
+                <select id="statusOrderFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Chờ xử lý">Chờ xử lý</option>
+                    <option value="Đã xác nhận">Đã xác nhận</option>
+                    <option value="Đang giao">Đang giao</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
+                    <option value="Đã hủy">Đã hủy</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="qldh-table-wrap">
+            <table class="qldh-table" id="orderTable">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Địa chỉ</th>
+                        <th>Trạng thái</th>
+                        <th>Cập nhật</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dh in ds_don_hang %}
+                    <tr>
+                        <td class="order-id">#{{ dh.ma_don_hang }}</td>
+                        <td class="order-user">
+                            {% if dh.ma_tai_khoan %}
+                                {{ dh.ma_tai_khoan.ho_ten|default:dh.ma_tai_khoan.ten_dang_nhap }}
+                            {% else %}
+                                Khách lẻ
+                            {% endif %}
+                        </td>
+                        <td>{{ dh.ngay_dat|date:"d/m/Y H:i"|default:"-" }}</td>
+                        <td>{{ dh.tong_tien }}</td>
+                        <td>{{ dh.dia_chi_giao_hang }}</td>
+                        <td class="order-status-cell">
+                            <span class="qldh-status">{{ dh.trang_thai_don_hang|default:"Chờ xử lý" }}</span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'cap_nhat_don_hang' dh.ma_don_hang %}" class="qldh-inline-form">
+                                {% csrf_token %}
+                                <select name="trang_thai_don_hang">
+                                    <option value="Chờ xử lý" {% if dh.trang_thai_don_hang == "Chờ xử lý" %}selected{% endif %}>Chờ xử lý</option>
+                                    <option value="Đã xác nhận" {% if dh.trang_thai_don_hang == "Đã xác nhận" %}selected{% endif %}>Đã xác nhận</option>
+                                    <option value="Đang giao" {% if dh.trang_thai_don_hang == "Đang giao" %}selected{% endif %}>Đang giao</option>
+                                    <option value="Hoàn thành" {% if dh.trang_thai_don_hang == "Hoàn thành" %}selected{% endif %}>Hoàn thành</option>
+                                    <option value="Đã hủy" {% if dh.trang_thai_don_hang == "Đã hủy" %}selected{% endif %}>Đã hủy</option>
+                                </select>
+                                <button type="submit">Lưu</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="qldh-empty">Chưa có đơn hàng nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<script src="{% static 'app/js/QuanLyDonHang.js' %}"></script>
+
+{% endblock %}

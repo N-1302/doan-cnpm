@@ -1,0 +1,247 @@
+.sb-page {
+    background: #f7f3ea;
+    min-height: 100vh;
+    padding: 36px 20px 60px;
+}
+
+.sb-container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.sb-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.sb-subtitle {
+    color: #d8001d;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.sb-title {
+    font-size: 48px;
+    color: #d8001d;
+    font-weight: 500;
+    font-family: serif;
+    margin: 0 0 10px;
+    line-height: 1.1;
+}
+
+.sb-desc {
+    color: #666;
+    margin: 0;
+    line-height: 1.7;
+    max-width: 760px;
+}
+
+.sb-top-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.sb-back-btn {
+    height: 46px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid #d8001d;
+    background: #fff;
+    color: #d8001d;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    transition: 0.25s ease;
+}
+
+.sb-back-btn:hover {
+    background: #fff4f6;
+    color: #d8001d;
+}
+
+.sb-card {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 22px;
+    background: transparent;
+}
+
+.sb-card-left,
+.sb-card-right {
+    background: #fff;
+    border-radius: 22px;
+    border: 1px solid #ece3da;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+}
+
+.sb-card-left {
+    padding: 20px;
+    height: fit-content;
+}
+
+.sb-image-box {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #faf7f3;
+    border: 1px solid #f0e7df;
+    margin-bottom: 18px;
+}
+
+.sb-image-box img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+}
+
+.sb-no-image {
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 16px;
+    text-align: center;
+    padding: 20px;
+}
+
+.sb-product-info h3 {
+    margin: 0 0 14px;
+    color: #1f2b3a;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.sb-product-info p {
+    margin: 0 0 10px;
+    color: #555;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.sb-card-right {
+    padding: 24px;
+}
+
+.sb-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.sb-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sb-full {
+    grid-column: 1 / -1;
+}
+
+.sb-form-group label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f2b3a;
+}
+
+.sb-form-group input,
+.sb-form-group select,
+.sb-form-group textarea {
+    width: 100%;
+    border: 1px solid #e2d7cf;
+    border-radius: 14px;
+    padding: 14px 16px;
+    outline: none;
+    font-size: 15px;
+    color: #333;
+    background: #fff;
+    box-sizing: border-box;
+    transition: 0.25s ease;
+    resize: vertical;
+}
+
+.sb-form-group input:focus,
+.sb-form-group select:focus,
+.sb-form-group textarea:focus {
+    border-color: #d8001d;
+    box-shadow: 0 0 0 3px rgba(216, 0, 29, 0.08);
+}
+
+.sb-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.sb-cancel-btn,
+.sb-save-btn {
+    min-width: 140px;
+    height: 46px;
+    border-radius: 999px;
+    padding: 0 20px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s ease;
+    cursor: pointer;
+}
+
+.sb-cancel-btn {
+    background: #f2f2f2;
+    color: #444;
+    border: none;
+}
+
+.sb-cancel-btn:hover {
+    background: #e7e7e7;
+    color: #222;
+}
+
+.sb-save-btn {
+    background: #d8001d;
+    color: #fff;
+    border: none;
+}
+
+.sb-save-btn:hover {
+    background: #b70019;
+}
+
+@media (max-width: 992px) {
+    .sb-card {
+        grid-template-columns: 1fr;
+    }
+
+    .sb-image-box img,
+    .sb-no-image {
+        height: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sb-title {
+        font-size: 38px;
+    }
+
+    .sb-card-right {
+        padding: 18px;
+    }
+
+    .sb-form-grid {
+        grid-template-columns: 1fr;
+    }
+}

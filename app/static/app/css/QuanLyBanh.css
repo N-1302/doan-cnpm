@@ -1,0 +1,347 @@
+.qlb-page {
+    background: #f7f3ea;
+    min-height: 100vh;
+    padding: 36px 20px 60px;
+}
+
+.qlb-container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.qlb-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.qlb-subtitle {
+    color: #d8001d;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.qlb-title {
+    font-size: 48px;
+    color: #d8001d;
+    font-weight: 500;
+    font-family: serif;
+    margin: 0 0 10px;
+}
+
+.qlb-desc {
+    color: #666;
+    margin: 0;
+    line-height: 1.7;
+}
+
+.qlb-top-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.qlb-back-btn,
+.qlb-add-btn {
+    height: 46px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.qlb-back-btn {
+    background: #fff;
+    color: #d8001d;
+    border: 1px solid #d8001d;
+}
+
+.qlb-back-btn:hover {
+    background: #fff4f6;
+    color: #d8001d;
+}
+
+.qlb-add-btn {
+    background: #d8001d;
+    color: #fff;
+}
+
+.qlb-add-btn:hover {
+    background: #b70019;
+}
+
+.qlb-toolbar {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.qlb-search-box,
+.qlb-filter-box {
+    background: #fff;
+    border: 1px solid #ece3da;
+    border-radius: 14px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.qlb-search-box {
+    flex: 1;
+    min-width: 260px;
+    gap: 10px;
+}
+
+.qlb-search-box i {
+    color: #888;
+}
+
+.qlb-search-box input,
+.qlb-filter-box select {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 15px;
+}
+
+.qlb-filter-box {
+    min-width: 240px;
+}
+
+.qlb-table-wrap {
+    background: #fff;
+    border-radius: 22px;
+    padding: 18px;
+    border: 1px solid #ece3da;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+
+.qlb-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.qlb-table thead th {
+    background: #fff5f6;
+    color: #1f2b3a;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 14px 12px;
+    text-align: left;
+}
+
+.qlb-table tbody td {
+    padding: 14px 12px;
+    border-top: 1px solid #f0e7df;
+    vertical-align: middle;
+    color: #444;
+}
+
+.qlb-thumb {
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid #eee;
+}
+
+.qlb-no-image {
+    width: 68px;
+    height: 68px;
+    border-radius: 14px;
+    background: #f5f5f5;
+    color: #888;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.qlb-status {
+    display: inline-block;
+    background: #fff1f3;
+    color: #d8001d;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.qlb-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.qlb-action {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.qlb-action.edit {
+    background: #eef6ff;
+    color: #1769e0;
+}
+
+.qlb-action.delete {
+    background: #fff1f1;
+    color: #d32f2f;
+}
+
+.qlb-action:hover {
+    transform: translateY(-2px);
+}
+
+.qlb-empty {
+    text-align: center;
+    color: #999;
+    padding: 28px 0 !important;
+}
+
+.qlb-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+}
+
+.qlb-modal.show {
+    display: flex;
+}
+
+.qlb-modal-content {
+    background: #fff;
+    width: 100%;
+    max-width: 760px;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.15);
+}
+
+.qlb-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.qlb-modal-head h2 {
+    margin: 0;
+    color: #d8001d;
+    font-family: serif;
+    font-size: 34px;
+    font-weight: 500;
+}
+
+.qlb-close {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background: #fff1f1;
+    color: #d8001d;
+    font-size: 24px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.qlb-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.qlb-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.qlb-form-group-full {
+    grid-column: 1 / -1;
+}
+
+.qlb-form-group label {
+    font-weight: 700;
+    color: #1f2b3a;
+}
+
+.qlb-form-group input,
+.qlb-form-group select,
+.qlb-form-group textarea {
+    border: 1px solid #e2d7cf;
+    border-radius: 14px;
+    padding: 14px 16px;
+    outline: none;
+    font-size: 15px;
+    resize: vertical;
+}
+
+.qlb-form-group input:focus,
+.qlb-form-group select:focus,
+.qlb-form-group textarea:focus {
+    border-color: #d8001d;
+    box-shadow: 0 0 0 3px rgba(216, 0, 29, 0.08);
+}
+
+.qlb-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.qlb-cancel-btn,
+.qlb-save-btn {
+    height: 46px;
+    border-radius: 999px;
+    padding: 0 20px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.qlb-cancel-btn {
+    background: #f2f2f2;
+    color: #444;
+}
+
+.qlb-save-btn {
+    background: #d8001d;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .qlb-title {
+        font-size: 38px;
+    }
+
+    .qlb-form-grid {
+        grid-template-columns: 1fr;
+    }
+}

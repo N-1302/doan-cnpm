@@ -1,0 +1,177 @@
+.dlmk-page {
+    background: #f7f3ea;
+    min-height: 100vh;
+    padding: 70px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.dlmk-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.dlmk-card {
+    width: 100%;
+    max-width: 560px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 42px 44px 36px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.dlmk-title {
+    font-size: 56px;
+    font-weight: 500;
+    color: #d8001d;
+    margin-bottom: 24px;
+    line-height: 1.1;
+    font-family: serif;
+}
+
+.dlmk-form {
+    width: 100%;
+}
+
+.dlmk-group {
+    margin-bottom: 22px;
+}
+
+.dlmk-group label {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 10px;
+}
+
+.dlmk-group input {
+    width: 100%;
+    height: 58px;
+    border: 1px solid #d9dde3;
+    border-radius: 12px;
+    padding: 0 18px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    box-sizing: border-box;
+    background: #fff;
+    transition: all 0.25s ease;
+}
+
+.dlmk-group input:focus {
+    border-color: #d8001d;
+    box-shadow: 0 0 0 3px rgba(216, 0, 29, 0.08);
+}
+
+.dlmk-group input::placeholder {
+    color: #c8ced8;
+}
+
+.dlmk-password-box {
+    position: relative;
+}
+
+.dlmk-password-box input {
+    padding-right: 56px;
+}
+
+.dlmk-toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #39485a;
+    font-size: 20px;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+}
+
+.dlmk-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    margin-bottom: 26px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.dlmk-remember {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #222;
+    cursor: pointer;
+}
+
+.dlmk-remember input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #d8001d;
+}
+
+.dlmk-back-link {
+    font-size: 15px;
+    color: #1f2b3a;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.dlmk-back-link:hover {
+    color: #d8001d;
+}
+
+.dlmk-submit-btn {
+    width: 100%;
+    height: 58px;
+    border: none;
+    border-radius: 999px;
+    background: #d8001d;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.dlmk-submit-btn:hover {
+    background: #be0019;
+}
+
+.dlmk-alert {
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.dlmk-error {
+    background: #fff1f1;
+    border: 1px solid #f1b7b7;
+    color: #c62828;
+}
+
+.dlmk-success {
+    background: #eefbf2;
+    border: 1px solid #b8e0c2;
+    color: #1d7a39;
+}
+
+@media (max-width: 768px) {
+    .dlmk-card {
+        padding: 30px 20px 28px;
+    }
+
+    .dlmk-title {
+        font-size: 42px;
+    }
+}

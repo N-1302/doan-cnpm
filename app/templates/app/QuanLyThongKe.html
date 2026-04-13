@@ -1,0 +1,104 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/ThongKe.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<section class="tk-page">
+    <div class="tk-container">
+
+        <div class="tk-top">
+            <div>
+                <p class="tk-subtitle">SPRINTTEAM ADMIN</p>
+                <h1 class="tk-title">Thống kê hệ thống</h1>
+                <p class="tk-desc">Theo dõi doanh thu, số đơn hàng, tài khoản và sản phẩm bán chạy.</p>
+            </div>
+
+            <div class="tk-top-actions">
+                <a href="{% url 'admin_dashboard' %}" class="tk-back-btn">← Về dashboard</a>
+            </div>
+        </div>
+
+        <div class="tk-stats-grid">
+            <div class="tk-stat-card">
+                <span class="tk-label">Tổng doanh thu</span>
+                <h3>{{ tong_doanh_thu|default:"0" }}</h3>
+            </div>
+
+            <div class="tk-stat-card">
+                <span class="tk-label">Tổng đơn hàng</span>
+                <h3>{{ tong_don_hang|default:"0" }}</h3>
+            </div>
+
+            <div class="tk-stat-card">
+                <span class="tk-label">Tài khoản</span>
+                <h3>{{ tong_tai_khoan|default:"0" }}</h3>
+            </div>
+
+            <div class="tk-stat-card">
+                <span class="tk-label">Sản phẩm bánh</span>
+                <h3>{{ tong_banh|default:"0" }}</h3>
+            </div>
+        </div>
+
+        <div class="tk-main-grid">
+            <div class="tk-panel">
+                <div class="tk-panel-head">
+                    <h2>Sản phẩm bán chạy</h2>
+                </div>
+
+                <table class="tk-table">
+                    <thead>
+                        <tr>
+                            <th>Tên bánh</th>
+                            <th>Số lượng bán</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in san_pham_ban_chay %}
+                        <tr>
+                            <td>{{ item.ten_banh }}</td>
+                            <td>{{ item.tong_ban }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="tk-empty">Chưa có dữ liệu</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tk-panel">
+                <div class="tk-panel-head">
+                    <h2>Tổng quan</h2>
+                </div>
+
+                <div class="tk-summary-list">
+                    <div class="tk-summary-item">
+                        <span>Đơn hoàn thành</span>
+                        <strong>{{ don_hoan_thanh|default:"0" }}</strong>
+                    </div>
+                    <div class="tk-summary-item">
+                        <span>Đơn chờ xử lý</span>
+                        <strong>{{ don_cho_xu_ly|default:"0" }}</strong>
+                    </div>
+                    <div class="tk-summary-item">
+                        <span>Đơn đang giao</span>
+                        <strong>{{ don_dang_giao|default:"0" }}</strong>
+                    </div>
+                    <div class="tk-summary-item">
+                        <span>Đơn đã hủy</span>
+                        <strong>{{ don_da_huy|default:"0" }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="{% static 'app/js/ThongKe.js' %}"></script>
+
+{% endblock %}

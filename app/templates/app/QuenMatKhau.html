@@ -1,0 +1,51 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main_content %}
+
+<link rel="stylesheet" href="{% static 'app/css/QuenMatKhau.css' %}">
+
+<section class="qmk-page">
+    <div class="qmk-wrapper">
+        <div class="qmk-card">
+            <h2 class="qmk-title">Quên mật khẩu</h2>
+
+            {% if loi %}
+                <div class="qmk-alert qmk-error">{{ loi }}</div>
+            {% endif %}
+
+            {% if thanhcong %}
+                <div class="qmk-alert qmk-success">{{ thanhcong }}</div>
+            {% endif %}
+
+            <form method="POST" class="qmk-form" id="quenMatKhauForm">
+                {% csrf_token %}
+
+                <div class="qmk-group">
+                    <label for="username_or_email">Tài khoản</label>
+                    <input
+                        type="text"
+                        id="username_or_email"
+                        name="username_or_email"
+                        placeholder="Nhập tài khoản hoặc email"
+                        required
+                    >
+                </div>
+
+                <div class="qmk-options">
+                    <a href="{% url 'login' %}" class="qmk-back-link">Quay lại đăng nhập</a>
+                </div>
+
+                <button type="submit" class="qmk-submit-btn">Gửi mã OTP</button>
+
+                <p class="qmk-register-text">
+                    Chưa có tài khoản
+                    <a href="{% url 'register' %}">Đăng ký ngay</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'app/js/QuenMatKhau.js' %}"></script>
+
+{% endblock %}

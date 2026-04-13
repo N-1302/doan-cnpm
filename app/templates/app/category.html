@@ -2,73 +2,50 @@
 {% load static %}
 {% block main_content %}
 
-<section class="product-section category-page">
-  <div class="container">
-    <div class="section-heading">
-      <p class="section-subtitle">Danh mục bánh</p>
-      <h2 class="section-title">Danh mục sản phẩm</h2>
+<link rel="stylesheet" href="{% static 'app/css/category.css' %}">
 
-      {% if active_category %}
-      <p class="category-active-text">
-        Bạn đang xem danh mục: <strong>{{ active_category }}</strong>
-      </p>
-      {% endif %}
-    </div>
+<section class="givral-category-page">
+    <div class="givral-category-container">
 
-    <div class="shopee-grid">
-      {% for product in products %}
-      <div class="shopee-card">
-        <div class="product-badge">Yêu thích</div>
+        <div class="givral-category-head">
+            <h1 class="givral-category-title">Danh sách sản phẩm</h1>
 
-        <div class="shopee-image-wrap">
-          {% if product.hinh_anh %}
-          <img
-            src="{% static 'app/images/' %}{{ product.hinh_anh }}"
-            class="shopee-image"
-            alt="{{ product.ten_banh }}"
-          />
-          {% else %}
-          <img
-            src="{% static 'app/images/looogoo.png' %}"
-            class="shopee-image"
-            alt="{{ product.ten_banh }}"
-          />
-          {% endif %}
+            <div class="givral-category-breadcrumb">
+              <a href="/">TRANG CHỦ</a>
+              <span>›</span>
+              <span class="active-breadcrumb">DANH SÁCH SẢN PHẨM</span>
+            </div>
         </div>
 
-        <div class="shopee-info">
-          <h5 class="shopee-name">{{ product.ten_banh }}</h5>
+        <div class="givral-category-grid">
+            {% for loai in categories %}
+            <div class="givral-category-card">
+                <a href="/san-pham/{{ loai.MaLoaiBanh }}/" class="givral-category-link">
+                    <div class="givral-category-image-wrap">
+                        {% if loai.HinhAnh %}
+                            <img src="{% static 'app/images/' %}{{ loai.HinhAnh }}" alt="{{ loai.TenLoaiBanh }}" class="givral-category-image">
+                        {% else %}
+                            <img src="{% static 'app/images/looogoo.png' %}" alt="{{ loai.TenLoaiBanh }}" class="givral-category-image">
+                        {% endif %}
+                    </div>
 
-          <p class="shopee-desc">{{ product.mo_ta|default:"Bánh ngon mỗi ngày" }}</p>
+                    <div class="givral-category-info">
+                        <h3 class="givral-category-name">{{ loai.TenLoaiBanh }}</h3>
 
-          <div class="shopee-rating">★★★★★</div>
-
-          <div class="shopee-old-price">
-            {{ product.gia }} VNĐ
-            <span class="discount-tag">-20%</span>
-          </div>
-
-          <div class="shopee-price">
-            {{ product.gia }} <span>đ</span>
-          </div>
-
-          <div class="shopee-stock">
-            Còn lại: {{ product.so_luong }}
-          </div>
-
-          <div class="shopee-bottom">
-            <div class="shopee-hot">ĐANG BÁN CHẠY</div>
-            <a href="#" class="buy-now-btn">Mua Ngay</a>
-          </div>
+                        <p class="givral-category-count">
+                            {{ loai.so_luong_san_pham|default:"0" }} sản phẩm
+                        </p>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="givral-category-empty">
+                Hiện chưa có danh mục sản phẩm nào.
+            </div>
+            {% endfor %}
         </div>
-      </div>
-      {% empty %}
-      <div class="col-12 text-center">
-        <p>Không có sản phẩm nào trong danh mục này.</p>
-      </div>
-      {% endfor %}
+
     </div>
-  </div>
 </section>
 
 {% endblock %}
