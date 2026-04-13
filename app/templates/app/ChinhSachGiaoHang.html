@@ -1,0 +1,112 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/ChinhSachGiaoHang.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="policy-page">
+    <div class="policy-container">
+        <div class="policy-header">
+            <h1>CHÍNH SÁCH GIAO HÀNG</h1>
+            <div class="policy-breadcrumb">
+                <a href="{% url 'home' %}">TRANG CHỦ</a>
+                <span>›</span>
+                <span>CHÍNH SÁCH GIAO HÀNG</span>
+            </div>
+        </div>
+
+        <div class="policy-content">
+            <p>
+                Chính sách giao hàng dưới đây được áp dụng cho các đơn đặt bánh tại website của cửa hàng.
+                Nội dung được xây dựng nhằm giúp khách hàng nắm rõ điều kiện giao nhận, mức phí và thời gian dự kiến.
+            </p>
+
+            <h3>1. Điều kiện áp dụng giao hàng</h3>
+            <p>
+                Cửa hàng hỗ trợ giao bánh cho các đơn hàng đã được xác nhận thành công qua hệ thống hoặc qua nhân viên tư vấn.
+            </p>
+            <ul>
+                <li>Áp dụng cho đơn hàng trong khu vực nội thành và một số khu vực lân cận.</li>
+                <li>Khách hàng cần cung cấp đầy đủ họ tên, số điện thoại và địa chỉ nhận hàng.</li>
+                <li>Đơn đặt trước theo giờ sẽ được ưu tiên chuẩn bị và giao đúng khung thời gian đã hẹn.</li>
+            </ul>
+
+            <h3>2. Khu vực phục vụ</h3>
+            <p>
+                Hiện tại cửa hàng nhận giao hàng tại TP.HCM và một số quận, huyện lân cận tùy theo khoảng cách thực tế.
+                Đối với khu vực xa hơn, nhân viên sẽ liên hệ để xác nhận lại trước khi chốt đơn.
+            </p>
+
+            <h3>3. Mức phí giao hàng tham khảo</h3>
+            <p>
+                Phí giao hàng được tính dựa trên khoảng cách từ cửa hàng đến địa điểm nhận bánh. Mức phí dưới đây là bảng tham khảo:
+            </p>
+
+            <div class="policy-table-wrap">
+                <table class="policy-table">
+                    <thead>
+                        <tr>
+                            <th>Khoảng cách</th>
+                            <th>Đơn dưới 800.000đ</th>
+                            <th>Đơn từ 800.000đ trở lên</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dưới 4km</td>
+                            <td>25.000đ</td>
+                            <td>15.000đ</td>
+                        </tr>
+                        <tr>
+                            <td>Từ 4 - 8km</td>
+                            <td>35.000đ</td>
+                            <td>20.000đ</td>
+                        </tr>
+                        <tr>
+                            <td>Từ 8 - 12km</td>
+                            <td>50.000đ</td>
+                            <td>30.000đ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="policy-note-text">
+                Lưu ý: Mức phí thực tế có thể thay đổi vào các ngày lễ, khung giờ cao điểm hoặc khi thời tiết không thuận lợi.
+            </p>
+
+            <h3>4. Thời gian giao hàng</h3>
+            <ul>
+                <li>Đơn thông thường được giao trong khoảng từ 60 đến 120 phút sau khi xác nhận.</li>
+                <li>Đối với bánh đặt theo mẫu hoặc đơn số lượng lớn, thời gian giao sẽ được hẹn cụ thể.</li>
+                <li>Cửa hàng hoạt động giao hàng tất cả các ngày trong tuần, trừ trường hợp bảo trì hệ thống hoặc thông báo đặc biệt.</li>
+            </ul>
+
+            <h3>5. Quy trình nhận hàng</h3>
+            <p>
+                Khi nhận bánh, khách hàng nên kiểm tra sơ bộ tình trạng sản phẩm, số lượng, mẫu mã và thông tin người nhận.
+                Nếu phát hiện bánh bị nghiêng, móp hộp, sai mẫu hoặc thiếu sản phẩm, vui lòng phản hồi ngay để được hỗ trợ.
+            </p>
+
+            <h3>6. Trường hợp giao hàng không thành công</h3>
+            <p>
+                Trong một số trường hợp như không liên lạc được người nhận, cung cấp sai địa chỉ hoặc người nhận không có mặt,
+                đơn hàng có thể bị chậm hoặc cần sắp xếp giao lại. Phí phát sinh nếu có sẽ được thông báo trước cho khách hàng.
+            </p>
+
+            <h3>7. Hỗ trợ và giải quyết phát sinh</h3>
+            <p>
+                Nếu có vấn đề trong quá trình giao nhận, khách hàng có thể liên hệ trực tiếp với cửa hàng qua hotline
+                hoặc gửi thông tin tại trang Liên hệ để được phản hồi sớm nhất.
+            </p>
+
+            <div class="policy-highlight">
+                <strong>Ghi chú:</strong> Chính sách giao hàng có thể được cập nhật để phù hợp với từng thời điểm hoạt động,
+                chương trình ưu đãi hoặc phạm vi phục vụ của cửa hàng.
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

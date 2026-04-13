@@ -1,0 +1,155 @@
+.policy-page {
+    background: #f6f1e7;
+    padding: 55px 0 90px;
+    min-height: 700px;
+}
+
+.policy-container {
+    width: 1180px;
+    max-width: 92%;
+    margin: 0 auto;
+}
+
+.policy-header {
+    margin-bottom: 28px;
+}
+
+.policy-header h1 {
+    font-size: 56px;
+    line-height: 1.1;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #c91523;
+    font-family: Georgia, "Times New Roman", serif;
+    text-transform: uppercase;
+}
+
+.policy-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #8d8d8d;
+    flex-wrap: wrap;
+}
+
+.policy-breadcrumb a {
+    text-decoration: none;
+    color: #8d8d8d;
+}
+
+.policy-breadcrumb span:last-child {
+    color: #222;
+    font-weight: 600;
+}
+
+.policy-content {
+    max-width: 950px;
+    color: #222;
+}
+
+.policy-content p,
+.policy-content li {
+    font-size: 16px;
+    line-height: 1.9;
+    color: #222;
+}
+
+.policy-content h3 {
+    margin-top: 24px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+
+.policy-content ul {
+    margin: 0 0 12px 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.policy-content ul li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 6px;
+}
+
+.policy-content ul li::before {
+    content: "-";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #111;
+}
+
+.policy-table-wrap {
+    margin: 18px 0 14px;
+    overflow-x: auto;
+}
+
+.policy-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+.policy-table th,
+.policy-table td {
+    border: 1px solid #cfcfcf;
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+.policy-table th {
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.policy-note-text {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.policy-highlight {
+    margin-top: 28px;
+    padding: 14px 16px;
+    border-left: 4px solid #c91523;
+    background: rgba(255, 255, 255, 0.45);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+@media (max-width: 992px) {
+    .policy-header h1 {
+        font-size: 42px;
+    }
+
+    .policy-content p,
+    .policy-content li {
+        font-size: 15px;
+    }
+
+    .policy-table th,
+    .policy-table td {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .policy-page {
+        padding: 40px 0 60px;
+    }
+
+    .policy-header h1 {
+        font-size: 34px;
+    }
+
+    .policy-content {
+        max-width: 100%;
+    }
+}

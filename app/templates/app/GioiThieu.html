@@ -1,0 +1,172 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/GioiThieu.css' %}">
+
+<section class="about-page">
+  <div class="about-container">
+
+    <!-- Tiêu đề -->
+    <div class="about-hero">
+      <h1>Giới Thiệu</h1>
+      <div class="breadcrumb">
+        <a href="{% url 'home' %}">TRANG CHỦ</a>
+        <span>›</span>
+        <strong>GIỚI THIỆU</strong>
+      </div>
+    </div>
+
+    <!-- Khối 75 năm -->
+    <div class="about-block about-grid">
+      <div class="about-image">
+        <img src="{% static 'app/images/gioithieu-1.jpg' %}" alt="Givral since 1950">
+      </div>
+
+      <div class="about-content">
+        <div class="big-number-wrap">
+          <span class="big-number">75</span>
+          <span class="plus-sign">+</span>
+          <span class="big-text">Năm Hoạt Động</span>
+        </div>
+
+        <p>
+          SprintTeam là thương hiệu bánh mang phong cách sang trọng, được hình thành từ
+          cảm hứng ẩm thực châu Âu và không ngừng phát triển để phù hợp với nhu cầu
+          thưởng thức hiện đại. Trải qua nhiều năm, thương hiệu luôn chú trọng vào
+          chất lượng, hình thức tinh tế và trải nghiệm trọn vẹn cho khách hàng.
+        </p>
+
+        <p>
+          Với định hướng xây dựng hình ảnh cao cấp nhưng gần gũi, Givral không chỉ
+          mang đến những chiếc bánh ngon mà còn gửi gắm sự chỉn chu trong từng chi
+          tiết, từ nguyên liệu, công thức đến cách trình bày sản phẩm.
+        </p>
+
+        <div class="vision-mission">
+          <div class="vm-item">
+            <div class="vm-icon">Tầm Nhìn</div>
+            <div class="vm-text">
+              <h3>Hướng đến vị thế thương hiệu bánh cao cấp</h3>
+              <p>
+                Không ngừng đổi mới để trở thành lựa chọn ưu tiên của khách hàng
+                trong các dịp quan trọng, quà tặng và nhu cầu thưởng thức hằng ngày.
+              </p>
+            </div>
+          </div>
+
+          <div class="vm-item">
+            <div class="vm-icon">Sứ Mệnh</div>
+            <div class="vm-text">
+              <h3>Đặt sự hài lòng của khách hàng làm trung tâm</h3>
+              <p>
+                Cung cấp sản phẩm chất lượng, hương vị hài hòa, thiết kế đẹp mắt và
+                dịch vụ tận tâm nhằm mang đến trải nghiệm trọn vẹn nhất.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Khối 500 loại bánh -->
+    <div class="cake-types">
+      <div class="cake-types-heading">
+        <span class="big-number">500</span>
+        <span class="plus-sign">+</span>
+        <span class="big-text">Loại Bánh</span>
+      </div>
+
+      <p class="cake-types-desc">
+        Danh mục sản phẩm phong phú, phù hợp với nhiều nhu cầu khác nhau từ bánh kem,
+        bánh lạnh, bánh nướng đến các dòng quà tặng và bánh theo mùa, mang lại nhiều
+        lựa chọn tinh tế cho khách hàng.
+      </p>
+
+      <div class="cake-showcase">
+        <div class="cake-item">
+          <img src="{% static 'app/images/b1.jpg' %}" alt="Bánh 1">
+        </div>
+        <div class="cake-item">
+          <img src="{% static 'app/images/b2.jpg' %}" alt="Bánh 2">
+        </div>
+        <div class="cake-item">
+          <img src="{% static 'app/images/b3.jpg' %}" alt="Bánh 3">
+        </div>
+        <div class="cake-item">
+          <img src="{% static 'app/images/b4.jpg' %}" alt="Bánh 4">
+        </div>
+        <div class="cake-item">
+          <img src="{% static 'app/images/b5.jpg' %}" alt="Bánh 5">
+        </div>
+        <div class="cake-item">
+          <img src="{% static 'app/images/b6.jpg' %}" alt="Bánh 6">
+        </div>
+        <div class="cake-item">
+          <img src="{% static 'app/images/b7.jpg' %}" alt="Bánh 7">
+        </div>
+      </div>
+
+    <!-- Dải đỏ 4 giá trị -->
+    <div class="about-values">
+      <div class="value-item">
+        <div class="value-icon">✦</div>
+        <h4>Tinh chọn nguyên liệu thượng hạng</h4>
+        <p>★★★★★</p>
+      </div>
+
+      <div class="value-item">
+        <div class="value-icon">✦</div>
+        <h4>Tinh hoa từ đôi tay nghệ nhân</h4>
+        <p>★★★★★</p>
+      </div>
+
+      <div class="value-item">
+        <div class="value-icon">✦</div>
+        <h4>Vị ngon vượt thời gian</h4>
+        <p>★★★★★</p>
+      </div>
+
+      <div class="value-item">
+        <div class="value-icon">✦</div>
+        <h4>Tuyệt tác cho mọi khẩu vị</h4>
+        <p>★★★★★</p>
+      </div>
+    </div>
+
+    <!-- Banner cuối -->
+    <div class="health-banner">
+      <div class="health-overlay">
+        <div class="health-text">
+          <h2>Hướng Đến Sức Khỏe Người Tiêu Dùng</h2>
+          <p class="health-subtitle">
+            Hương vị tinh tế, chỉn chu trong từng sản phẩm.
+          </p>
+          <p>
+            Từ những dòng bánh truyền thống đến các sản phẩm hiện đại, mỗi chiếc bánh
+            đều được chăm chút kỹ lưỡng nhằm cân bằng giữa hương vị, thẩm mỹ và cảm
+            nhận thưởng thức. Đây cũng là định hướng mà thương hiệu luôn theo đuổi
+            trong hành trình phục vụ khách hàng.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  let currentCakeSlide = 0;
+
+  function goToCakeSlide(index) {
+    const track = document.getElementById("cakeTrack");
+    const dots = document.querySelectorAll(".slider-dots span");
+
+    currentCakeSlide = index;
+    track.style.transform = `translateX(-${index * 100}%)`;
+
+    dots.forEach(dot => dot.classList.remove("active"));
+    dots[index].classList.add("active");
+  }
+</script>
+{% endblock main_content %}

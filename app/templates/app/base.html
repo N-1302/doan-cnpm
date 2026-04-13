@@ -1,34 +1,25 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
+<head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WEB BÁN BÁNH ONLINE</title>
 
     <!-- Bootstrap -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
     />
 
-    <!-- CSS riêng -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}" />
+
+    <!-- CSS chung -->
     <link rel="stylesheet" href="{% static 'app/css/main.css' %}" />
 
-    <!-- Bootstrap JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
-
-    <script src="{% static 'app/js/s3.js' %}"></script>
-    <script src="{% static 'app/js/all.min.js' %}"></script>
-    <script src="{% static 'app/js/myscript.js' %}"></script>
+    <!-- CSS riêng từng trang -->
+    {% block extra_css %}{% endblock %}
 
     <script type="text/javascript">
       var user = "{{ ten_dang_nhap|default:'' }}";
@@ -40,9 +31,7 @@
           for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === name + "=") {
-              cookieValue = decodeURIComponent(
-                cookie.substring(name.length + 1),
-              );
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
               break;
             }
           }
@@ -52,9 +41,9 @@
 
       const csrftoken = getCookie("csrftoken");
     </script>
-  </head>
+</head>
 
-  <body style="background-color: #f7f3ea">
+<body style="background-color: #f7f3ea">
     <!-- Header trên -->
     <header class="border-bottom bg-white">
       <div class="container py-3">
@@ -102,12 +91,8 @@
             <span class="me-2">Xin chào, {{ ten_dang_nhap }}</span>
             <a href="{% url 'logout' %}" class="text-decoration-none">Logout</a>
             {% else %}
-            <a href="{% url 'login' %}" class="text-decoration-none me-2"
-              >Đăng nhập</a
-            >
-            <a href="{% url 'register' %}" class="text-decoration-none"
-              >Đăng kí</a
-            >
+            <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
+            <a href="{% url 'register' %}" class="text-decoration-none">Đăng kí</a>
             {% endif %}
 
             <a
@@ -179,13 +164,14 @@
     </nav>
 
     <!-- Nội dung trang -->
-    <main class="pb-5">{% block main_content %} {% endblock %}</main>
+    <main class="pb-5">
+      {% block main_content %}{% endblock %}
+    </main>
 
     <!-- Footer -->
     <footer class="footer-givral text-black mt-5">
       <div class="container py-5">
         <div class="row gy-4">
-          <!-- Logo -->
           <div class="col-lg-3 col-md-12 text-center text-lg-start">
             <div class="footer-logo">
               <img
@@ -198,15 +184,13 @@
             </div>
           </div>
 
-          <!-- Thông tin công ty -->
           <div class="col-lg-5 col-md-7">
             <div class="footer-menu mb-4">
-              <a href="{% url 'home' %}">Giới thiệu</a>
-              <a href="#">Sản phẩm</a>
-              <a href="#">Hệ thống</a>
-              <a href="#">Tin tức</a>
-              <a href="#">Chính sách giao hàng</a>
-              <a href="#">Liên hệ</a>
+              <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
+              <a href="{% url 'san_pham' %}">Sản phẩm</a>
+              <a href="{% url 'tin_tuc' %}">Tin tức</a>
+              <a href="{% url 'chinh_sach_giao_hang' %}">Chính sách giao hàng</a>
+              <a href="{% url 'lien_he' %}">Liên hệ</a>
             </div>
 
             <hr class="footer-line" />
@@ -225,7 +209,6 @@
             <p class="mb-0">Email: info@saigongivral.com</p>
           </div>
 
-          <!-- Hotline + social -->
           <div class="col-lg-4 col-md-5">
             <h4 class="fw-bold mb-3">Hotline:</h4>
             <p class="mb-2"><strong>Hồ Chí Minh:</strong> 0944 630 055</p>
@@ -256,5 +239,32 @@
         </div>
       </div>
     </footer>
-  </body>
+
+    <!-- Nút liên hệ nổi -->
+    <div class="floating-contact">
+      <a href="https://m.me/nguyen.dang.khoi.130206" target="_blank" class="float-btn messenger-btn" title="Messenger">
+        <i class="fab fa-facebook-messenger"></i>
+      </a>
+
+      <a href="https://zalo.me/0849130206" target="_blank" class="float-btn zalo-btn" title="Zalo">
+        <span>Zalo</span>
+      </a>
+
+      <a href="tel:0849130206" class="float-btn phone-btn" title="Gọi điện">
+        <i class="fas fa-phone-alt"></i>
+      </a>
+
+      <button type="button" class="float-btn back-top-btn" id="backToTop" title="Lên đầu trang">
+        <i class="fas fa-chevron-up"></i>
+        <i class="fas fa-chevron-up"></i>
+      </button>
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'app/js/s3.js' %}"></script>
+    <script src="{% static 'app/js/all.min.js' %}"></script>
+    <script src="{% static 'app/js/myscript.js' %}"></script>
+    <script src="{% static 'app/js/floating-contact.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

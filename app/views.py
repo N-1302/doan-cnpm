@@ -156,3 +156,18 @@ def admin_dashboard(request):
     context['tong_banh'] = Banh.objects.count()
     context['tong_loai_banh'] = LoaiBanh.objects.count()
     return render(request, 'app/admin_dashboard.html', context)
+
+def lien_he(request):
+    return render(request, 'app/LienHe.html')
+
+def chinh_sach_giao_hang(request):
+    return render(request, 'app/ChinhSachGiaoHang.html')
+
+def tin_tuc(request):
+    return render(request, 'app/TinTuc.html')
+
+def san_pham(request):
+    return render(request, 'app/sanpham.html')
+
+def gioi_thieu(request):
+    return render(request, 'app/GioiThieu.html')
