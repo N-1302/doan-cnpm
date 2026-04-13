@@ -1,0 +1,137 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/BaoMatThongTin.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="privacy-page">
+    <div class="privacy-container">
+
+        <div class="privacy-header">
+            <h1 class="privacy-title">Bảo mật thông tin</h1>
+
+            <div class="privacy-breadcrumb">
+                <a href="/">TRANG CHỦ</a>
+                <span class="breadcrumb-sep">›</span>
+                <span>BẢO MẬT THÔNG TIN</span>
+            </div>
+        </div>
+
+        <div class="privacy-content">
+            <h2>CHÍNH SÁCH BẢO MẬT THÔNG TIN</h2>
+
+            <p>
+                Công ty Cổ phần Bánh SPRINTTEAM (“SPRINTTEAM”) cam kết bảo vệ quyền riêng tư và thông tin cá nhân của Quý khách hàng theo quy định pháp luật hiện hành, đặc biệt là Nghị định số 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân.
+            </p>
+
+            <p>
+                Chính sách này áp dụng cho tất cả các hoạt động thu thập, xử lý và sử dụng dữ liệu cá nhân qua website và hệ thống cửa hàng. Việc tiếp tục truy cập và sử dụng website đồng nghĩa với việc Quý khách đồng ý và chấp thuận các nội dung trong chính sách này.
+            </p>
+
+            <h3>1. Mục đích và phạm vi thu thập thông tin</h3>
+            <p>SPRINTTEAM thu thập thông tin khách hàng nhằm các mục đích sau:</p>
+            <ul>
+                <li>Cung cấp sản phẩm, dịch vụ và chương trình ưu đãi;</li>
+                <li>Xử lý đơn hàng, vận chuyển và chăm sóc khách hàng;</li>
+                <li>Cải thiện trải nghiệm người dùng và nâng cao chất lượng dịch vụ;</li>
+                <li>Gửi thông báo về sản phẩm mới, chương trình khuyến mãi nếu khách hàng đồng ý;</li>
+                <li>Tuân thủ yêu cầu từ cơ quan nhà nước có thẩm quyền theo quy định pháp luật.</li>
+            </ul>
+
+            <h3>2. Loại thông tin được thu thập</h3>
+            <p>Các loại dữ liệu cá nhân có thể được thu thập bao gồm:</p>
+            <ul>
+                <li>Họ và tên;</li>
+                <li>Số điện thoại;</li>
+                <li>Địa chỉ email;</li>
+                <li>Địa chỉ nhận hàng;</li>
+                <li>Nội dung phản hồi, góp ý hoặc yêu cầu hỗ trợ;</li>
+                <li>Thông tin truy cập như địa chỉ IP, loại thiết bị, trình duyệt và cookies.</li>
+            </ul>
+
+            <h3>3. Phạm vi sử dụng thông tin</h3>
+            <p>Thông tin cá nhân của khách hàng được sử dụng để:</p>
+            <ul>
+                <li>Xác nhận và xử lý đơn hàng;</li>
+                <li>Liên hệ khi cần thiết trong quá trình giao hàng hoặc hỗ trợ;</li>
+                <li>Cung cấp thông tin dịch vụ, chương trình ưu đãi phù hợp;</li>
+                <li>Phân tích hành vi sử dụng để cải thiện giao diện và nội dung website.</li>
+            </ul>
+
+            <h3>4. Thời gian lưu trữ thông tin</h3>
+            <p>
+                Dữ liệu cá nhân được lưu trữ trong thời gian phù hợp với mục đích sử dụng hoặc theo yêu cầu của pháp luật. Khi khách hàng yêu cầu xóa dữ liệu, SPRINTTEAM sẽ tiếp nhận và xử lý trong phạm vi được phép.
+            </p>
+
+            <h3>5. Đối tượng được tiếp cận thông tin</h3>
+            <p>Thông tin cá nhân của khách hàng chỉ được chia sẻ trong các trường hợp cần thiết, bao gồm:</p>
+            <ul>
+                <li>Bộ phận nội bộ có thẩm quyền xử lý đơn hàng, chăm sóc khách hàng;</li>
+                <li>Đơn vị vận chuyển, đối tác thanh toán phục vụ giao dịch;</li>
+                <li>Cơ quan nhà nước có thẩm quyền khi có yêu cầu hợp pháp.</li>
+            </ul>
+
+            <h3>6. Cam kết bảo mật dữ liệu cá nhân</h3>
+            <p>
+                SPRINTTEAM áp dụng các biện pháp kỹ thuật và quản lý phù hợp để bảo mật thông tin cá nhân, hạn chế tối đa việc truy cập trái phép, mất mát hoặc rò rỉ dữ liệu.
+            </p>
+            <ul>
+                <li>Dữ liệu được lưu trữ trên hệ thống có kiểm soát truy cập;</li>
+                <li>Mật khẩu tài khoản được mã hóa trước khi lưu trữ;</li>
+                <li>Nhân sự tiếp cận dữ liệu phải tuân thủ quy định bảo mật nội bộ.</li>
+            </ul>
+
+            <h3>7. Quyền của khách hàng đối với dữ liệu cá nhân</h3>
+            <p>Khách hàng có quyền:</p>
+            <ul>
+                <li>Yêu cầu xem, chỉnh sửa hoặc cập nhật dữ liệu cá nhân;</li>
+                <li>Yêu cầu ngừng xử lý hoặc xóa dữ liệu trong phạm vi pháp luật cho phép;</li>
+                <li>Từ chối nhận thông báo tiếp thị, quảng cáo;</li>
+                <li>Gửi khiếu nại nếu phát hiện dữ liệu bị sử dụng sai mục đích.</li>
+            </ul>
+
+            <h3>8. Liên kết đến bên thứ ba</h3>
+            <p>
+                Website có thể chứa liên kết đến các nền tảng như Facebook, Zalo hoặc các website bên thứ ba. SPRINTTEAM không chịu trách nhiệm đối với nội dung hoặc chính sách bảo mật của các đơn vị này.
+            </p>
+
+            <h3>9. Miễn trừ trách nhiệm</h3>
+            <p>SPRINTTEAM không chịu trách nhiệm trong các trường hợp:</p>
+            <ul>
+                <li>Khách hàng tự tiết lộ mật khẩu, mã OTP hoặc thông tin cá nhân cho bên thứ ba;</li>
+                <li>Thiết bị của khách hàng bị xâm nhập bởi virus, mã độc hoặc phần mềm gián điệp;</li>
+                <li>Sự cố phát sinh từ lỗi mạng, đường truyền hoặc các trường hợp bất khả kháng;</li>
+                <li>Website bị tấn công bởi các hình thức mạng ngoài tầm kiểm soát hợp lý của hệ thống.</li>
+            </ul>
+
+            <h3>10. Thông tin liên hệ</h3>
+
+            <div class="privacy-contact">
+                <h4>CÔNG TY CỔ PHẦN BÁNH SPRINTTEAM</h4>
+
+                <div class="contact-line">
+                    <span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+                    <span>Trụ sở: 123 Nguyễn Văn A, Phường B, Quận C, TP.HCM</span>
+                </div>
+
+                <div class="contact-line">
+                    <span class="contact-icon"><i class="fas fa-phone-alt"></i></span>
+                    <span>Hotline: 0909 123 456</span>
+                </div>
+
+                <div class="contact-line">
+                    <span class="contact-icon"><i class="fas fa-envelope"></i></span>
+                    <span>Email: sprintteam@gmail.com</span>
+                </div>
+
+                <div class="contact-line">
+                    <span class="contact-icon"><i class="fas fa-globe"></i></span>
+                    <span>Fanpage: <a href="#">facebook.com/sprintteamcake</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock main_content %}

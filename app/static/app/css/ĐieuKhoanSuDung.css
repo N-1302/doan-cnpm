@@ -1,0 +1,210 @@
+/* =========================
+   DIEU KHOAN SU DUNG - CLEAN (NO !IMPORTANT)
+========================= */
+
+.terms-page {
+    background: #f7f3e9;
+    min-height: 100vh;
+    padding: 52px 0 82px;
+}
+
+.terms-page,
+.terms-page * {
+    box-sizing: border-box;
+}
+
+/* container */
+.terms-page .terms-container {
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 140px;
+}
+
+/* ===== HEADER ===== */
+.terms-page .terms-header {
+    margin-bottom: 56px;
+}
+
+/* FIX lỗi chữ tiếng Việt */
+.terms-page .terms-header .terms-title {
+    margin: 0 0 16px;
+    font-family: "Times New Roman", serif;
+    font-size: 66px;
+    line-height: 1.12;
+    font-weight: 400;
+    color: #c8102e;
+    letter-spacing: 0;
+    word-spacing: 0;
+}
+
+/* breadcrumb */
+.terms-page .terms-header .terms-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 16px;
+}
+
+.terms-page .terms-header .terms-breadcrumb a {
+    text-decoration: none;
+    color: #9aa0b3;
+    text-transform: uppercase;
+}
+
+.terms-page .terms-header .terms-breadcrumb a:hover {
+    color: #c8102e;
+}
+
+.terms-page .terms-header .breadcrumb-sep {
+    color: #111;
+    font-size: 22px;
+}
+
+.terms-page .terms-header .terms-breadcrumb span:last-child {
+    color: #111;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* ===== CONTENT ===== */
+.terms-page .terms-content {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+
+/* tiêu đề giữa */
+.terms-page .terms-content h2 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 28px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+/* mục lớn */
+.terms-page .terms-content h3 {
+    font-size: 29px;
+    margin: 26px 0 14px;
+}
+
+/* tiêu đề nhỏ */
+.terms-page .terms-content h4 {
+    font-size: 22px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+}
+
+/* text */
+.terms-page .terms-content p {
+    font-size: 19px;
+    line-height: 1.72;
+    margin-bottom: 18px;
+}
+
+/* list */
+.terms-page .terms-content ul {
+    margin: 10px 0 22px 28px;
+    padding-left: 18px;
+    list-style: disc;
+}
+
+.terms-page .terms-content ul li {
+    font-size: 19px;
+    line-height: 1.72;
+    margin-bottom: 6px;
+}
+
+/* ===== COMPANY ===== */
+.terms-page .terms-company {
+    margin-top: 10px;
+}
+
+.terms-page .terms-company .company-line {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.terms-page .terms-company .company-icon {
+    width: 18px;
+}
+
+/* icon màu */
+.terms-page .fa-map-marker-alt { color: #e63b4f; }
+.terms-page .fa-phone-alt { color: #333; }
+.terms-page .fa-envelope { color: #b7bcc6; }
+.terms-page .fa-globe { color: #4b8ed6; }
+
+.terms-page .terms-company a {
+    color: #d63b38;
+    text-decoration: none;
+}
+
+.terms-page .terms-company a:hover {
+    text-decoration: underline;
+}
+
+/* ===== CHỐNG MAIN.CSS ĐÈ ===== */
+/* dùng selector sâu hơn thay vì !important */
+body .terms-page h1,
+body .terms-page h2,
+body .terms-page h3,
+body .terms-page h4,
+body .terms-page p,
+body .terms-page li {
+    max-width: none;
+    color: #111;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1280px) {
+    .terms-page .terms-container {
+        padding: 0 90px;
+    }
+
+    .terms-page .terms-title {
+        font-size: 56px;
+    }
+}
+
+@media (max-width: 992px) {
+    .terms-page .terms-container {
+        padding: 0 40px;
+    }
+
+    .terms-page .terms-title {
+        font-size: 46px;
+    }
+}
+
+@media (max-width: 768px) {
+    .terms-page {
+        padding: 28px 0 48px;
+    }
+
+    .terms-page .terms-container {
+        padding: 0 18px;
+    }
+
+    .terms-page .terms-title {
+        font-size: 38px;
+        line-height: 1.18;
+    }
+
+    .terms-page .terms-content h2 {
+        font-size: 21px;
+    }
+
+    .terms-page .terms-content h3 {
+        font-size: 20px;
+    }
+
+    .terms-page .terms-content p,
+    .terms-page .terms-content ul li {
+        font-size: 16px;
+    }
+}

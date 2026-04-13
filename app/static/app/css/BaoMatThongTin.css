@@ -1,0 +1,269 @@
+/* =========================
+   BAO MAT THONG TIN - GIRVAL STYLE
+========================= */
+
+.privacy-page {
+    background: #f7f3e9;
+    min-height: 100vh;
+    padding: 50px 0 80px;
+}
+
+.privacy-page * {
+    box-sizing: border-box;
+}
+
+.privacy-page .privacy-container {
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 140px;
+}
+
+/* ===== PHẦN ĐẦU ===== */
+.privacy-page .privacy-header {
+    margin-bottom: 54px;
+}
+
+.privacy-page .privacy-title {
+    margin: 0 0 16px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 66px;
+    line-height: 1.08;
+    font-weight: 400;
+    color: #c8102e;
+}
+
+.privacy-page .privacy-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.privacy-page .privacy-breadcrumb a {
+    text-decoration: none;
+    color: #9aa0b3;
+    text-transform: uppercase;
+}
+
+.privacy-page .privacy-breadcrumb a:hover {
+    color: #c8102e;
+}
+
+.privacy-page .privacy-breadcrumb .breadcrumb-sep {
+    color: #111;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.privacy-page .privacy-breadcrumb span:last-child {
+    color: #111;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* ===== NỘI DUNG ===== */
+.privacy-page .privacy-content {
+    width: 100%;
+    max-width: 1220px;
+    margin: 0 auto;
+}
+
+.privacy-page .privacy-content h2 {
+    margin: 0 0 28px;
+    text-align: center;
+    font-size: 30px;
+    line-height: 1.45;
+    font-weight: 500;
+    color: #111;
+    text-transform: uppercase;
+}
+
+.privacy-page .privacy-content h3 {
+    margin: 26px 0 14px;
+    font-size: 29px;
+    line-height: 1.4;
+    font-weight: 500;
+    color: #111;
+}
+
+.privacy-page .privacy-content h4 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    line-height: 1.45;
+    font-weight: 700;
+    color: #111;
+    text-transform: uppercase;
+}
+
+.privacy-page .privacy-content p {
+    margin: 0 0 18px;
+    font-size: 19px;
+    line-height: 1.72;
+    color: #111;
+    text-align: left;
+}
+
+.privacy-page .privacy-content ul {
+    margin: 10px 0 22px 28px;
+    padding-left: 18px;
+}
+
+.privacy-page .privacy-content ul li {
+    margin-bottom: 6px;
+    font-size: 19px;
+    line-height: 1.72;
+    color: #111;
+}
+
+/* ===== CONTACT CHUẨN MẪU ===== */
+.privacy-page .privacy-contact {
+    margin-top: 10px;
+}
+
+.privacy-page .contact-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #111;
+}
+
+.privacy-page .contact-icon {
+    width: 18px;
+    min-width: 18px;
+    text-align: center;
+    margin-top: 2px;
+}
+
+.privacy-page .contact-icon i.fa-map-marker-alt {
+    color: #e63b4f;
+}
+
+.privacy-page .contact-icon i.fa-phone-alt {
+    color: #333;
+}
+
+.privacy-page .contact-icon i.fa-envelope {
+    color: #b7bcc6;
+}
+
+.privacy-page .contact-icon i.fa-globe {
+    color: #4b8ed6;
+}
+
+.privacy-page .privacy-contact a {
+    color: #d63b38;
+    text-decoration: none;
+}
+
+.privacy-page .privacy-contact a:hover {
+    text-decoration: underline;
+}
+
+/* ===== CHỐNG CSS CHUNG ĐÈ ===== */
+.privacy-page h1,
+.privacy-page h2,
+.privacy-page h3,
+.privacy-page h4,
+.privacy-page p,
+.privacy-page li,
+.privacy-page a,
+.privacy-page span,
+.privacy-page div,
+.privacy-page section,
+.privacy-page ul {
+    max-width: none;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1280px) {
+    .privacy-page .privacy-container {
+        padding: 0 90px;
+    }
+
+    .privacy-page .privacy-title {
+        font-size: 56px;
+    }
+
+    .privacy-page .privacy-content h2 {
+        font-size: 28px;
+    }
+
+    .privacy-page .privacy-content h3 {
+        font-size: 26px;
+    }
+
+    .privacy-page .privacy-content p,
+    .privacy-page .privacy-content ul li,
+    .privacy-page .contact-line {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 992px) {
+    .privacy-page {
+        padding: 38px 0 60px;
+    }
+
+    .privacy-page .privacy-container {
+        padding: 0 40px;
+    }
+
+    .privacy-page .privacy-title {
+        font-size: 46px;
+    }
+
+    .privacy-page .privacy-content h2 {
+        font-size: 25px;
+    }
+
+    .privacy-page .privacy-content h3 {
+        font-size: 23px;
+    }
+
+    .privacy-page .privacy-content p,
+    .privacy-page .privacy-content ul li,
+    .privacy-page .contact-line {
+        font-size: 17px;
+        line-height: 1.66;
+    }
+}
+
+@media (max-width: 768px) {
+    .privacy-page {
+        padding: 28px 0 48px;
+    }
+
+    .privacy-page .privacy-container {
+        padding: 0 18px;
+    }
+
+    .privacy-page .privacy-title {
+        font-size: 38px;
+    }
+
+    .privacy-page .privacy-content h2 {
+        font-size: 21px;
+    }
+
+    .privacy-page .privacy-content h3 {
+        font-size: 20px;
+    }
+
+    .privacy-page .privacy-content p,
+    .privacy-page .privacy-content ul li,
+    .privacy-page .contact-line {
+        font-size: 16px;
+        line-height: 1.62;
+    }
+
+    .privacy-page .privacy-content ul {
+        margin-left: 18px;
+        padding-left: 10px;
+    }
+}

@@ -1,0 +1,300 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/TinTuc.css' %}">
+
+<section class="tt-page">
+
+  <!-- Banner tiêu đề -->
+  <section class="tt-hero">
+    <div class="tt-hero-inner">
+      <h1>Tin Tức</h1>
+      <div class="tt-breadcrumb">
+        <a href="/">Trang chủ</a>
+        <span>/</span>
+        <span>Tin tức</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="tt-container">
+
+    <!-- Khối nổi bật đầu trang -->
+    <section class="tt-featured-top">
+      <div class="tt-top-grid">
+
+        <article class="tt-top-card big">
+          <a href="#bai-viet-1" class="tt-top-thumb">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80" alt="Ưu đãi bánh sinh nhật">
+          </a>
+          <div class="tt-top-content">
+            <span class="tt-badge sale">ƯU ĐÃI</span>
+            <h3><a href="#bai-viet-1">Ưu đãi tháng này: Giảm 20% bánh kem sinh nhật tại SPRINTTEAM</a></h3>
+            <p>Áp dụng cho các mẫu bánh kem đặt trước, phù hợp cho tiệc sinh nhật và họp mặt gia đình.</p>
+          </div>
+        </article>
+
+        <article class="tt-top-card small">
+          <a href="#bai-viet-2" class="tt-top-thumb">
+            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=900&q=80" alt="Bánh mới tiramisu">
+          </a>
+          <div class="tt-top-content">
+            <span class="tt-badge new">NEW</span>
+            <h3><a href="#bai-viet-2">Ra mắt Tiramisu cacao kem mịn</a></h3>
+            <p>Bánh mới tháng này với vị béo nhẹ, thơm cacao.</p>
+          </div>
+        </article>
+
+        <article class="tt-top-card small">
+          <a href="#bai-viet-3" class="tt-top-thumb">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80" alt="Kiến thức bánh">
+          </a>
+          <div class="tt-top-content">
+            <span class="tt-badge info">CHIA SẺ</span>
+            <h3><a href="#bai-viet-3">Cách bảo quản bánh kem ngon lâu hơn</a></h3>
+            <p>Mẹo nhỏ giúp bánh giữ được độ mềm và hương vị.</p>
+          </div>
+        </article>
+
+        <article class="tt-top-card small">
+          <a href="#bai-viet-4" class="tt-top-thumb">
+            <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80" alt="Feedback khách hàng">
+          </a>
+          <div class="tt-top-content">
+            <span class="tt-badge feedback">FEEDBACK</span>
+            <h3><a href="#bai-viet-4">Khách hàng yêu thích bánh mousse dâu</a></h3>
+            <p>Những phản hồi ngọt ngào từ khách hàng thân thiết.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Tiêu đề khu tin -->
+    <section class="tt-heading-section">
+      <h2>TIN NỔI BẬT</h2>
+      <div class="tt-tabs">
+        <a href="#" class="active">Tất cả</a>
+        <a href="#">Tin khuyến mãi</a>
+        <a href="#">Sản phẩm mới</a>
+        <a href="#">Kiến thức bánh</a>
+        <a href="#">Feedback</a>
+      </div>
+    </section>
+
+    <!-- Danh sách bài viết -->
+    <section class="tt-post-grid">
+
+      <article class="tt-post-card" id="bai-viet-1">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1000&q=80" alt="Giảm 20% bánh sinh nhật">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Tin khuyến mãi</span>
+            <span>08/04/2026</span>
+          </div>
+          <h3><a href="#">Giảm 20% bánh kem sinh nhật cho đơn đặt trước tại SPRINTTEAM</a></h3>
+          <p>
+            Chương trình ưu đãi dành cho khách đặt bánh trước 24 giờ. Nhiều mẫu bánh đẹp,
+            phù hợp cho sinh nhật, kỷ niệm và các buổi tiệc nhỏ tại gia đình.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+      <article class="tt-post-card" id="bai-viet-2">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=1000&q=80" alt="Tiramisu mới">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Sản phẩm mới</span>
+            <span>05/04/2026</span>
+          </div>
+          <h3><a href="#">SPRINTTEAM ra mắt Tiramisu cacao kem mịn cho mùa lễ hội</a></h3>
+          <p>
+            Dòng bánh mới lấy cảm hứng từ hương vị Ý, lớp kem mềm mượt và điểm nhấn cacao
+            đậm nhẹ, phù hợp cho khách hàng thích vị bánh thanh nhưng vẫn sang trọng.
+          </p>
+          <div class="tt-inline-actions">
+            <a href="#" class="tt-readmore">Xem thêm</a>
+            <a href="#" class="tt-buy-btn">Mua ngay</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="tt-post-card" id="bai-viet-3">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=1000&q=80" alt="Bảo quản bánh kem">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Kiến thức bánh</span>
+            <span>03/04/2026</span>
+          </div>
+          <h3><a href="#">Cách bảo quản bánh kem đúng cách để giữ hương vị trọn vẹn</a></h3>
+          <p>
+            Bánh kem nên được đặt trong ngăn mát, tránh ánh nắng trực tiếp và hạn chế để gần
+            thực phẩm có mùi mạnh để bảo toàn độ ngon cũng như hình thức bánh.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+      <article class="tt-post-card" id="bai-viet-4">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=1000&q=80" alt="Phân biệt các loại bánh">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Kiến thức bánh</span>
+            <span>01/04/2026</span>
+          </div>
+          <h3><a href="#">Phân biệt mousse, tiramisu và chocolate cake cho người mới chọn bánh</a></h3>
+          <p>
+            Mỗi loại bánh mang một đặc trưng riêng về độ mềm, độ béo và phong cách thưởng thức.
+            Việc hiểu rõ sẽ giúp khách hàng chọn đúng loại bánh cho từng dịp.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+      <article class="tt-post-card">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1000&q=80" alt="Feedback khách hàng">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Feedback</span>
+            <span>29/03/2026</span>
+          </div>
+          <h3><a href="#">Khách hàng đánh giá cao dòng bánh mousse dâu mới tại SPRINTTEAM</a></h3>
+          <p>
+            Nhiều khách hàng nhận xét bánh có vị thanh nhẹ, hình thức đẹp và phù hợp cho các bữa tiệc
+            nhỏ hoặc làm quà tặng trong những dịp đặc biệt.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+      <article class="tt-post-card">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=1000&q=80" alt="Combo ưu đãi">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Tin khuyến mãi</span>
+            <span>27/03/2026</span>
+          </div>
+          <h3><a href="#">Combo cuối tuần: Mua 2 bánh nhỏ tặng 1 thức uống</a></h3>
+          <p>
+            Ưu đãi dành cho khách mua trực tiếp tại cửa hàng hoặc đặt giao trong nội thành,
+            phù hợp cho các buổi trà chiều và gặp gỡ bạn bè.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+      <article class="tt-post-card">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1000&q=80" alt="Bánh mới theo mùa">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Sản phẩm mới</span>
+            <span>24/03/2026</span>
+          </div>
+          <h3><a href="#">Bộ sưu tập bánh ngọt theo mùa với phong cách trang trí tinh tế</a></h3>
+          <p>
+            Thiết kế nhẹ nhàng, màu sắc thanh lịch và phù hợp cho khách hàng yêu thích phong cách
+            quà tặng cao cấp nhưng vẫn gần gũi.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+      <article class="tt-post-card">
+        <a href="#" class="tt-post-thumb">
+          <img src="https://images.unsplash.com/photo-1571115764595-644a1f56a55c?auto=format&fit=crop&w=1000&q=80" alt="Feedback sinh nhật">
+        </a>
+        <div class="tt-post-body">
+          <div class="tt-meta">
+            <span class="tt-cat">Feedback</span>
+            <span>20/03/2026</span>
+          </div>
+          <h3><a href="#">Nhiều khách hàng chọn SPRINTTEAM cho tiệc sinh nhật gia đình</a></h3>
+          <p>
+            Bánh được đánh giá cao ở độ chỉn chu, giao hàng đúng giờ và hương vị vừa miệng,
+            phù hợp với cả trẻ em lẫn người lớn.
+          </p>
+          <a href="#" class="tt-readmore">Xem thêm</a>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Phân trang tĩnh -->
+    <div class="tt-pagination">
+      <a href="#" class="active">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <span>…</span>
+      <a href="#">8</a>
+      <a href="#">9</a>
+      <a href="#">10</a>
+    </div>
+
+    <!-- Có thể bạn quan tâm -->
+    <section class="tt-related">
+      <h2>CÓ THỂ BẠN QUAN TÂM</h2>
+
+      <div class="tt-related-grid">
+        <article class="tt-related-card">
+          <a href="#" class="tt-related-thumb">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80" alt="Bánh sinh nhật">
+          </a>
+          <div class="tt-related-body">
+            <div class="tt-meta">
+              <span class="tt-cat">Tin khuyến mãi</span>
+              <span>08/04/2026</span>
+            </div>
+            <h3><a href="#">Ưu đãi đặc biệt cho bánh sinh nhật trong tháng này</a></h3>
+            <p>Chương trình giúp khách hàng tiết kiệm chi phí mà vẫn sở hữu mẫu bánh đẹp mắt.</p>
+          </div>
+        </article>
+
+        <article class="tt-related-card">
+          <a href="#" class="tt-related-thumb">
+            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=900&q=80" alt="Tiramisu">
+          </a>
+          <div class="tt-related-body">
+            <div class="tt-meta">
+              <span class="tt-cat">Sản phẩm mới</span>
+              <span>05/04/2026</span>
+            </div>
+            <h3><a href="#">Tiramisu mới với lớp kem mượt và vị cacao dịu</a></h3>
+            <p>Một lựa chọn phù hợp cho khách hàng thích bánh mềm và thanh vị.</p>
+          </div>
+        </article>
+
+        <article class="tt-related-card">
+          <a href="#" class="tt-related-thumb">
+            <img src="https://images.unsplash.com/photo-1464306076886-debca5e8a6b0?auto=format&fit=crop&w=900&q=80" alt="Bảo quản bánh">
+          </a>
+          <div class="tt-related-body">
+            <div class="tt-meta">
+              <span class="tt-cat">Kiến thức bánh</span>
+              <span>03/04/2026</span>
+            </div>
+            <h3><a href="#">Mẹo bảo quản bánh kem để giữ được form đẹp</a></h3>
+            <p>Một vài lưu ý nhỏ giúp bánh ngon và đẹp hơn khi dùng sau vài giờ.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </div>
+</section>
+{% endblock %}

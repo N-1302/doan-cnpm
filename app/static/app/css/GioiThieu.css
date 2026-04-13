@@ -1,156 +1,120 @@
-.about-page {
+/* ===== RESET ===== */
+body {
+  margin: 0;
+  padding: 0;
   background: #f6f1e7;
-  padding: 40px 0 0;
-  color: #222;
+  font-family: Arial, sans-serif;
 }
 
+/* ===== CONTAINER ===== */
 .about-container {
   width: 92%;
   max-width: 1320px;
   margin: 0 auto;
 }
 
+/* ===== HERO ===== */
 .about-hero {
   margin-bottom: 50px;
 }
 
 .about-hero h1 {
   font-size: 64px;
-  font-weight: 400;
   color: #c8102e;
-  margin-bottom: 12px;
-  line-height: 1.1;
   font-family: "Times New Roman", serif;
+  margin-bottom: 10px;
 }
 
 .breadcrumb {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 26px;
-  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 20px;
 }
 
 .breadcrumb a {
+  color: #888;
   text-decoration: none;
-  color: #8f99b0;
-  font-weight: 500;
 }
 
 .breadcrumb strong {
-  color: #111;
-  font-weight: 700;
+  color: #000;
 }
 
-.about-block {
-  margin-bottom: 80px;
-}
-
+/* ===== GRID ===== */
 .about-grid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 40px;
-  align-items: start;
 }
 
 .about-image img {
   width: 100%;
   border-radius: 6px;
-  display: block;
-  object-fit: cover;
 }
 
+/* ===== 75 NĂM ===== */
 .big-number-wrap {
   display: flex;
   align-items: flex-end;
   gap: 10px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .big-number {
-  font-size: 180px;
-  line-height: 0.9;
+  font-size: 150px;
   color: #c8102e;
   font-family: "Times New Roman", serif;
-  font-weight: 400;
 }
 
 .plus-sign {
-  font-size: 90px;
-  line-height: 1;
+  font-size: 70px;
   color: #c8102e;
-  font-family: "Times New Roman", serif;
-  align-self: flex-start;
 }
 
 .big-text {
-  font-size: 54px;
+  font-size: 40px;
   color: #c8102e;
-  font-family: "Times New Roman", serif;
-  padding-bottom: 18px;
 }
 
 .about-content p {
-  font-size: 20px;
-  line-height: 1.8;
-  margin-bottom: 18px;
-}
-
-.vision-mission {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.vm-item {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  background: #f7e9eb;
-  padding: 22px 24px;
-  border-radius: 2px;
-}
-
-.vm-icon {
-  width: 140px;
-  height: 140px;
-  min-width: 140px;
-  background: #c8102e;
-  border-radius: 50%;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  font-family: "Times New Roman", serif;
-  text-align: center;
-  padding: 10px;
-}
-
-.vm-text h3 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  font-weight: 700;
-}
-
-.vm-text p {
-  margin: 0;
   font-size: 18px;
   line-height: 1.7;
 }
 
-/* 500 loại bánh */
+/* ===== VISION ===== */
+.vision-mission {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vm-item {
+  display: flex;
+  gap: 20px;
+  background: #f7e9eb;
+  padding: 20px;
+}
+
+.vm-icon {
+  width: 120px;
+  height: 120px;
+  background: #c8102e;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vm-text h3 {
+  margin-bottom: 10px;
+}
+
+/* ===== 500 LOẠI BÁNH ===== */
 .cake-types {
   text-align: center;
-  padding: 60px 0 70px;
-  background:
-    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  margin-bottom: 0;
-  overflow: hidden;
+  padding: 60px 0;
 }
 
 .cake-types-heading {
@@ -158,282 +122,115 @@
   justify-content: center;
   align-items: flex-end;
   gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
 }
 
 .cake-types-desc {
   max-width: 900px;
-  margin: 0 auto 38px;
-  font-size: 20px;
-  line-height: 1.8;
-  padding: 0 20px;
+  margin: 20px auto 40px;
 }
 
-/* slider bánh */
+/* ===== SLIDER ===== */
 .cake-slider {
-  width: 100%;
   overflow: hidden;
-  position: relative;
+  width: 100%;
 }
 
 .cake-track {
   display: flex;
-  width: 300%;
-  transition: transform 0.6s ease;
+  transition: transform 0.5s ease;
 }
 
-.cake-slide {
-  width: 100%;
-  flex: 0 0 100%;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-  align-items: end;
-  justify-items: center;
-  box-sizing: border-box;
-  padding: 10px 20px 0;
-}
-
+/* 5 bánh */
 .cake-item {
-  width: 100%;
-  max-width: 260px;
-  min-height: 250px;
+  flex: 0 0 20%;
+  height: 220px;
   display: flex;
-  align-items: flex-end;
   justify-content: center;
-  text-align: center;
+  align-items: flex-end;
 }
 
 .cake-item img {
-  max-width: 100%;
-  max-height: 220px;
-  width: auto;
-  height: auto;
+  max-width: 90%;
+  max-height: 180px;
   object-fit: contain;
-  display: block;
-  transition: transform 0.3s ease;
+  transition: 0.3s;
 }
 
 .cake-item img:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
 }
 
-.cake-item-empty {
-  visibility: hidden;
-}
-
+/* ===== DOT ===== */
 .slider-dots {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .slider-dots span {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
+  background: #ccc;
   border-radius: 50%;
-  background: #cfcfcf;
-  display: inline-block;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .slider-dots span.active {
   background: #c8102e;
 }
 
-/* dải đỏ */
+/* ===== DẢI ĐỎ ===== */
 .about-values {
-  background: linear-gradient(135deg, #d70826, #c6001f);
+  background: #c8102e;
   color: #fff;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 46px 36px;
+  padding: 40px;
+  margin-top: 40px;
 }
 
 .value-item {
   text-align: center;
 }
 
-.value-icon {
-  font-size: 38px;
-  margin-bottom: 12px;
-}
-
-.value-item h4 {
-  font-size: 22px;
-  font-family: "Times New Roman", serif;
-  font-weight: 400;
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
-
-.value-item p {
-  font-size: 18px;
-  margin: 0;
-  letter-spacing: 2px;
-}
-
-/* banner */
+/* ===== BANNER ===== */
 .health-banner {
-  background: url("/static/app/images/gioithieu-banner.jpg") center center/cover no-repeat;
-  min-height: 650px;
-  position: relative;
+  background: url("/static/app/images/gioithieu-banner.jpg") center/cover;
+  min-height: 500px;
+  margin-top: 40px;
 }
 
 .health-overlay {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.25) 38%,
-    rgba(0, 0, 0, 0.05) 100%
-  );
-  width: 100%;
-  min-height: 650px;
+  background: rgba(0,0,0,0.4);
+  min-height: 500px;
   display: flex;
   align-items: center;
 }
 
 .health-text {
-  max-width: 700px;
   color: #fff;
-  padding: 70px;
+  padding: 60px;
+  max-width: 600px;
 }
 
 .health-text h2 {
-  font-size: 68px;
-  line-height: 1.15;
-  font-family: "Times New Roman", serif;
-  font-weight: 400;
-  margin-bottom: 28px;
+  font-size: 48px;
 }
 
-.health-subtitle {
-  font-size: 26px;
-  margin-bottom: 22px;
-}
-
-.health-text p {
-  font-size: 20px;
-  line-height: 1.9;
-  margin-bottom: 16px;
-}
-
-/* responsive */
-@media (max-width: 1200px) {
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
   .about-grid {
     grid-template-columns: 1fr;
   }
 
-  .big-number {
-    font-size: 120px;
-  }
-
-  .big-text {
-    font-size: 42px;
-  }
-
-  .about-values {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .health-text h2 {
-    font-size: 52px;
-  }
-}
-
-@media (max-width: 992px) {
-  .cake-slide {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-
   .cake-item {
-    max-width: 240px;
-    min-height: 220px;
-  }
-
-  .cake-item img {
-    max-height: 190px;
-  }
-}
-
-@media (max-width: 768px) {
-  .about-hero h1 {
-    font-size: 42px;
-  }
-
-  .breadcrumb {
-    font-size: 18px;
-  }
-
-  .big-number {
-    font-size: 90px;
-  }
-
-  .plus-sign {
-    font-size: 50px;
-  }
-
-  .big-text {
-    font-size: 30px;
-    padding-bottom: 8px;
-  }
-
-  .about-content p,
-  .cake-types-desc,
-  .health-text p {
-    font-size: 16px;
-  }
-
-  .vm-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .vm-icon {
-    width: 110px;
-    height: 110px;
-    min-width: 110px;
-    font-size: 24px;
-  }
-
-  .about-values {
-    grid-template-columns: 1fr;
-  }
-
-  .health-banner,
-  .health-overlay {
-    min-height: auto;
-  }
-
-  .health-text {
-    padding: 40px 24px;
-  }
-
-  .health-text h2 {
-    font-size: 38px;
-  }
-
-  .health-subtitle {
-    font-size: 20px;
+    flex: 0 0 33%;
   }
 }
 
 @media (max-width: 576px) {
-  .cake-slide {
-    grid-template-columns: 1fr;
-  }
-
   .cake-item {
-    max-width: 100%;
-    min-height: 200px;
-  }
-
-  .cake-item img {
-    max-height: 170px;
+    flex: 0 0 50%;
   }
 }
