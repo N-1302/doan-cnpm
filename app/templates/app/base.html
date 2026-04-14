@@ -54,7 +54,7 @@ const csrftoken = getCookie('csrftoken');
   <div class="container-fluid">
     <!-- cú pháp để trỏ tới là h r e f ... bên trong là phần đã định nghĩa ở view -->
     <a class="navbar-brand" href="{% url 'home' %}"> 
-      <img src="{% static 'app/images/looogoo.png' %}" width="200" height="100" >
+      <img src="{% static 'app/images/banner/logo1.jpg' %}" width="200" height="100" >
       HOME
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ const csrftoken = getCookie('csrftoken');
 
        
        <div class="form-inline my-2 mu-lg-0" style = "visibility: {{user_login}}">
-        <span>hello!{{request.user}}</span>
+        <span>{{request.user}}</span>
         <span><a href="{% url 'logout' %}"> Logout</a></span>
        </div>
       <div class="form-inline my-2 mu-lg-0" style = "visibility: {{user_not_login}}">

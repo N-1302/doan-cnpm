@@ -7,6 +7,26 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 
 # Create your views here.
+#detail
+
+def detail(request):
+    if request.user.is_authenticated:
+        khachhang = request.user
+        donhang, created = Donhang.objects.get_or_create(khachhang=khachhang, complete=False)
+        items = donhang.donhangsanpham_set.all()
+        user_not_login = "hidden"
+        user_login = "visible"
+    else:
+            items = []
+            donhang = {'get_cart_total':0, 'get_cart_items':0}
+            user_not_login = "visible"
+            user_login = "hidden"
+    id = request.GET.get('id','')
+    products = Sanpham.objects.filter(id=id)
+    categories = Category.objects.filter(is_sub=False)
+    context ={'products': products, 'categories': categories,'items': items, 'donhang': donhang, 'user_not_login': user_not_login, 'user_login': user_login}
+    return render(request, 'app/detail.html', context)
+
 def category(request):
     categories = Category.objects.filter(is_sub=False)
     # category = Category.objects.filter(is_sub=True) này sẽ chuyển thành danh mục con 
