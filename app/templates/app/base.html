@@ -127,54 +127,56 @@
       </div>
     </header>
 
-    <!-- Menu danh mục -->
-    <nav class="navbar navbar-expand-lg bg-white border-bottom">
-      <div class="container">
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNavbar"
-          aria-controls="mainNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- ===== MENU NGANG ===== -->
+    <nav class="top-category-nav">
+      <div class="top-category-container">
+        <!-- MENU ICON -->
+        <div class="mega-menu-wrapper">
+          <a class="mega-menu-trigger" href="javascript:void(0);">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+          </a>
 
-        <div
-          class="collapse navbar-collapse justify-content-center"
-          id="mainNavbar"
-        >
-          <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-3">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Trang chủ</a>
-            </li>
+          <!-- MEGA MENU -->
+          <div class="mega-menu-box">
+            <div class="mega-menu-content">
+              <div class="mega-col mega-col-left">
+                <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
+                <a href="#">SẢN PHẨM</a>
+                <a href="{% url 'tin_tuc' %}">TIN TỨC</a>
+                <a href="{% url 'chinh_sach_giao_hang' %}">HỆ THỐNG CỬA HÀNG</a>
+                <a href="{% url 'lien_he' %}">LIÊN HỆ</a>
+              </div>
 
-            {% for i in categories %}
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="{% url 'category' %}?category={{ i.ma_loai }}"
-              >
-                <!--{{ i.ma_loai_banh }} -->
-                {{ i.ten_loai_banh }}
-              </a>
-            </li>
-            {% endfor %}
+              <div class="mega-col">
+                <h4>SẢN PHẨM NỔI BẬT</h4>
+                <a href="#">Bánh kem</a>
+                <a href="#">Bánh ngọt</a>
+                <a href="#">Rau câu</a>
+              </div>
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cart' %}">Giỏ hàng</a>
-            </li>
+              <div class="mega-col">
+                <h4>Kết nối</h4>
+                <div class="mega-social">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-youtube"></i></a>
+                  <a href="#"><i class="fab fa-tiktok"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'checkout' %}">Thanh toán</a>
-            </li>
-          </ul>
+        <!-- DANH MỤC -->
+        <div class="top-category-links">
+          <a href="#">New Collection</a>
+          <a href="#">Bánh kem</a>
+          <a href="#">Bánh ngọt</a>
+          <a href="#">Rau câu</a>
         </div>
       </div>
     </nav>
-
     <!-- Nội dung trang -->
     <main class="pb-5">{% block main_content %}{% endblock %}</main>
 
@@ -190,7 +192,6 @@
                 class="img-fluid mb-3"
                 style="max-height: 235px"
               />
-              <p class="footer-since mb-0">since 1950</p>
             </div>
           </div>
 
@@ -199,7 +200,9 @@
               <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
               <a href="{% url 'san_pham' %}">Sản phẩm</a>
               <a href="{% url 'tin_tuc' %}">Tin tức</a>
-              <a href="{% url 'chinh_sach_giao_hang' %}">Chính sách giao hàng</a>
+              <a href="{% url 'chinh_sach_giao_hang' %}"
+                >Chính sách giao hàng</a
+              >
               <a href="{% url 'lien_he' %}">Liên hệ</a>
             </div>
 
@@ -288,6 +291,5 @@
     <script src="{% static 'app/js/all.min.js' %}"></script>
     <script src="{% static 'app/js/floating-contact.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'app/js/TrangChu.js' %}"></script>
   </body>
 </html>
