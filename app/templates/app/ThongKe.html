@@ -1,0 +1,142 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/ThongKe.css' %}">
+
+<div class="admin-page">
+    <div class="admin-header">
+        <div>
+            <h1>Thống kê doanh thu</h1>
+            <p>Theo dõi doanh thu theo ngày và tháng</p>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="back-btn">←Dashboard</a>
+    </div>
+
+    <div class="filter-card">
+        <form method="GET" class="filter-form">
+            <div class="filter-group">
+                <label for="filter_type">Kiểu lọc</label>
+                <select name="filter_type" id="filter_type">
+                    <option value="day" {% if filter_type == 'day' %}selected{% endif %}>Theo ngày</option>
+                    <option value="month" {% if filter_type == 'month' %}selected{% endif %}>Theo tháng</option>
+                </select>
+            </div>
+
+            <div class="filter-group" id="dayFilterWrap">
+                <label for="selected_date">Chọn ngày</label>
+                <input type="date" name="selected_date" id="selected_date" value="{{ selected_date }}">
+            </div>
+
+            <div class="filter-group" id="monthFilterWrap">
+                <label for="selected_month">Chọn tháng</label>
+                <input type="month" name="selected_month" id="selected_month" value="{{ selected_month }}">
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="filter-btn">Lọc dữ liệu</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Tổng doanh thu</div>
+            <div class="stat-value">{{ tong_doanh_thu|floatformat:0 }} đ</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Số đơn hàng</div>
+            <div class="stat-value">{{ tong_don_hang }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Đơn hoàn thành</div>
+            <div class="stat-value">{{ don_hoan_thanh }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Đơn chờ xử lý</div>
+            <div class="stat-value">{{ don_cho_xu_ly }}</div>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="section-title-wrap">
+            <h2>Biểu đồ doanh thu</h2>
+        </div>
+        <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="section-title-wrap">
+            <h2>Danh sách đơn hàng</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th>Tổng tiền</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for don in ds_don_hang %}
+                    <tr>
+                        <td>#{{ don.ma_don_hang }}</td>
+                        <td>
+                            {% if don.ma_tai_khoan %}
+                                {{ don.ma_tai_khoan.ho_ten|default:don.ma_tai_khoan.ten_dang_nhap }}
+                            {% else %}
+                                Khách lẻ
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if don.ngay_dat %}
+                                {{ don.ngay_dat|date:"d/m/Y H:i" }}
+                            {% else %}
+                                ---
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-badge
+                                {% if don.trang_thai_don_hang == 'Hoàn thành' %}done
+                                {% elif don.trang_thai_don_hang == 'Chờ xử lý' %}pending
+                                {% elif don.trang_thai_don_hang == 'Đang giao hàng' %}shipping
+                                {% else %}confirm{% endif %}">
+                                {{ don.trang_thai_don_hang }}
+                            </span>
+                        </td>
+                        <td>{{ don.tong_tien|floatformat:0 }} đ</td>
+                        <td>
+                            <a href="{% url 'chi_tiet_don_hang_admin' don.ma_don_hang %}" class="detail-btn">
+                                Xem chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-row">Không có đơn hàng nào.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.chartLabels = {{ chart_labels|safe }};
+    window.chartData = {{ chart_data|safe }};
+    window.currentFilterType = "{{ filter_type }}";
+</script>
+<script src="{% static 'app/js/ThongKe.js' %}"></script>
+{% endblock %}

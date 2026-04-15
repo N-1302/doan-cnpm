@@ -38,6 +38,8 @@ urlpatterns = [
     path('quan-ly-khach-hang/', views.quan_ly_khach_hang, name='quan_ly_khach_hang'),
     path('khoa-tai-khoan/<int:mataikhoan>/', views.khoa_tai_khoan, name='khoa_tai_khoan'),
     path('mo-tai-khoan/<int:mataikhoan>/', views.mo_tai_khoan, name='mo_tai_khoan'),
+    path('thong-ke/', views.thong_ke, name='thong_ke'),
+    path('admin/chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang_admin, name='chi_tiet_don_hang_admin'),
 
 path('thong-ke/', views.thong_ke, name='thong_ke'),
 

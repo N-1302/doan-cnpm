@@ -27,7 +27,7 @@
     {% block extra_css %}{% endblock %}
 
     <script type="text/javascript">
-      var user = "{{ ten_dang_nhap|default:'' }}";
+      var user = "{{ request.session.ten_dang_nhap|default:'' }}";
 
       function getCookie(name) {
         let cookieValue = null;
@@ -94,16 +94,15 @@
               Đặt bánh
             </a>
 
-            {% if da_dang_nhap %}
-            <span class="me-2">Xin chào, {{ ten_dang_nhap }}</span>
-            <a href="{% url 'logout' %}" class="text-decoration-none">Logout</a>
+            {% if request.session.ma_tai_khoan %}
+            <span class="me-2">Xin chào, {{ request.session.ten_dang_nhap }}</span>
+            {% if request.session.ma_quyen == 1 %}
+            <span class="me-2 fw-semibold text-danger"></span>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="text-decoration-none">Đăng xuất</a>
             {% else %}
-            <a href="{% url 'login' %}" class="text-decoration-none me-2"
-              >Đăng nhập</a
-            >
-            <a href="{% url 'register' %}" class="text-decoration-none"
-              >Đăng kí</a
-            >
+            <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
+            <a href="{% url 'register' %}" class="text-decoration-none">Đăng ký</a>
             {% endif %}
 
             <a
@@ -141,28 +140,34 @@
           <div class="mega-menu-box">
             <div class="mega-menu-content">
               <div class="mega-col mega-col-left">
-                <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
-                <a href="#">SẢN PHẨM</a>
+                <a href="{% url 'gioi_thieu' %}">GIỚI THIỆU</a>
+                <a href="{% url 'san_pham' %}">SẢN PHẨM</a>
                 <a href="{% url 'tin_tuc' %}">TIN TỨC</a>
-                <a href="{% url 'chinh_sach_giao_hang' %}">HỆ THỐNG CỬA HÀNG</a>
                 <a href="{% url 'lien_he' %}">LIÊN HỆ</a>
               </div>
 
               <div class="mega-col">
                 <h4>SẢN PHẨM NỔI BẬT</h4>
-                <a href="#">Bánh kem</a>
-                <a href="#">Bánh ngọt</a>
-                <a href="#">Rau câu</a>
+                <a href="{% url 'san_pham' %}?category=cake">Bánh kem</a>
+                <a href="{% url 'san_pham' %}?category=pastry">Bánh ngọt</a>
+                <a href="{% url 'san_pham' %}?category=jelly">Rau câu</a>
               </div>
 
               <div class="mega-col">
                 <h4>Kết nối</h4>
                 <div class="mega-social">
-                  <a href="#"><i class="fab fa-facebook-f"></i></a>
-                  <a href="#"><i class="fab fa-youtube"></i></a>
-                  <a href="#"><i class="fab fa-tiktok"></i></a>
-                  <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
+                  <!-- Facebook -->
+                  <a href="https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/dangkhoi9925/" target="_blank">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <!-- Zalo -->
+                <a href="https://chat.zalo.me/" target="_blank">
+                  <span>Zalo</span>
+                </a>
               </div>
             </div>
           </div>
@@ -198,7 +203,6 @@
           <div class="col-lg-5 col-md-7">
             <div class="footer-menu mb-4">
               <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
-              <a href="{% url 'san_pham' %}">Sản phẩm</a>
               <a href="{% url 'tin_tuc' %}">Tin tức</a>
               <a href="{% url 'chinh_sach_giao_hang' %}"
                 >Chính sách giao hàng</a
@@ -255,7 +259,7 @@
     <!-- Nút liên hệ nổi -->
     <div class="floating-contact">
       <a
-        href="https://m.me/nguyen.dang.khoi.130206"
+        href="https://www.facebook.com/nguyen.dang.khoi.130206/"
         target="_blank"
         class="float-btn messenger-btn"
         title="Messenger"
@@ -264,7 +268,7 @@
       </a>
 
       <a
-        href="https://zalo.me/0849130206"
+        href="https://chat.zalo.me/"
         target="_blank"
         class="float-btn zalo-btn"
         title="Zalo"

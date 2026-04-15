@@ -1,15 +1,17 @@
 from django.db import connection
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
-from datetime import timedelta
-from django.db.models import Sum
-from .models import TaiKhoan, LoaiBanh, Banh, PhanQuyen, DonHang, KhuyenMai, ChiTietDonHang
-import random
-
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDay, TruncMonth
+from datetime import timedelta, datetime
 from math import ceil
+import random
+import json
+
+from .models import TaiKhoan, LoaiBanh, Banh, PhanQuyen, DonHang, KhuyenMai, ChiTietDonHang
 
 def get_common_data(request):
     categories = LoaiBanh.objects.all()
@@ -165,7 +167,7 @@ def quen_mat_khau(request):
 def san_pham(request):
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa
+            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa, TrangThai, MaLoaiBanh
             FROM banh
             ORDER BY MaBanh ASC
         """)
@@ -180,7 +182,11 @@ def san_pham(request):
             'Gia': row[3],
             'SoLuongTon': row[4],
             'MoTa': row[5],
+            'TrangThai': row[6],
+            'MaLoaiBanh': row[7],
         })
+
+    print("PRODUCTS =", products)
 
     return render(request, 'app/SanPham.html', {
         'products': products,
@@ -191,7 +197,7 @@ def san_pham(request):
 def san_pham_theo_loai(request, maloai):
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa
+            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa, TrangThai, MaLoaiBanh
             FROM banh
             WHERE MaLoaiBanh = %s
             ORDER BY MaBanh ASC
@@ -207,16 +213,26 @@ def san_pham_theo_loai(request, maloai):
             'Gia': row[3],
             'SoLuongTon': row[4],
             'MoTa': row[5],
+            'TrangThai': row[6],
+            'MaLoaiBanh': row[7],
         })
 
-    active_category = ''
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT TenLoaiBanh FROM loaibanh WHERE MaLoaiBanh = %s", [maloai])
-        category_row = cursor.fetchone()
-        if category_row:
-            active_category = category_row[0]
+    active_category = 'Danh mục sản phẩm'
 
-    return render(request, 'app/sanpham.html', {
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT TenLoaiBanh
+            FROM loaibanh
+            WHERE MaLoaiBanh = %s
+        """, [maloai])
+        category_row = cursor.fetchone()
+
+    if category_row:
+        active_category = category_row[0]
+
+    print("PRODUCTS THEO LOAI =", products)
+
+    return render(request, 'app/SanPham.html', {
         'products': products,
         'active_category': active_category
     })
@@ -225,7 +241,7 @@ def san_pham_theo_loai(request, maloai):
 def product_detail(request, mabanh):
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa, MaLoaiBanh
+            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa, TrangThai, MaLoaiBanh
             FROM banh
             WHERE MaBanh = %s
         """, [mabanh])
@@ -244,7 +260,8 @@ def product_detail(request, mabanh):
         'Gia': row[3],
         'SoLuongTon': row[4],
         'MoTa': row[5],
-        'MaLoaiBanh': row[6],
+        'TrangThai': row[6],
+        'MaLoaiBanh': row[7],
     }
 
     with connection.cursor() as cursor:
@@ -702,3 +719,111 @@ def mo_tai_khoan(request, mataikhoan):
         tai_khoan.save()
 
     return redirect('quan_ly_khach_hang')
+
+def thong_ke(request):
+    filter_type = request.GET.get('filter_type', 'day')
+    selected_date = request.GET.get('selected_date', '')
+    selected_month = request.GET.get('selected_month', '')
+
+    don_hang_qs = DonHang.objects.select_related('ma_tai_khoan').all().order_by('-ngay_dat')
+
+    chart_labels = []
+    chart_data = []
+    now = timezone.now()
+
+    if filter_type == 'month':
+        if selected_month:
+            year, month = map(int, selected_month.split('-'))
+        else:
+            year = now.year
+            month = now.month
+            selected_month = f"{year}-{month:02d}"
+
+        ds_don_hang = don_hang_qs.filter(
+            ngay_dat__year=year,
+            ngay_dat__month=month
+        )
+
+        tong_doanh_thu = ds_don_hang.aggregate(total=Sum('tong_tien'))['total'] or 0
+        tong_don_hang = ds_don_hang.count()
+        don_hoan_thanh = ds_don_hang.filter(trang_thai_don_hang='Hoàn thành').count()
+        don_cho_xu_ly = ds_don_hang.filter(trang_thai_don_hang='Chờ xử lý').count()
+
+        doanh_thu_theo_thang = (
+            DonHang.objects
+            .filter(ngay_dat__year=year)
+            .annotate(thang=TruncMonth('ngay_dat'))
+            .values('thang')
+            .annotate(tong=Sum('tong_tien'))
+            .order_by('thang')
+        )
+
+        for item in doanh_thu_theo_thang:
+            if item['thang']:
+                chart_labels.append(item['thang'].strftime('%m/%Y'))
+                chart_data.append(float(item['tong'] or 0))
+
+    else:
+        filter_type = 'day'
+
+        if selected_date:
+            target_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+        else:
+            target_date = now.date()
+            selected_date = target_date.strftime('%Y-%m-%d')
+
+        ds_don_hang = don_hang_qs.filter(ngay_dat__date=target_date)
+
+        tong_doanh_thu = ds_don_hang.aggregate(total=Sum('tong_tien'))['total'] or 0
+        tong_don_hang = ds_don_hang.count()
+        don_hoan_thanh = ds_don_hang.filter(trang_thai_don_hang='Hoàn thành').count()
+        don_cho_xu_ly = ds_don_hang.filter(trang_thai_don_hang='Chờ xử lý').count()
+
+        doanh_thu_theo_ngay = (
+            DonHang.objects
+            .filter(
+                ngay_dat__year=target_date.year,
+                ngay_dat__month=target_date.month
+            )
+            .annotate(ngay=TruncDay('ngay_dat'))
+            .values('ngay')
+            .annotate(tong=Sum('tong_tien'))
+            .order_by('ngay')
+        )
+
+        for item in doanh_thu_theo_ngay:
+            if item['ngay']:
+                chart_labels.append(item['ngay'].strftime('%d/%m'))
+                chart_data.append(float(item['tong'] or 0))
+
+    context = {
+        'filter_type': filter_type,
+        'selected_date': selected_date,
+        'selected_month': selected_month,
+        'tong_doanh_thu': tong_doanh_thu,
+        'tong_don_hang': tong_don_hang,
+        'don_hoan_thanh': don_hoan_thanh,
+        'don_cho_xu_ly': don_cho_xu_ly,
+        'ds_don_hang': ds_don_hang,
+        'chart_labels': json.dumps(chart_labels, ensure_ascii=False),
+        'chart_data': json.dumps(chart_data),
+    }
+    return render(request, 'app/ThongKe.html', context)
+
+def chi_tiet_don_hang_admin(request, ma_don_hang):
+    don_hang = get_object_or_404(
+        DonHang.objects.select_related('ma_tai_khoan'),
+        ma_don_hang=ma_don_hang
+    )
+
+    chi_tiet_don = (
+        ChiTietDonHang.objects
+        .filter(ma_don_hang=don_hang)
+        .select_related('ma_banh')
+    )
+
+    context = {
+        'don_hang': don_hang,
+        'chi_tiet_don': chi_tiet_don,
+    }
+    return render(request, 'app/ChiTietDonHangAdmin.html', context)

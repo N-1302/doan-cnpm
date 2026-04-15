@@ -1,0 +1,77 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/ChiTietDonHangAdmin.css' %}">
+<script src="{% static 'app/js/ChiTietDonHangAdmin.js' %}" defer></script>
+
+<div class="order-detail-page">
+    <div class="order-detail-header">
+        <div>
+            <h1>Chi tiết đơn hàng #{{ don_hang.ma_don_hang }}</h1>
+            <p>Xem thông tin khách hàng và các bánh trong đơn</p>
+        </div>
+        <a href="{% url 'thong_ke' %}" class="back-btn">← Quay lại Thống kê</a>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Thông tin đơn hàng</h3>
+            <p><strong>Mã đơn:</strong> #{{ don_hang.ma_don_hang }}</p>
+            <p><strong>Ngày đặt:</strong> {{ don_hang.ngay_dat|date:"d/m/Y H:i" }}</p>
+            <p><strong>Trạng thái:</strong> {{ don_hang.trang_thai_don_hang }}</p>
+            <p><strong>Tổng tiền:</strong> {{ don_hang.tong_tien|floatformat:0 }} đ</p>
+            <p><strong>Địa chỉ giao hàng:</strong> {{ don_hang.dia_chi_giao_hang }}</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Thông tin khách hàng</h3>
+            {% if don_hang.ma_tai_khoan %}
+                <p><strong>Họ tên:</strong> {{ don_hang.ma_tai_khoan.ho_ten }}</p>
+                <p><strong>Email:</strong> {{ don_hang.ma_tai_khoan.email }}</p>
+                <p><strong>SĐT:</strong> {{ don_hang.ma_tai_khoan.sdt }}</p>
+            {% else %}
+                <p>Không có thông tin tài khoản.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="detail-table-card">
+        <h2>Các sản phẩm trong đơn</h2>
+        <div class="table-responsive">
+            <table class="detail-table">
+                <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Tên bánh</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in chi_tiet_don %}
+                    <tr>
+                        <td>
+                            {% if item.ma_banh.hinh_anh %}
+                                <img src="/static/images/{{ item.ma_banh.hinh_anh }}" alt="{{ item.ma_banh.ten_banh }}" class="cake-thumb">
+                            {% else %}
+                                <div class="no-image">No image</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.ma_banh.ten_banh }}</td>
+                        <td>{{ item.don_gia|floatformat:0 }} đ</td>
+                        <td>{{ item.so_luong }}</td>
+                        <td>{{ item.thanh_tien|floatformat:0 }} đ</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-row">Đơn hàng này chưa có sản phẩm.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,193 +1,211 @@
-.givral-product-page {
-    background: #f6f2ea;
-    padding: 28px 0 70px;
+.product-page {
+    padding: 40px 0 60px;
+    background: #f5f1eb;
     min-height: 100vh;
 }
 
-.givral-container {
-    width: 100%;
-    max-width: 1120px;
+.product-page .container {
+    width: 90%;
+    max-width: 1520px;
     margin: 0 auto;
-    padding: 0 12px;
 }
 
-.givral-page-head {
-    margin-bottom: 24px;
-    padding-top: 6px;
+/* tiêu đề đầu trang */
+.product-top-heading {
+    margin-bottom: 40px;
 }
 
-.givral-page-title {
-    margin: 0 0 12px;
-    font-size: 64px;
-    line-height: 0.95;
-    font-weight: 400;
-    color: #c61f2a;
-    text-transform: uppercase;
-    letter-spacing: 0;
+.product-top-heading h1 {
     font-family: "Times New Roman", serif;
+    font-size: 82px;
+    font-weight: 400;
+    color: #c8102e;
+    margin: 0 0 14px;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
-.givral-breadcrumb {
+.product-breadcrumb {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    font-size: 13px;
+    font-size: 17px;
+    color: #93a0bb;
     text-transform: uppercase;
-    color: #9aa3b5;
-    margin-top: 0;
-    font-weight: 500;
 }
 
-.givral-breadcrumb a {
-    color: #9aa3b5;
+.product-breadcrumb a {
+    color: #93a0bb;
     text-decoration: none;
 }
 
-.givral-breadcrumb a:hover {
-    color: #c61f2a;
+.product-breadcrumb a:hover {
+    color: #c8102e;
 }
 
-.givral-breadcrumb .current-page {
-    color: #000000;
+.product-breadcrumb strong {
+    color: #000;
     font-weight: 700;
 }
 
-.givral-product-grid {
+/* grid sản phẩm */
+.product-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 22px 20px;
-    margin-top: 24px;
+    gap: 26px;
 }
 
-.givral-product-card {
+.product-card {
+    background: #fff;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+    transition: 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+}
+
+.product-image {
+    width: 100%;
+    height: 320px;
+    background: #f2f2f2;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* nội dung */
+.product-info {
+    padding: 22px 10px 10px;
+    text-align: center;
     background: transparent;
 }
 
-.givral-product-card a {
-    display: block;
-    text-decoration: none;
-    background: #f6f2ea;
-    border: 1px solid #dfd7cf;
-    border-radius: 18px;
-    overflow: hidden;
-    transition: all 0.25s ease;
-    height: 100%;
-}
-
-.givral-product-card a:hover {
-    border-color: #d8aab0;
-    transform: translateY(-3px);
-}
-
-.givral-product-image-wrap {
-    width: 100%;
-    height: 255px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 18px 18px 8px;
-    background: #f6f2ea;
-    overflow: hidden;
-}
-
-.givral-product-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
-}
-
-.givral-product-info {
-    text-align: center;
-    padding: 8px 14px 18px;
-}
-
-.givral-product-name {
-    margin: 0 0 8px;
+.product-info h3 {
     font-size: 22px;
+    color: #111;
+    margin: 0 0 10px;
+    font-weight: 500;
+    min-height: 58px;
     line-height: 1.35;
-    font-weight: 400;
-    color: #2f2540;
-    font-family: "Times New Roman", serif;
-    min-height: 60px;
+}
+
+.product-info p {
+    color: #777;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 48px;
+    margin-bottom: 14px;
+}
+
+.price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #c8102e;
+    margin-bottom: 10px;
+}
+
+.stock,
+.status {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+/* nút */
+.product-actions {
     display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+.btn-detail,
+.btn-buy {
+    min-width: 150px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 700;
+    transition: 0.25s ease;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
 }
 
-.givral-product-price {
-    margin: 0 0 6px;
-    font-size: 14px;
-    color: #9aa3b5;
-    font-weight: 500;
-    text-align: center;
+.btn-detail {
+    background: #fff;
+    color: #c8102e;
+    border: 2px solid #c8102e;
 }
 
-.givral-product-stock {
-    margin: 0 0 18px;
-    font-size: 13px;
-    color: #7e8b7a;
-    text-align: center;
+.btn-detail:hover {
+    background: #c8102e;
+    color: #fff;
 }
 
-.givral-product-stock.out {
-    color: #c61f2a;
+.btn-buy {
+    background: #c8102e;
+    color: #fff;
+    border: 2px solid #c8102e;
 }
 
-.givral-empty {
+.btn-buy:hover {
+    background: #a50d26;
+    border-color: #a50d26;
+    color: #fff;
+}
+
+.empty-box {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 50px 20px;
-    border: 1px dashed #d7ccc3;
-    border-radius: 16px;
-    color: #7f7f7f;
-    background: #f9f6f1;
+    padding: 40px;
+    background: #fff;
+    color: #777;
     font-size: 16px;
 }
 
-@media (max-width: 1199px) {
-    .givral-product-grid {
+/* responsive */
+@media (max-width: 1200px) {
+    .product-grid {
         grid-template-columns: repeat(3, 1fr);
     }
+
+    .product-top-heading h1 {
+        font-size: 64px;
+    }
 }
 
-@media (max-width: 991px) {
-    .givral-page-title {
-        font-size: 56px;
-    }
-
-    .givral-product-grid {
+@media (max-width: 900px) {
+    .product-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .product-top-heading h1 {
+        font-size: 52px;
+    }
 }
 
-@media (max-width: 767px) {
-    .givral-product-page {
-        padding: 28px 0 50px;
+@media (max-width: 576px) {
+    .product-grid {
+        grid-template-columns: 1fr;
     }
 
-    .givral-page-title {
+    .product-top-heading h1 {
         font-size: 42px;
     }
 
-    .givral-breadcrumb {
-        font-size: 12px;
-        gap: 6px;
-    }
-
-    .givral-product-grid {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .givral-product-image-wrap {
-        height: 230px;
-    }
-
-    .givral-product-name {
-        min-height: auto;
-        font-size: 20px;
+    .product-breadcrumb {
+        font-size: 14px;
     }
 }
