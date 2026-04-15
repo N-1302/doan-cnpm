@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+
     const btnDecrease = document.getElementById("btnDecrease");
     const btnIncrease = document.getElementById("btnIncrease");
     const quantityInput = document.getElementById("quantity");
@@ -6,30 +7,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnAddCart = document.getElementById("btnAddCart");
     const btnBuyNow = document.getElementById("btnBuyNow");
 
-    const buyNowModal = document.getElementById("buyNowModal");
-    const closeBuyNowModalBtn = document.getElementById("closeBuyNowModal");
-    const modalQuantity = document.getElementById("modalQuantity");
-    const buyNowQuantity = document.getElementById("buyNowQuantity");
+    const modal = document.getElementById("buyNowModal");
+    const modalOverlay = document.getElementById("buyNowModalOverlay");
+    const closeModal = document.getElementById("closeBuyNowModal");
 
+    const modalImage = document.getElementById("modalProductImage");
+    const modalName = document.getElementById("modalProductName");
+    const modalPrice = document.getElementById("modalProductPrice");
+    const modalStock = document.getElementById("modalProductStock");
+
+    const modalQtyInput = document.getElementById("modalQuantityInput");
+    const modalDecrease = document.getElementById("modalDecrease");
+    const modalIncrease = document.getElementById("modalIncrease");
+    const modalBuyBtn = document.getElementById("modalBuyNowBtn");
+
+    const checkoutUrlInput = document.getElementById("detailCheckoutUrl");
     const detailMessage = document.getElementById("detailMessage");
-
-    if (!quantityInput) return;
-
-    const maBanh = btnAddCart ? btnAddCart.dataset.mabanh : null;
-    const soLuongTon = btnAddCart ? parseInt(btnAddCart.dataset.soluongton || "0", 10) : 0;
-
-    function getCSRFToken() {
-        const name = "csrftoken";
-        const cookies = document.cookie.split(";");
-
-        for (let cookie of cookies) {
-            cookie = cookie.trim();
-            if (cookie.startsWith(name + "=")) {
-                return cookie.substring(name.length + 1);
-            }
-        }
-        return "";
-    }
 
     function showMessage(message, type = "success") {
         if (!detailMessage) return;
@@ -37,103 +30,203 @@ document.addEventListener("DOMContentLoaded", function () {
         detailMessage.className = "detail-message " + type;
     }
 
+    function parsePrice(price) {
+        if (price === null || price === undefined) return 0;
+        return Number(String(price).replace(/[^\d]/g, "")) || 0;
+    }
+
+    function formatPrice(price) {
+        return parsePrice(price).toLocaleString("vi-VN") + " đ";
+    }
+
     function getQuantity() {
-        return parseInt(quantityInput.value || "1", 10);
+        return Number(quantityInput?.value || 1);
     }
 
-    function setQuantity(value) {
-        quantityInput.value = value;
+    function setQuantity(val) {
+        if (quantityInput) quantityInput.value = val;
+    }
 
-        if (modalQuantity) {
-            modalQuantity.textContent = value;
+    function getCart() {
+        return JSON.parse(localStorage.getItem("cart")) || [];
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    function updateBadge() {
+        const badge = document.querySelector(".open-cart-btn .badge");
+        const cart = getCart();
+        const total = cart.reduce((sum, item) => sum + Number(item.soLuong || 0), 0);
+        if (badge) badge.textContent = total;
+    }
+
+    function addToCart(product, quantity) {
+        let cart = getCart();
+
+        const index = cart.findIndex(
+            item => String(item.maBanh) === String(product.maBanh)
+        );
+
+        if (index !== -1) {
+            cart[index].soLuong += quantity;
+        } else {
+            cart.push({
+                maBanh: product.maBanh,
+                tenBanh: product.tenBanh,
+                gia: parsePrice(product.gia),
+                hinhAnh: product.hinhAnh,
+                soLuong: quantity
+            });
         }
 
-        if (buyNowQuantity) {
-            buyNowQuantity.value = value;
+        saveCart(cart);
+        updateBadge();
+        document.dispatchEvent(new CustomEvent("cartUpdated"));
+    }
+
+    function openCartDrawerSafe() {
+        if (typeof window.openCartDrawer === "function") {
+            window.openCartDrawer();
+            return;
         }
+
+        const drawer = document.getElementById("gioHangTruot");
+        const overlay = document.getElementById("gioHangTruotOverlay");
+
+        if (drawer) drawer.classList.add("active");
+        if (overlay) overlay.classList.add("active");
+        document.body.classList.add("giohangtruot-open");
     }
 
-    if (btnDecrease) {
-        btnDecrease.addEventListener("click", function () {
-            let current = getQuantity();
-            if (current > 1) {
-                setQuantity(current - 1);
-            }
+    function getMainProduct() {
+        if (!btnAddCart) return null;
+
+        return {
+            maBanh: btnAddCart.getAttribute("data-id"),
+            tenBanh: btnAddCart.getAttribute("data-name"),
+            gia: btnAddCart.getAttribute("data-price"),
+            hinhAnh: btnAddCart.getAttribute("data-image"),
+            soLuongTon: btnAddCart.getAttribute("data-stock")
+        };
+    }
+
+    let currentProduct = null;
+
+    function openModal(product) {
+        currentProduct = product;
+
+        if (modalImage) modalImage.src = product.hinhAnh;
+        if (modalName) modalName.textContent = product.tenBanh;
+        if (modalPrice) modalPrice.textContent = formatPrice(product.gia);
+        if (modalStock) modalStock.textContent = product.soLuongTon || 0;
+        if (modalQtyInput) modalQtyInput.value = getQuantity();
+
+        if (modal) modal.classList.add("active");
+        if (modalOverlay) modalOverlay.classList.add("active");
+    }
+
+    function closeModalFn() {
+        if (modal) modal.classList.remove("active");
+        if (modalOverlay) modalOverlay.classList.remove("active");
+    }
+
+    btnDecrease?.addEventListener("click", function () {
+        let q = getQuantity();
+        if (q > 1) setQuantity(q - 1);
+    });
+
+    btnIncrease?.addEventListener("click", function () {
+        let q = getQuantity();
+        const max = Number(btnAddCart?.getAttribute("data-stock") || 1);
+
+        if (q < max) {
+            setQuantity(q + 1);
+            showMessage("", "success");
+        } else {
+            showMessage("Số lượng vượt quá tồn kho", "error");
+        }
+    });
+
+    btnAddCart?.addEventListener("click", function () {
+        const product = getMainProduct();
+        const quantity = getQuantity();
+
+        console.log("btnAddCart clicked", product);
+
+        if (!product || !product.maBanh) {
+            showMessage("Không tìm thấy mã sản phẩm", "error");
+            return;
+        }
+
+        addToCart(product, quantity);
+        showMessage("Đã thêm vào giỏ hàng", "success");
+        openCartDrawerSafe();
+    });
+
+    btnBuyNow?.addEventListener("click", function () {
+        const product = {
+            maBanh: btnBuyNow.getAttribute("data-id"),
+            tenBanh: btnBuyNow.getAttribute("data-name"),
+            gia: btnBuyNow.getAttribute("data-price"),
+            hinhAnh: btnBuyNow.getAttribute("data-image"),
+            soLuongTon: btnBuyNow.getAttribute("data-stock")
+        };
+
+        console.log("btnBuyNow clicked", product);
+
+        if (!product.maBanh) {
+            showMessage("Không tìm thấy mã sản phẩm", "error");
+            return;
+        }
+
+        openModal(product);
+    });
+
+    document.querySelectorAll(".related-buy-now-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const product = {
+                maBanh: this.getAttribute("data-id"),
+                tenBanh: this.getAttribute("data-name"),
+                gia: this.getAttribute("data-price"),
+                hinhAnh: this.getAttribute("data-image"),
+                soLuongTon: this.getAttribute("data-stock")
+            };
+
+            if (!product.maBanh) return;
+            if (modalQtyInput) modalQtyInput.value = 1;
+            openModal(product);
         });
-    }
+    });
 
-    if (btnIncrease) {
-        btnIncrease.addEventListener("click", function () {
-            let current = getQuantity();
-            if (current < soLuongTon) {
-                setQuantity(current + 1);
-            } else {
-                showMessage("Số lượng vượt quá tồn kho", "error");
-            }
-        });
-    }
+    modalDecrease?.addEventListener("click", function () {
+        let q = Number(modalQtyInput?.value || 1);
+        if (q > 1) modalQtyInput.value = q - 1;
+    });
 
-    if (btnAddCart) {
-        btnAddCart.addEventListener("click", async function () {
-            const soLuong = getQuantity();
+    modalIncrease?.addEventListener("click", function () {
+        let q = Number(modalQtyInput?.value || 1);
+        const max = Number(currentProduct?.soLuongTon || 1);
 
-            try {
-                btnAddCart.disabled = true;
-                btnAddCart.textContent = "ĐANG THÊM...";
+        if (q < max) {
+            modalQtyInput.value = q + 1;
+        }
+    });
 
-                const response = await fetch("/api/cart/add/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": getCSRFToken()
-                    },
-                    body: JSON.stringify({
-                        ma_banh: maBanh,
-                        so_luong: soLuong
-                    })
-                });
+    modalBuyBtn?.addEventListener("click", function () {
+        if (!currentProduct) return;
 
-                const data = await response.json();
+        const quantity = Number(modalQtyInput?.value || 1);
 
-                if (data.success) {
-                    showMessage("Đã thêm vào giỏ hàng", "success");
+        addToCart(currentProduct, quantity);
 
-                    if (typeof window.openCartDrawer === "function") {
-                        window.openCartDrawer();
-                    }
-                } else {
-                    showMessage(data.message || "Không thể thêm vào giỏ hàng", "error");
-                }
-            } catch (error) {
-                console.error(error);
-                showMessage("Có lỗi xảy ra khi thêm vào giỏ hàng", "error");
-            } finally {
-                btnAddCart.disabled = false;
-                btnAddCart.textContent = "Thêm vào giỏ hàng";
-            }
-        });
-    }
+        const url = checkoutUrlInput?.value || "/checkout/";
+        window.location.href = url;
+    });
 
-    if (btnBuyNow && buyNowModal) {
-        btnBuyNow.addEventListener("click", function () {
-            setQuantity(getQuantity());
-            buyNowModal.classList.add("active");
-        });
-    }
+    closeModal?.addEventListener("click", closeModalFn);
+    modalOverlay?.addEventListener("click", closeModalFn);
 
-    if (closeBuyNowModalBtn && buyNowModal) {
-        closeBuyNowModalBtn.addEventListener("click", function () {
-            buyNowModal.classList.remove("active");
-        });
-    }
-
-    if (buyNowModal) {
-        buyNowModal.addEventListener("click", function (e) {
-            if (e.target === buyNowModal) {
-                buyNowModal.classList.remove("active");
-            }
-        });
-    }
-
-    setQuantity(getQuantity());
+    updateBadge();
 });

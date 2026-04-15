@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}">
+<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}?v=10">
 {% endblock %}
 
 {% block main_content %}
@@ -76,6 +76,35 @@
                             </span>
                         </label>
                     </div>
+
+                    <div id="chuyenKhoanBox" class="thanhtoan-extra-box" style="display:none;">
+                        <h4>Thông tin chuyển khoản</h4>
+                        <div class="thanhtoan-bank-box">
+                            <div class="thanhtoan-qr-wrap">
+                                <img src="{% static 'app/images/qr-bank.jpg' %}" alt="QR chuyển khoản" class="thanhtoan-qr-img">
+                            </div>
+                            <div class="thanhtoan-bank-info">
+                                <p><strong>Ngân hàng:</strong> BIDV</p>
+                                <p><strong>Số tài khoản:</strong> 6560479868</p>
+                                <p><strong>Chủ tài khoản:</strong> SPRINTTEAM BAKERY</p>
+                                <p><strong>Nội dung CK:</strong> THANHTOAN-{{ request.session.ma_tai_khoan|default:'KHACH' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="viDienTuBox" class="thanhtoan-extra-box" style="display:none;">
+                        <h4>Chọn ví điện tử</h4>
+
+                        <label class="thanhtoan-ewallet-item">
+                            <input type="radio" name="viDienTu" value="MoMo" checked>
+                            <span>MoMo</span>
+                        </label>
+
+                        <label class="thanhtoan-ewallet-item">
+                            <input type="radio" name="viDienTu" value="ZaloPay">
+                            <span>ZaloPay</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -124,5 +153,5 @@
     </div>
 </section>
 
-<script src="{% static 'app/js/ThanhToan.js' %}"></script>
+<script src="{% static 'app/js/ThanhToan.js' %}?v=10"></script>
 {% endblock %}

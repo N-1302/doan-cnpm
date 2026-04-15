@@ -6,25 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WEB BÁN BÁNH ONLINE</title>
 
-    <!-- Bootstrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-
-    <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'app/css/main.css' %}" />
-    <link rel="stylesheet" href="{% static 'app/css/CartDrawer.css' %}" />
+    <link rel="stylesheet" href="{% static 'app/css/GIoHangTruot.css' %}">
+    <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'app/css/main.css' %}">
 
     {% block extra_css %}{% endblock %}
 
-    <script type="text/javascript">
+    <script>
       var user = "{{ request.session.ten_dang_nhap|default:'' }}";
 
       function getCookie(name) {
@@ -46,19 +37,13 @@
     </script>
   </head>
 
-  <body style="background-color: #f7f3ea">
-    <!-- Header trên -->
+  <body style="background-color: #f7f3ea;">
     <header class="border-bottom bg-white">
       <div class="container py-3">
         <div class="row align-items-center">
           <div class="col-lg-2 col-md-3 col-6">
             <a href="{% url 'home' %}" class="text-decoration-none">
-              <img
-                src="{% static 'app/images/logo.png' %}"
-                alt="Logo"
-                class="img-fluid"
-                style="max-height: 120px"
-              />
+              <img src="{% static 'app/images/logo.png' %}" alt="Logo" class="img-fluid" style="max-height: 120px;">
             </a>
           </div>
 
@@ -66,54 +51,24 @@
             <form method="POST" action="{% url 'search' %}">
               {% csrf_token %}
               <div class="input-group">
-                <input
-                  type="search"
-                  class="form-control rounded-pill"
-                  placeholder="Bạn muốn tìm bánh gì..."
-                  name="searched"
-                />
-                <button
-                  class="btn btn-outline-secondary ms-2 rounded-pill px-4"
-                  type="submit"
-                >
-                  Tìm
-                </button>
+                <input type="search" class="form-control rounded-pill" placeholder="Bạn muốn tìm bánh gì..." name="searched">
+                <button class="btn btn-outline-secondary ms-2 rounded-pill px-4" type="submit">Tìm</button>
               </div>
             </form>
           </div>
 
           <div class="col-lg-4 col-md-4 col-6 text-end">
-            <a
-              href="{% url 'gio_hang' %}"
-              class="btn btn-danger rounded-pill px-3 me-2"
-            >
-              Đặt bánh
-            </a>
-
             {% if request.session.ma_tai_khoan %}
-            <span class="me-2">Xin chào, {{ request.session.ten_dang_nhap }}</span>
-            {% if request.session.ma_quyen == 1 %}
-            <span class="me-2 fw-semibold text-danger"></span>
-            {% endif %}
-            <a href="{% url 'logout' %}" class="text-decoration-none">Đăng xuất</a>
+              <span class="me-2">Xin chào, {{ request.session.ten_dang_nhap }}</span>
+              <a href="{% url 'logout' %}" class="text-decoration-none">Đăng xuất</a>
             {% else %}
-            <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
-            <a href="{% url 'register' %}" class="text-decoration-none">Đăng ký</a>
+              <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
+              <a href="{% url 'register' %}" class="text-decoration-none">Đăng ký</a>
             {% endif %}
 
-            <a
-              href="#"
-              class="ms-3 text-decoration-none position-relative open-cart-btn"
-            >
-              <img
-                id="cart-icon"
-                src="{% static 'app/images/cart.png' %}"
-                alt="cart"
-                style="width: 28px"
-              />
-              <span
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              >
+            <a href="#" class="ms-3 text-decoration-none position-relative open-cart-btn">
+              <img id="cart-icon" src="{% static 'app/images/cart.png' %}" alt="cart" style="width: 28px;">
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{ cartItems|default:0 }}
               </span>
             </a>
@@ -122,17 +77,14 @@
       </div>
     </header>
 
-    <!-- ===== MENU NGANG ===== -->
     <nav class="top-category-nav">
       <div class="top-category-container">
-        <!-- MENU ICON -->
         <div class="mega-menu-wrapper">
           <a class="mega-menu-trigger" href="javascript:void(0);">
             <i class="fas fa-bars"></i>
             <span>Menu</span>
           </a>
 
-          <!-- MEGA MENU -->
           <div class="mega-menu-box">
             <div class="mega-menu-content">
               <div class="mega-col mega-col-left">
@@ -152,49 +104,33 @@
               <div class="mega-col">
                 <h4>Kết nối</h4>
                 <div class="mega-social">
-                  <a href="https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank">
-                    <i class="fab fa-facebook-f"></i>
-                  </a>
-                  <a href="https://www.instagram.com/dangkhoi9925/" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                  </a>
-                  <a href="https://chat.zalo.me/" target="_blank">
-                    <span>Zalo</span>
-                  </a>
+                  <a href="https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                  <a href="https://www.instagram.com/dangkhoi9925/" target="_blank"><i class="fab fa-instagram"></i></a>
+                  <a href="https://chat.zalo.me/" target="_blank"><span>Zalo</span></a>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DANH MỤC -->
         <div class="top-category-links">
-          <a href="#">New Collection</a>
-          <a href="#">Bánh kem</a>
-          <a href="#">Bánh ngọt</a>
-          <a href="#">Rau câu</a>
+          <a href="{% url 'new_collection' %}">New Collection</a>
+          <a href="{% url 'category' %}?category=cake">Bánh kem</a>
+          <a href="{% url 'category' %}?category=pastry">Bánh ngọt</a>
+          <a href="{% url 'category' %}?category=jelly">Rau câu</a>
         </div>
       </div>
     </nav>
 
-    <!-- Nội dung trang -->
     <main class="pb-5">
       {% block main_content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="footer-givral text-black mt-5">
       <div class="container py-5">
         <div class="row gy-4">
           <div class="col-lg-3 col-md-12 text-center text-lg-start">
-            <div class="footer-logo">
-              <img
-                src="{% static 'app/images/logo_white.png' %}"
-                alt="Logo"
-                class="img-fluid mb-3"
-                style="max-height: 235px"
-              />
-            </div>
+            <img src="{% static 'app/images/logo_white.png' %}" alt="Logo" class="img-fluid mb-3" style="max-height: 235px;">
           </div>
 
           <div class="col-lg-5 col-md-7">
@@ -204,20 +140,11 @@
               <a href="{% url 'chinh_sach_giao_hang' %}">Chính sách giao hàng</a>
               <a href="{% url 'lien_he' %}">Liên hệ</a>
             </div>
-
-            <hr class="footer-line" />
-
+            <hr class="footer-line">
             <h4 class="fw-bold mb-3">Công ty cổ phần Bánh SprintTeam,</h4>
-            <p class="mb-3">
-              Mã số doanh nghiệp: 0311426136 do Sở Kế Hoạch và Đầu Tư TP.Hồ Chí
-              Minh cấp lần đầu ngày 19/12/2011. Đăng ký thay đổi lần thứ 22,
-              ngày 31/07/2025.
-            </p>
-            <p class="mb-3">
-              Trụ sở: 280 An Dương Vương, Phường Chợ Quán, TP.Hồ Chí Minh.
-            </p>
+            <p class="mb-3">Mã số doanh nghiệp: 0311426136 do Sở Kế Hoạch và Đầu Tư TP.Hồ Chí Minh cấp lần đầu ngày 19/12/2011.</p>
+            <p class="mb-3">Trụ sở: 280 An Dương Vương, Phường Chợ Quán, TP.Hồ Chí Minh.</p>
             <p class="mb-2">Điện thoại: (028) 3979 7350</p>
-            <p class="mb-2">Fax: (028) 3979 7403</p>
             <p class="mb-0">Email: info@saigongivral.com</p>
           </div>
 
@@ -226,22 +153,12 @@
             <p class="mb-2"><strong>Hồ Chí Minh:</strong> 0944 630 055</p>
             <p class="mb-2"><strong>(028) 3979 7350</strong></p>
             <p class="mb-4"><strong>CSKH:</strong> 0906 990 898</p>
-
-            <h4 class="fw-bold mb-3 mt-4">Kết nối với chúng tôi</h4>
-            <div class="footer-social d-flex gap-3 flex-wrap">
-              <a href="#"><i class="fab fa-facebook-f"></i></a>
-              <a href="#"><i class="fab fa-youtube"></i></a>
-              <a href="#"><i class="fab fa-tiktok"></i></a>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
           </div>
         </div>
 
-        <hr class="footer-line my-4" />
+        <hr class="footer-line my-4">
 
-        <div
-          class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 footer-bottom"
-        >
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 footer-bottom">
           <p class="mb-0">© All Right Reserved / Bản quyền thuộc về Givral</p>
           <div class="footer-bottom-links d-flex gap-3 flex-wrap">
             <a href="{% url 'bao_mat_thong_tin' %}">Bảo mật thông tin</a>
@@ -251,48 +168,27 @@
       </div>
     </footer>
 
-    <!-- Nút liên hệ nổi -->
     <div class="floating-contact">
-      <a
-        href="https://www.facebook.com/nguyen.dang.khoi.130206/"
-        target="_blank"
-        class="float-btn messenger-btn"
-        title="Messenger"
-      >
+      <a href="https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank" class="float-btn messenger-btn" title="Messenger">
         <i class="fab fa-facebook-messenger"></i>
       </a>
-
-      <a
-        href="https://chat.zalo.me/"
-        target="_blank"
-        class="float-btn zalo-btn"
-        title="Zalo"
-      >
+      <a href="https://chat.zalo.me/" target="_blank" class="float-btn zalo-btn" title="Zalo">
         <span>Zalo</span>
       </a>
-
       <a href="tel:0849130206" class="float-btn phone-btn" title="Gọi điện">
         <i class="fas fa-phone-alt"></i>
       </a>
-
-      <button
-        type="button"
-        class="float-btn back-top-btn"
-        id="backToTop"
-        title="Lên đầu trang"
-      >
+      <button type="button" class="float-btn back-top-btn" id="backToTop" title="Lên đầu trang">
         <i class="fas fa-chevron-up"></i>
         <i class="fas fa-chevron-up"></i>
       </button>
     </div>
 
-    <!-- GioHang -->
-    {% include 'app/GioHang.html' %}
+    {% include 'app/GioHangTruot.html' %}
 
-    <!-- JS -->
     <script src="{% static 'app/js/all.min.js' %}"></script>
     <script src="{% static 'app/js/floating-contact.js' %}"></script>
-    <script src="{% static 'app/js/CartDrawer.js' %}"></script>
+    <script src="{% static 'app/js/GIoHangTruot.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

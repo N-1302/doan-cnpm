@@ -1,4 +1,5 @@
-from django.db import connection
+from urllib import request
+from django.db import connection, transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.utils import timezone
@@ -82,6 +83,11 @@ def category(request):
 
     return render(request, 'app/category.html', {'categories': categories})
 
+def new_collection(request):
+    ds_banh_moi = Banh.objects.all().order_by('-ma_banh')[:8]
+    return render(request, 'app/newcollection.html', {
+        'new_collection': ds_banh_moi
+    })
 
 def dat_lai_mat_khau(request):
     ma_tai_khoan = request.session.get('reset_ma_tai_khoan')
@@ -623,9 +629,64 @@ def gio_hang(request):
 def cart(request):
     return redirect('gio_hang')
 
-
 def checkout(request):
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+    if not ma_tai_khoan:
+        return redirect('login')
+
     context = get_common_data(request)
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT gh.MaGioHang
+            FROM giohang gh
+            WHERE gh.MaTaiKhoan = %s
+              AND gh.TrangThaiGioHang = 'Đang chọn'
+            LIMIT 1
+        """, [ma_tai_khoan])
+        gio_hang_row = cursor.fetchone()
+
+        items = []
+        tong_tien = 0
+        tong_so_luong = 0
+
+        if gio_hang_row:
+            ma_gio_hang = gio_hang_row[0]
+
+            cursor.execute("""
+                SELECT 
+                    ct.MaBanh,
+                    b.TenBanh,
+                    b.HinhAnh,
+                    ct.SoLuong,
+                    ct.DonGia,
+                    ct.ThanhTien
+                FROM chitietgiohang ct
+                INNER JOIN banh b ON ct.MaBanh = b.MaBanh
+                WHERE ct.MaGioHang = %s
+                ORDER BY ct.MaBanh ASC
+            """, [ma_gio_hang])
+
+            rows = cursor.fetchall()
+
+            for row in rows:
+                items.append({
+                    'ma_banh': row[0],
+                    'ten_banh': row[1],
+                    'hinh_anh': row[2],
+                    'so_luong': row[3],
+                    'don_gia': float(row[4]),
+                    'thanh_tien': float(row[5]),
+                })
+                tong_so_luong += row[3]
+                tong_tien += float(row[5])
+
+    context.update({
+        'checkout_items': items,
+        'tong_so_luong': tong_so_luong,
+        'tong_tien': tong_tien,
+    })
+
     return render(request, 'app/ThanhToan.html', context)
 
 
@@ -645,58 +706,119 @@ def dat_hang(request):
 
     ma_tai_khoan = request.session.get('ma_tai_khoan')
     if not ma_tai_khoan:
-        return JsonResponse({'success': False, 'message': 'Vui lòng đăng nhập'})
+        return JsonResponse({'success': False, 'message': 'Vui lòng đăng nhập để đặt hàng'})
 
     try:
-        data = json.loads(request.body)
-        dia_chi = data.get('dia_chi', '').strip()
+        # nhận cả JSON lẫn form submit thường
+        if request.content_type and 'application/json' in request.content_type:
+            data = json.loads(request.body or '{}')
+        else:
+            data = request.POST
+
+        dia_chi = str(data.get('dia_chi', '')).strip()
+        phuong_thuc_thanh_toan = str(data.get('phuong_thuc_thanh_toan', 'COD')).strip()
+        vi_dien_tu = str(data.get('vi_dien_tu', '')).strip()
 
         if not dia_chi:
             return JsonResponse({'success': False, 'message': 'Vui lòng nhập địa chỉ giao hàng'})
 
-        gio_hang = GioHang.objects.filter(
-            ma_tai_khoan_id=ma_tai_khoan,
-            trang_thai_gio_hang='Đang chọn'
-        ).first()
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT MaGioHang
+                FROM giohang
+                WHERE MaTaiKhoan = %s
+                  AND TrangThaiGioHang = 'Đang chọn'
+                LIMIT 1
+            """, [ma_tai_khoan])
+            gio_hang_row = cursor.fetchone()
 
-        if not gio_hang:
+        if not gio_hang_row:
             return JsonResponse({'success': False, 'message': 'Không tìm thấy giỏ hàng'})
 
-        chi_tiet = ChiTietGioHang.objects.filter(
-            ma_gio_hang=gio_hang
-        ).select_related('ma_banh')
+        ma_gio_hang = gio_hang_row[0]
 
-        if not chi_tiet.exists():
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    ct.MaBanh,
+                    b.TenBanh,
+                    b.SoLuongTon,
+                    ct.SoLuong,
+                    ct.DonGia,
+                    ct.ThanhTien
+                FROM chitietgiohang ct
+                INNER JOIN banh b ON ct.MaBanh = b.MaBanh
+                WHERE ct.MaGioHang = %s
+            """, [ma_gio_hang])
+            chi_tiet = cursor.fetchall()
+
+        if not chi_tiet:
             return JsonResponse({'success': False, 'message': 'Giỏ hàng đang trống'})
 
         tong_tien = 0
         for item in chi_tiet:
-            tong_tien += item.thanh_tien
+            ma_banh, ten_banh, so_luong_ton, so_luong, don_gia, thanh_tien = item
+            if so_luong > so_luong_ton:
+                return JsonResponse({
+                    'success': False,
+                    'message': f'Sản phẩm "{ten_banh}" không đủ tồn kho'
+                })
+            tong_tien += float(thanh_tien)
 
-        don_hang = DonHang.objects.create(
-            ma_tai_khoan_id=ma_tai_khoan,
-            ngay_dat=timezone.now(),
-            tong_tien=tong_tien,
-            dia_chi_giao_hang=dia_chi,
-            trang_thai_don_hang='Chờ xử lý'
-        )
-
-        for item in chi_tiet:
-            ChiTietDonHang.objects.create(
-                ma_don_hang=don_hang,
-                ma_banh=item.ma_banh,
-                so_luong=item.so_luong,
-                don_gia=item.don_gia,
-                thanh_tien=item.thanh_tien
+        with transaction.atomic():
+            don_hang = DonHang.objects.create(
+                ma_tai_khoan_id=ma_tai_khoan,
+                ma_khuyen_mai=None,
+                ngay_dat=timezone.now(),
+                tong_tien=tong_tien,
+                dia_chi_giao_hang=dia_chi,
+                trang_thai_don_hang='Chờ xử lý'
             )
 
-            banh = item.ma_banh
-            banh.so_luong_ton = max(0, banh.so_luong_ton - item.so_luong)
-            banh.save()
+            for item in chi_tiet:
+                ma_banh, ten_banh, so_luong_ton, so_luong, don_gia, thanh_tien = item
 
-        chi_tiet.delete()
-        gio_hang.trang_thai_gio_hang = 'Đã đặt'
-        gio_hang.save()
+                ChiTietDonHang.objects.create(
+                    ma_don_hang=don_hang,
+                    ma_banh_id=ma_banh,
+                    so_luong=so_luong,
+                    don_gia=don_gia,
+                    thanh_tien=thanh_tien
+                )
+
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        UPDATE banh
+                        SET SoLuongTon = SoLuongTon - %s
+                        WHERE MaBanh = %s
+                    """, [so_luong, ma_banh])
+
+            if phuong_thuc_thanh_toan == 'COD':
+                phuong_thuc_luu = 'COD'
+                trang_thai_thanh_toan = 'Chưa thanh toán'
+            elif phuong_thuc_thanh_toan == 'Chuyển khoản':
+                phuong_thuc_luu = 'Chuyển khoản'
+                trang_thai_thanh_toan = 'Chờ thanh toán'
+            elif phuong_thuc_thanh_toan == 'Ví điện tử':
+                phuong_thuc_luu = vi_dien_tu if vi_dien_tu else 'Ví điện tử'
+                trang_thai_thanh_toan = 'Chờ thanh toán'
+            else:
+                phuong_thuc_luu = 'COD'
+                trang_thai_thanh_toan = 'Chưa thanh toán'
+
+            ThanhToan.objects.create(
+                ma_don_hang=don_hang,
+                phuong_thuc=phuong_thuc_luu,
+                trang_thai=trang_thai_thanh_toan
+            )
+
+            with connection.cursor() as cursor:
+                cursor.execute("DELETE FROM chitietgiohang WHERE MaGioHang = %s", [ma_gio_hang])
+                cursor.execute("""
+                    UPDATE giohang
+                    SET TrangThaiGioHang = 'Đang chọn'
+                    WHERE MaGioHang = %s
+                """, [ma_gio_hang])
 
         return JsonResponse({
             'success': True,

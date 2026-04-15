@@ -11,6 +11,7 @@ urlpatterns = [
     path('chi-tiet/<int:mabanh>/', views.product_detail, name='product_detail'),
     path('search/', views.search, name='search'),
     path('danh-muc/', views.category, name='category'),
+    path('new-collection/', views.new_collection, name='new_collection'),
 
     # Tài khoản
     path('register/', views.register, name='register'),

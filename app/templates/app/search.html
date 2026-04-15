@@ -5,40 +5,40 @@
     <p class="text-muted">Từ khóa: <strong>{{ searched }}</strong></p>
   </div>
 
-  <div class="row">
+  <div class="shopee-grid">
     {% for product in keys %}
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-      <div class="card h-100 shadow-sm">
+    <div class="shopee-card">
+      <div class="shopee-image-wrap">
         {% if product.hinh_anh %}
         <img
-          src="{{ product.hinh_anh }}"
-          class="card-img-top"
+          class="shopee-image"
+          src="{% static 'app/images/' %}{{ product.hinh_anh }}"
           alt="{{ product.ten_banh }}"
-          style="height: 250px; object-fit: cover"
         />
         {% else %}
         <img
+          class="shopee-image"
           src="{% static 'app/images/looogoo.png' %}"
-          class="card-img-top"
           alt="{{ product.ten_banh }}"
-          style="height: 250px; object-fit: cover"
         />
         {% endif %}
+      </div>
 
-        <div class="card-body">
-          <h5 class="card-title">{{ product.ten_banh }}</h5>
+      <div class="shopee-info">
+        <h5 class="shopee-name">{{ product.ten_banh }}</h5>
 
-          <p class="card-text">{{ product.mo_ta|default:"Chưa có mô tả" }}</p>
+        <p class="shopee-desc">{{ product.mo_ta|default:"Chưa có mô tả" }}</p>
 
-          <p class="product-price">{{ product.gia }} VNĐ</p>
-          <p class="product-stock">Số lượng: {{ product.so_luong }}</p>
-        </div>
+        <div class="shopee-price">{{ product.gia }} <span>VNĐ</span></div>
 
-        <div class="card-footer bg-white border-0 text-center">
-          <button class="btn btn-outline-secondary" disabled>
-            Thêm vào giỏ
-          </button>
-          <a href="#" class="btn btn-outline-success"> Xem chi tiết </a>
+        <div class="shopee-stock">Còn lại: {{ product.so_luong_ton }}</div>
+
+        <div class="shopee-bottom">
+          <a
+            href="{% url 'product_detail' product.ma_banh %}"
+            class="buy-now-btn"
+            >Xem chi tiết</a
+          >
         </div>
       </div>
     </div>

@@ -1,0 +1,45 @@
+{% load static %}
+
+<div id="gioHangTruotOverlay" class="giohangtruot-overlay"></div>
+
+<aside id="gioHangTruot" class="giohangtruot-drawer">
+    <div class="giohangtruot-header">
+        <div class="giohangtruot-title-wrap">
+            <h2 class="giohangtruot-title">GIỎ HÀNG</h2>
+            <span class="giohangtruot-count">0</span>
+        </div>
+
+        <button type="button" class="giohangtruot-close" id="closeGioHangTruot">&times;</button>
+    </div>
+
+    <div class="giohangtruot-body">
+        <!-- TRẠNG THÁI TRỐNG -->
+        <div id="gioHangTruotEmpty" class="giohangtruot-empty">
+            <img 
+            src="{% static 'app/images/empty-cart.png' %}" 
+            alt="Giỏ hàng trống"
+            class="giohangtruot-empty-img"
+            />
+            <p class="giohangtruot-empty-text">Hiện tại giỏ hàng của bạn đang trống</p>
+            <a href="{% url 'san_pham' %}" class="giohangtruot-shop-btn">Mua sắm ngay</a>
+        </div>
+
+        <!-- TRẠNG THÁI CÓ SẢN PHẨM -->
+        <div id="gioHangTruotContent" class="giohangtruot-content" style="display: none;">
+            <div id="gioHangTruotList" class="giohangtruot-list"></div>
+        </div>
+    </div>
+
+    <div id="gioHangTruotFooter" class="giohangtruot-footer" style="display: none;">
+        <div class="giohangtruot-summary">
+            <div class="giohangtruot-summary-row total">
+                <span>Tạm tính</span>
+                <strong id="gioHangTruotTongTien" class="giohangtruot-total-price">0 đ</strong>
+            </div>
+        </div>
+
+        <div class="giohangtruot-actions">
+            <a href="{% url 'gio_hang' %}" class="giohangtruot-viewcart-btn">Xem giỏ hàng</a>
+        </div>
+    </div>
+</aside>

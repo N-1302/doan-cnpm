@@ -7,7 +7,6 @@
 <section class="product-page">
     <div class="container">
 
-        <!-- Tiêu đề giống mẫu -->
         <div class="product-top-heading">
             <h1>SẢN PHẨM</h1>
             <div class="product-breadcrumb">
@@ -22,27 +21,38 @@
         <div class="product-grid">
             {% for p in products %}
             <div class="product-card">
-                <div class="product-image">
-                    {% if p.HinhAnh %}
-                        <img src="{% static 'app/images/' %}{{ p.HinhAnh }}" alt="{{ p.TenBanh }}">
-                    {% else %}
-                        <img src="{% static 'app/images/no-image.png' %}" alt="{{ p.TenBanh }}">
-                    {% endif %}
-                </div>
-
-                <div class="product-info">
-                    <h3>{{ p.TenBanh }}</h3>
-                    <p>{{ p.MoTa|default:"Chưa có mô tả sản phẩm." }}</p>
-
-                    <div class="price">{{ p.Gia|floatformat:0 }} đ</div>
-                    <div class="stock">Số lượng tồn: {{ p.SoLuongTon }}</div>
-                    <div class="status">Trạng thái: {{ p.TrangThai|default:"Còn hàng" }}</div>
-
-                    <div class="product-actions">
-                        <a href="{% url 'product_detail' p.MaBanh %}" class="btn-buy">
-                            Mua ngay
-                        </a>
+                
+                <a href="{% url 'product_detail' p.MaBanh %}" class="product-card-link">
+                    <div class="product-image">
+                        {% if p.HinhAnh %}
+                            <img src="{% static 'app/images/' %}{{ p.HinhAnh }}" alt="{{ p.TenBanh }}">
+                        {% else %}
+                            <img src="{% static 'app/images/no-image.png' %}" alt="{{ p.TenBanh }}">
+                        {% endif %}
                     </div>
+
+                    <div class="product-info">
+                        <h3>{{ p.TenBanh }}</h3>
+                        <p>{{ p.MoTa|default:"Chưa có mô tả sản phẩm." }}</p>
+
+                        <div class="price">{{ p.Gia|floatformat:0 }} đ</div>
+                        <div class="stock">Số lượng tồn: {{ p.SoLuongTon }}</div>
+                        <div class="status">Trạng thái: {{ p.TrangThai|default:"Còn hàng" }}</div>
+                    </div>
+                </a>
+
+                <div class="product-actions">
+                    <button
+                        type="button"
+                        class="btn-buy product-buy-now-btn"
+                        data-id="{{ p.MaBanh }}"
+                        data-name="{{ p.TenBanh }}"
+                        data-price="{{ p.Gia|floatformat:0 }}"
+                        data-stock="{{ p.SoLuongTon }}"
+                        data-image="{% static 'app/images/' %}{{ p.HinhAnh|default:'no-image.png' }}"
+                    >
+                        Mua ngay
+                    </button>
                 </div>
             </div>
             {% empty %}
@@ -53,6 +63,48 @@
         </div>
     </div>
 </section>
+
+<!-- POPUP MUA NGAY -->
+<div class="buy-now-popup-overlay" id="buyNowPopupOverlay"></div>
+
+<div class="buy-now-popup" id="buyNowPopup">
+    <button type="button" class="buy-now-close" id="closeBuyNowPopup">&times;</button>
+
+    <h2 class="buy-now-title">Mua Ngay</h2>
+
+    <div class="buy-now-box">
+        <div class="buy-now-left">
+            <img id="buyNowImage" src="" alt="Sản phẩm">
+        </div>
+
+        <div class="buy-now-right">
+            <h3 id="buyNowName">Tên bánh</h3>
+            <p class="buy-now-price" id="buyNowPrice">0 đ</p>
+
+            <div class="buy-now-quantity-wrap">
+                <span class="buy-now-quantity-label">Số lượng</span>
+                <div class="buy-now-quantity-box">
+                    <button type="button" class="buy-now-qty-btn" id="buyNowMinus">-</button>
+                    <input type="text" id="buyNowQtyInput" value="1" readonly>
+                    <button type="button" class="buy-now-qty-btn" id="buyNowPlus">+</button>
+                </div>
+            </div>
+
+            <p class="buy-now-stock-text">
+                Còn lại: <span id="buyNowStock">0</span>
+            </p>
+
+            <div class="buy-now-actions">
+                <button type="button" class="buy-now-pay-btn" id="buyNowConfirmBtn">
+                    Mua ngay
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="buyNowProductId">
+<input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
 
 <script src="{% static 'app/js/SanPham.js' %}"></script>
 {% endblock %}

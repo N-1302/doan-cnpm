@@ -28,17 +28,25 @@
             <div class="detail-left">
                 <div class="detail-image-box">
                     {% if product.HinhAnh %}
-                        <img src="{% static 'app/images/' %}{{ product.HinhAnh }}" alt="{{ product.TenBanh }}">
+                        <img
+                            src="{% static 'app/images/' %}{{ product.HinhAnh }}"
+                            alt="{{ product.TenBanh }}"
+                            id="detailProductImage"
+                        >
                     {% else %}
-                        <img src="{% static 'app/images/looogoo.png' %}" alt="{{ product.TenBanh }}">
+                        <img
+                            src="{% static 'app/images/looogoo.png' %}"
+                            alt="{{ product.TenBanh }}"
+                            id="detailProductImage"
+                        >
                     {% endif %}
                 </div>
             </div>
 
             <div class="detail-right">
-                <h1 class="detail-title">{{ product.TenBanh }}</h1>
+                <h1 class="detail-title" id="detailProductName">{{ product.TenBanh }}</h1>
 
-                <div class="detail-price">
+                <div class="detail-price" id="detailProductPrice">
                     {{ product.Gia }} đ
                 </div>
 
@@ -51,7 +59,10 @@
                             Hết hàng
                         {% endif %}
                     </p>
-                    <p><strong>Số lượng tồn:</strong> {{ product.SoLuongTon }}</p>
+                    <p>
+                        <strong>Số lượng tồn:</strong>
+                        <span id="detailProductStock">{{ product.SoLuongTon }}</span>
+                    </p>
                 </div>
 
                 <div class="detail-desc">
@@ -75,6 +86,11 @@
                         type="button"
                         class="btn-buy"
                         id="btnBuyNow"
+                        data-id="{{ product.MaBanh }}"
+                        data-name="{{ product.TenBanh }}"
+                        data-price="{{ product.Gia }}"
+                        data-stock="{{ product.SoLuongTon }}"
+                        data-image="{% static 'app/images/' %}{{ product.HinhAnh|default:'looogoo.png' }}"
                     >
                         Mua ngay
                     </button>
@@ -83,8 +99,11 @@
                         type="button"
                         class="btn-cart"
                         id="btnAddCart"
-                        data-mabanh="{{ product.MaBanh }}"
-                        data-soluongton="{{ product.SoLuongTon }}"
+                        data-id="{{ product.MaBanh }}"
+                        data-name="{{ product.TenBanh }}"
+                        data-price="{{ product.Gia }}"
+                        data-stock="{{ product.SoLuongTon }}"
+                        data-image="{% static 'app/images/' %}{{ product.HinhAnh|default:'looogoo.png' }}"
                     >
                         Thêm vào giỏ hàng
                     </button>
@@ -114,9 +133,17 @@
                 </a>
 
                 <div class="related-action">
-                    <a href="{% url 'product_detail' item.MaBanh %}" class="related-buy-btn">
+                    <button
+                        type="button"
+                        class="related-buy-btn related-buy-now-btn"
+                        data-id="{{ item.MaBanh }}"
+                        data-name="{{ item.TenBanh }}"
+                        data-price="{{ item.Gia }}"
+                        data-stock="{{ item.SoLuongTon }}"
+                        data-image="{% static 'app/images/' %}{{ item.HinhAnh|default:'looogoo.png' }}"
+                    >
                         <span>Mua ngay</span>
-                    </a>
+                    </button>
                 </div>
             </div>
             {% empty %}
@@ -132,6 +159,9 @@
     </div>
 </section>
 
+<!-- POPUP MUA NGAY -->
+<div id="buyNowModalOverlay" class="buy-modal-overlay"></div>
+
 <div id="buyNowModal" class="buy-modal">
     <div class="buy-modal-content">
         <button class="buy-modal-close" type="button" id="closeBuyNowModal">×</button>
@@ -141,30 +171,44 @@
         <div class="buy-modal-body">
             <div class="buy-modal-product">
                 <div class="buy-modal-image">
-                    {% if product and product.HinhAnh %}
-                        <img src="{% static 'app/images/' %}{{ product.HinhAnh }}" alt="{{ product.TenBanh }}">
-                    {% else %}
-                        <img src="{% static 'app/images/looogoo.png' %}" alt="Sản phẩm">
-                    {% endif %}
+                    <img id="modalProductImage" src="{% static 'app/images/looogoo.png' %}" alt="Sản phẩm">
                 </div>
 
                 <div class="buy-modal-info">
-                    <h3>{{ product.TenBanh }}</h3>
-                    <p class="buy-modal-price">{{ product.Gia }} đ</p>
-                    <p class="buy-modal-qty">Số lượng: <span id="modalQuantity">1</span></p>
+                    <h3 id="modalProductName">Tên bánh</h3>
+                    <p class="buy-modal-price" id="modalProductPrice">0 đ</p>
+
+                    <div class="buy-modal-qty-wrap">
+                        <span>Số lượng</span>
+                        <div class="buy-modal-qty-box">
+                            <button type="button" class="buy-modal-qty-btn" id="modalDecrease">-</button>
+                            <input type="text" id="modalQuantityInput" value="1" readonly>
+                            <button type="button" class="buy-modal-qty-btn" id="modalIncrease">+</button>
+                        </div>
+                    </div>
+
+                    <p class="buy-modal-stock">
+                        Còn lại: <span id="modalProductStock">0</span>
+                    </p>
                 </div>
             </div>
 
             <div class="buy-modal-action">
-                <form method="get" action="{% url 'checkout' %}">
-                    <input type="hidden" name="product_id" value="{{ product.MaBanh }}">
-                    <input type="hidden" name="quantity" id="buyNowQuantity" value="1">
-                    <button type="submit" class="buy-modal-btn">Thanh toán ngay</button>
-                </form>
+                <button type="button" class="buy-modal-btn" id="modalBuyNowBtn">
+                    Mua ngay
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- hidden data cho JS -->
+<input type="hidden" id="detailCheckoutUrl" value="{% url 'checkout' %}">
+<input type="hidden" id="currentProductId" value="{{ product.MaBanh }}">
+<input type="hidden" id="currentProductName" value="{{ product.TenBanh }}">
+<input type="hidden" id="currentProductPrice" value="{{ product.Gia }}">
+<input type="hidden" id="currentProductStock" value="{{ product.SoLuongTon }}">
+<input type="hidden" id="currentProductImage" value="{% static 'app/images/' %}{{ product.HinhAnh|default:'looogoo.png' }}">
 
 <script src="{% static 'app/js/ChiTietSanPham.js' %}"></script>
 {% endblock %}
