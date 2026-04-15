@@ -56,4 +56,8 @@ urlpatterns = [
     path('gioi-thieu/', views.gioi_thieu, name='gioi_thieu'),
     path('bao-mat-thong-tin/', views.bao_mat_thong_tin, name='bao_mat_thong_tin'),
     path('dieu-khoan-su-dung/', views.dieu_khoan_su_dung, name='dieu_khoan_su_dung'),
+
+    # newcollection
+    path('', views.home, name='home'),
+    path('new-collection/', views.new_collection, name='new_collection'),
 ]

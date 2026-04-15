@@ -34,7 +34,9 @@
           for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === name + "=") {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1),
+              );
               break;
             }
           }
@@ -91,14 +93,22 @@
             </a>
 
             {% if request.session.ma_tai_khoan %}
-            <span class="me-2">Xin chào, {{ request.session.ten_dang_nhap }}</span>
+            <span class="me-2"
+              >Xin chào, {{ request.session.ten_dang_nhap }}</span
+            >
             {% if request.session.ma_quyen == 1 %}
             <span class="me-2 fw-semibold text-danger"></span>
             {% endif %}
-            <a href="{% url 'logout' %}" class="text-decoration-none">Đăng xuất</a>
+            <a href="{% url 'logout' %}" class="text-decoration-none"
+              >Đăng xuất</a
+            >
             {% else %}
-            <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
-            <a href="{% url 'register' %}" class="text-decoration-none">Đăng ký</a>
+            <a href="{% url 'login' %}" class="text-decoration-none me-2"
+              >Đăng nhập</a
+            >
+            <a href="{% url 'register' %}" class="text-decoration-none"
+              >Đăng ký</a
+            >
             {% endif %}
 
             <a
@@ -152,10 +162,16 @@
               <div class="mega-col">
                 <h4>Kết nối</h4>
                 <div class="mega-social">
-                  <a href="https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank">
+                  <a
+                    href="https://www.facebook.com/nguyen.dang.khoi.130206/"
+                    target="_blank"
+                  >
                     <i class="fab fa-facebook-f"></i>
                   </a>
-                  <a href="https://www.instagram.com/dangkhoi9925/" target="_blank">
+                  <a
+                    href="https://www.instagram.com/dangkhoi9925/"
+                    target="_blank"
+                  >
                     <i class="fab fa-instagram"></i>
                   </a>
                   <a href="https://chat.zalo.me/" target="_blank">
@@ -169,7 +185,7 @@
 
         <!-- DANH MỤC -->
         <div class="top-category-links">
-          <a href="#">New Collection</a>
+          <a href="{% url 'new_collection' %}">New Collection</a>
           <a href="#">Bánh kem</a>
           <a href="#">Bánh ngọt</a>
           <a href="#">Rau câu</a>
@@ -178,9 +194,7 @@
     </nav>
 
     <!-- Nội dung trang -->
-    <main class="pb-5">
-      {% block main_content %}{% endblock %}
-    </main>
+    <main class="pb-5">{% block main_content %}{% endblock %}</main>
 
     <!-- Footer -->
     <footer class="footer-givral text-black mt-5">
@@ -201,7 +215,9 @@
             <div class="footer-menu mb-4">
               <a href="{% url 'gioi_thieu' %}">Giới thiệu</a>
               <a href="{% url 'tin_tuc' %}">Tin tức</a>
-              <a href="{% url 'chinh_sach_giao_hang' %}">Chính sách giao hàng</a>
+              <a href="{% url 'chinh_sach_giao_hang' %}"
+                >Chính sách giao hàng</a
+              >
               <a href="{% url 'lien_he' %}">Liên hệ</a>
             </div>
 

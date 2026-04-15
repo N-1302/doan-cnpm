@@ -1075,3 +1075,9 @@ def chi_tiet_don_hang_admin(request, ma_don_hang):
         'chi_tiet_don': chi_tiet_don,
     }
     return render(request, 'app/ChiTietDonHangAdmin.html', context)
+
+def new_collection(request):
+    ds_banh_moi = Banh.objects.all().order_by('-ma_banh')[:8]
+    return render(request, 'app/newcollection.html', {
+        'new_collection': ds_banh_moi
+    })

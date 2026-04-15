@@ -1,0 +1,66 @@
+{% extends 'app/base.html' %} {% load static %} {% block main_content %}
+
+<div class="product-header">
+  <div class="container">
+    <h1 class="product-title">NEW COLLECTION</h1>
+
+    <div class="givral-category-breadcrumb">
+      <a href="{% url 'home' %}">TRANG CHỦ</a>
+      <span>›</span>
+      <a href="{% url 'category' %}">DANH SÁCH BÁNH</a>
+      <span>›</span>
+      <strong>NEW COLLECTION</strong>
+    </div>
+  </div>
+</div>
+
+<section class="product-section pb-5">
+  <div class="container">
+    <div class="shopee-grid">
+      {% for item in new_collection %}
+      <div class="shopee-card">
+        <div class="product-badge">NEW</div>
+
+        <div class="shopee-image-wrap">
+          {% if item.hinh_anh %}
+          <img
+            class="shopee-image"
+            src="{% static 'app/images/' %}{{ item.hinh_anh }}"
+            alt="{{ item.ten_banh }}"
+          />
+          {% else %}
+          <img
+            class="shopee-image"
+            src="{% static 'app/images/looogoo.png' %}"
+            alt="{{ item.ten_banh }}"
+          />
+          {% endif %}
+        </div>
+
+        <div class="shopee-info">
+          <h5 class="shopee-name">{{ item.ten_banh }}</h5>
+
+          <p class="shopee-desc">
+            {{ item.mo_ta|default:"Bánh ngon mỗi ngày" }}
+          </p>
+
+          <div class="shopee-price">{{ item.gia }} <span>VNĐ</span></div>
+
+          <div class="shopee-stock">Còn lại: {{ item.so_luong_ton }}</div>
+
+          <div class="shopee-bottom">
+            <div class="shopee-hot">SẢN PHẨM MỚI</div>
+            <a href="{% url 'cart' %}" class="buy-now-btn">Mua ngay</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <p class="text-center">Chưa có sản phẩm mới.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
