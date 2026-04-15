@@ -1,0 +1,87 @@
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="giohang-page">
+    <div class="giohang-container">
+        <div class="giohang-header">
+            <p class="giohang-subtitle">SPRINTTEAM BAKERY</p>
+            <h1 class="giohang-title">GIỎ HÀNG CỦA BẠN</h1>
+            <div class="giohang-breadcrumb">
+                <a href="{% url 'home' %}">Trang chủ</a>
+                <span>/</span>
+                <span>Giỏ hàng</span>
+            </div>
+        </div>
+
+        <div class="giohang-layout">
+            <div class="giohang-left">
+                <div class="giohang-table-wrap">
+                    <table class="giohang-table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="gioHangTableBody">
+                            <tr>
+                                <td colspan="5" class="giohang-loading">Đang tải giỏ hàng...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="gioHangEmpty" class="giohang-empty" style="display: none;">
+                    <div class="giohang-empty-icon">🛒</div>
+                    <h3>Giỏ hàng của bạn đang trống</h3>
+                    <p>Hãy chọn những chiếc bánh thật ngon để thêm vào giỏ hàng nhé.</p>
+                    <a href="{% url 'san_pham' %}" class="giohang-shop-btn">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+
+            <div class="giohang-right">
+                <div class="giohang-summary-card">
+                    <h3>Tóm tắt đơn hàng</h3>
+
+                    <div class="giohang-summary-row">
+                        <span>Tổng sản phẩm</span>
+                        <strong id="tongSanPham">0</strong>
+                    </div>
+
+                    <div class="giohang-summary-row">
+                        <span>Tạm tính</span>
+                        <strong id="tamTinh">0 đ</strong>
+                    </div>
+
+                    <div class="giohang-summary-row">
+                        <span>Phí vận chuyển</span>
+                        <strong>0 đ</strong>
+                    </div>
+
+                    <div class="giohang-summary-total">
+                        <span>Tổng cộng</span>
+                        <strong id="tongCong">0 đ</strong>
+                    </div>
+
+                    <a href="{% url 'checkout' %}" class="giohang-checkout-btn">
+                        TIẾN HÀNH THANH TOÁN
+                    </a>
+
+                    <a href="{% url 'san_pham' %}" class="giohang-continue-btn">
+                        Tiếp tục mua sắm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'app/js/GioHang.js' %}"></script>
+{% endblock %}

@@ -4,14 +4,18 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from django.db.models.functions import TruncDay, TruncMonth
 from datetime import timedelta, datetime
 from math import ceil
 import random
 import json
 
-from .models import TaiKhoan, LoaiBanh, Banh, PhanQuyen, DonHang, KhuyenMai, ChiTietDonHang
+from .models import (
+    TaiKhoan, LoaiBanh, Banh, DonHang, KhuyenMai,
+    ChiTietDonHang, GioHang, ChiTietGioHang
+)
+
 
 def get_common_data(request):
     categories = LoaiBanh.objects.all()
@@ -21,10 +25,23 @@ def get_common_data(request):
     ten_dang_nhap = request.session.get('ten_dang_nhap')
     ma_quyen = request.session.get('ma_quyen')
 
+    cart_items = 0
+    if ma_tai_khoan:
+        gio_hang = GioHang.objects.filter(
+            ma_tai_khoan_id=ma_tai_khoan,
+            trang_thai_gio_hang='Đang chọn'
+        ).first()
+
+        if gio_hang:
+            tong = ChiTietGioHang.objects.filter(ma_gio_hang=gio_hang).aggregate(
+                tong_so_luong=Sum('so_luong')
+            )
+            cart_items = tong['tong_so_luong'] or 0
+
     return {
         'categories': categories,
         'products': products,
-        'cartItems': 0,
+        'cartItems': cart_items,
         'ten_dang_nhap': ten_dang_nhap,
         'ma_tai_khoan': ma_tai_khoan,
         'ma_quyen': ma_quyen,
@@ -64,6 +81,7 @@ def category(request):
         })
 
     return render(request, 'app/category.html', {'categories': categories})
+
 
 def dat_lai_mat_khau(request):
     ma_tai_khoan = request.session.get('reset_ma_tai_khoan')
@@ -121,6 +139,7 @@ def dat_lai_mat_khau(request):
 
     return render(request, 'app/DatLaiMatKhau.html')
 
+
 def quen_mat_khau(request):
     if request.method == 'POST':
         username_or_email = request.POST.get('username_or_email', '').strip()
@@ -131,7 +150,6 @@ def quen_mat_khau(request):
             })
 
         tai_khoan = TaiKhoan.objects.filter(ten_dang_nhap=username_or_email).first()
-
         if tai_khoan is None:
             tai_khoan = TaiKhoan.objects.filter(email=username_or_email).first()
 
@@ -159,10 +177,10 @@ def quen_mat_khau(request):
             })
 
         request.session['reset_ma_tai_khoan'] = tai_khoan.ma_tai_khoan
-
         return redirect('dat_lai_mat_khau')
 
     return render(request, 'app/QuenMatKhau.html')
+
 
 def san_pham(request):
     with connection.cursor() as cursor:
@@ -185,8 +203,6 @@ def san_pham(request):
             'TrangThai': row[6],
             'MaLoaiBanh': row[7],
         })
-
-    print("PRODUCTS =", products)
 
     return render(request, 'app/SanPham.html', {
         'products': products,
@@ -229,8 +245,6 @@ def san_pham_theo_loai(request, maloai):
 
     if category_row:
         active_category = category_row[0]
-
-    print("PRODUCTS THEO LOAI =", products)
 
     return render(request, 'app/SanPham.html', {
         'products': products,
@@ -307,10 +321,7 @@ def search(request):
     if request.method == 'POST':
         searched = request.POST.get('searched', '').strip()
 
-    if searched:
-        keys = Banh.objects.filter(ten_banh__icontains=searched)
-    else:
-        keys = Banh.objects.all()
+    keys = Banh.objects.filter(ten_banh__icontains=searched) if searched else Banh.objects.all()
 
     context['searched'] = searched
     context['keys'] = keys
@@ -323,6 +334,7 @@ def register(request):
         ho_ten = request.POST.get('ho_ten', '').strip()
         ten_dang_nhap = request.POST.get('username', '').strip()
         mat_khau = request.POST.get('password', '').strip()
+        confirm_password = request.POST.get('confirm_password', '').strip()
         email = request.POST.get('email', '').strip()
         sdt = request.POST.get('sdt', '').strip()
         gioi_tinh = request.POST.get('gioi_tinh', '').strip()
@@ -330,6 +342,11 @@ def register(request):
         if not ho_ten or not ten_dang_nhap or not mat_khau or not email:
             return render(request, 'app/DangKy.html', {
                 'loi': 'Vui lòng nhập đầy đủ thông tin bắt buộc'
+            })
+
+        if mat_khau != confirm_password:
+            return render(request, 'app/DangKy.html', {
+                'loi': 'Mật khẩu xác nhận không khớp'
             })
 
         if TaiKhoan.objects.filter(ten_dang_nhap=ten_dang_nhap).exists():
@@ -357,12 +374,6 @@ def register(request):
             ma_quyen_id=2
         )
 
-        confirm_password = request.POST.get('confirm_password', '').strip()
-        if mat_khau != confirm_password:
-            return render(request, 'app/DangKy.html', {
-                'loi': 'Mật khẩu xác nhận không khớp'
-                })
-
         return render(request, 'app/DangNhap.html', {
             'thanhcong': 'Đăng ký thành công, vui lòng đăng nhập'
         })
@@ -384,7 +395,6 @@ def loginPage(request):
             })
 
         tai_khoan = TaiKhoan.objects.filter(ten_dang_nhap=username).first()
-
         if tai_khoan is None:
             tai_khoan = TaiKhoan.objects.filter(email=username).first()
 
@@ -409,22 +419,296 @@ def logoutPage(request):
     return redirect('login')
 
 
-def cart(request):
+# =========================
+# GIỎ HÀNG
+# =========================
+
+def lay_gio_hang(request):
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+    if not ma_tai_khoan:
+        return None
+
+    gio_hang = GioHang.objects.filter(
+        ma_tai_khoan_id=ma_tai_khoan,
+        trang_thai_gio_hang='Đang chọn'
+    ).first()
+
+    if not gio_hang:
+        gio_hang = GioHang.objects.create(
+            ma_tai_khoan_id=ma_tai_khoan,
+            trang_thai_gio_hang='Đang chọn'
+        )
+
+    return gio_hang
+
+
+def api_cart(request):
+    gio_hang = lay_gio_hang(request)
+
+    if not gio_hang:
+        return JsonResponse({
+            'success': True,
+            'items': [],
+            'total_items': 0,
+            'subtotal': 0
+        })
+
+    chi_tiet = ChiTietGioHang.objects.filter(
+        ma_gio_hang=gio_hang
+    ).select_related('ma_banh')
+
+    items = []
+    total_items = 0
+    subtotal = 0
+
+    for ct in chi_tiet:
+        banh = ct.ma_banh
+        thanh_tien = ct.thanh_tien if ct.thanh_tien is not None else (ct.don_gia * ct.so_luong)
+
+        total_items += ct.so_luong
+        subtotal += thanh_tien
+
+        hinh = ''
+        if banh.hinh_anh:
+            if str(banh.hinh_anh).startswith('http'):
+                hinh = banh.hinh_anh
+            elif str(banh.hinh_anh).startswith('/media/') or str(banh.hinh_anh).startswith('/static/'):
+                hinh = banh.hinh_anh
+            else:
+                hinh = f"/media/{banh.hinh_anh}"
+
+        items.append({
+            'ma_banh': banh.ma_banh,
+            'ten_banh': banh.ten_banh,
+            'hinh_anh': hinh if hinh else '/static/app/images/no-image.png',
+            'so_luong': ct.so_luong,
+            'don_gia': float(ct.don_gia),
+            'thanh_tien': float(thanh_tien),
+            'mo_ta_ngan': 'Thêm nội dung đặt bánh' if 'B-' in banh.ten_banh.upper() else ''
+        })
+
+    return JsonResponse({
+        'success': True,
+        'items': items,
+        'total_items': total_items,
+        'subtotal': float(subtotal)
+    })
+
+
+def api_cart_update(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Phương thức không hợp lệ'})
+
+    try:
+        data = json.loads(request.body)
+        ma_banh = data.get('ma_banh')
+        action = data.get('action')
+
+        gio_hang = lay_gio_hang(request)
+        if not gio_hang:
+            return JsonResponse({'success': False, 'message': 'Không tìm thấy giỏ hàng'})
+
+        item = ChiTietGioHang.objects.filter(
+            ma_gio_hang=gio_hang,
+            ma_banh_id=ma_banh
+        ).first()
+
+        if not item:
+            return JsonResponse({'success': False, 'message': 'Không tìm thấy sản phẩm trong giỏ'})
+
+        if action == 'plus':
+            if item.so_luong >= item.ma_banh.so_luong_ton:
+                return JsonResponse({'success': False, 'message': 'Số lượng vượt quá tồn kho'})
+            item.so_luong += 1
+
+        elif action == 'minus':
+            item.so_luong -= 1
+            if item.so_luong <= 0:
+                item.delete()
+                return JsonResponse({'success': True})
+
+        else:
+            return JsonResponse({'success': False, 'message': 'Hành động không hợp lệ'})
+
+        item.thanh_tien = item.so_luong * item.don_gia
+        item.save()
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+def api_cart_remove(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Phương thức không hợp lệ'})
+
+    try:
+        data = json.loads(request.body)
+        ma_banh = data.get('ma_banh')
+
+        gio_hang = lay_gio_hang(request)
+        if not gio_hang:
+            return JsonResponse({'success': False, 'message': 'Không tìm thấy giỏ hàng'})
+
+        ChiTietGioHang.objects.filter(
+            ma_gio_hang=gio_hang,
+            ma_banh_id=ma_banh
+        ).delete()
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+def them_vao_gio(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Phương thức không hợp lệ'})
+
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+    if not ma_tai_khoan:
+        return JsonResponse({'success': False, 'message': 'Vui lòng đăng nhập để thêm vào giỏ hàng'})
+
+    try:
+        data = json.loads(request.body)
+        ma_banh = data.get('ma_banh')
+        so_luong = int(data.get('so_luong', 1))
+
+        banh = Banh.objects.filter(ma_banh=ma_banh).first()
+        if not banh:
+            return JsonResponse({'success': False, 'message': 'Không tìm thấy sản phẩm'})
+
+        if so_luong <= 0:
+            so_luong = 1
+
+        gio_hang = lay_gio_hang(request)
+
+        item = ChiTietGioHang.objects.filter(
+            ma_gio_hang=gio_hang,
+            ma_banh=banh
+        ).first()
+
+        if item:
+            tong_so_luong_moi = item.so_luong + so_luong
+            if tong_so_luong_moi > banh.so_luong_ton:
+                return JsonResponse({'success': False, 'message': 'Số lượng vượt quá tồn kho'})
+
+            item.so_luong = tong_so_luong_moi
+            item.thanh_tien = item.so_luong * item.don_gia
+            item.save()
+        else:
+            if so_luong > banh.so_luong_ton:
+                return JsonResponse({'success': False, 'message': 'Số lượng vượt quá tồn kho'})
+
+            ChiTietGioHang.objects.create(
+                ma_gio_hang=gio_hang,
+                ma_banh=banh,
+                so_luong=so_luong,
+                don_gia=banh.gia,
+                thanh_tien=banh.gia * so_luong
+            )
+
+        return JsonResponse({'success': True, 'message': 'Đã thêm vào giỏ hàng'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+def gio_hang(request):
     context = get_common_data(request)
-    context['items'] = []
-    context['donhang'] = {'get_cart_total': 0, 'get_cart_items': 0}
-    return render(request, 'app/cart.html', context)
+    return render(request, 'app/GioHang.html', context)
+
+
+def cart(request):
+    return redirect('gio_hang')
 
 
 def checkout(request):
     context = get_common_data(request)
-    context['items'] = []
-    context['donhang'] = {'get_cart_total': 0, 'get_cart_items': 0}
-    return render(request, 'app/checkout.html', context)
+    return render(request, 'app/ThanhToan.html', context)
 
 
 def updateItem(request):
-    return JsonResponse('Chức năng giỏ hàng đang được cập nhật theo MySQL', safe=False)
+    return JsonResponse({
+        'success': False,
+        'message': 'Hãy dùng api_cart_update hoặc them_vao_gio theo MySQL'
+    })
+
+
+# =========================
+# ĐẶT HÀNG (CHECKOUT)
+# =========================
+def dat_hang(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Phương thức không hợp lệ'})
+
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+    if not ma_tai_khoan:
+        return JsonResponse({'success': False, 'message': 'Vui lòng đăng nhập'})
+
+    try:
+        data = json.loads(request.body)
+        dia_chi = data.get('dia_chi', '').strip()
+
+        if not dia_chi:
+            return JsonResponse({'success': False, 'message': 'Vui lòng nhập địa chỉ giao hàng'})
+
+        gio_hang = GioHang.objects.filter(
+            ma_tai_khoan_id=ma_tai_khoan,
+            trang_thai_gio_hang='Đang chọn'
+        ).first()
+
+        if not gio_hang:
+            return JsonResponse({'success': False, 'message': 'Không tìm thấy giỏ hàng'})
+
+        chi_tiet = ChiTietGioHang.objects.filter(
+            ma_gio_hang=gio_hang
+        ).select_related('ma_banh')
+
+        if not chi_tiet.exists():
+            return JsonResponse({'success': False, 'message': 'Giỏ hàng đang trống'})
+
+        tong_tien = 0
+        for item in chi_tiet:
+            tong_tien += item.thanh_tien
+
+        don_hang = DonHang.objects.create(
+            ma_tai_khoan_id=ma_tai_khoan,
+            ngay_dat=timezone.now(),
+            tong_tien=tong_tien,
+            dia_chi_giao_hang=dia_chi,
+            trang_thai_don_hang='Chờ xử lý'
+        )
+
+        for item in chi_tiet:
+            ChiTietDonHang.objects.create(
+                ma_don_hang=don_hang,
+                ma_banh=item.ma_banh,
+                so_luong=item.so_luong,
+                don_gia=item.don_gia,
+                thanh_tien=item.thanh_tien
+            )
+
+            banh = item.ma_banh
+            banh.so_luong_ton = max(0, banh.so_luong_ton - item.so_luong)
+            banh.save()
+
+        chi_tiet.delete()
+        gio_hang.trang_thai_gio_hang = 'Đã đặt'
+        gio_hang.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Đặt hàng thành công',
+            'ma_don_hang': don_hang.ma_don_hang
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        })
 
 
 def admin_dashboard(request):
@@ -435,12 +719,7 @@ def admin_dashboard(request):
     context['tong_tai_khoan'] = TaiKhoan.objects.count()
     context['tong_banh'] = Banh.objects.count()
     context['tong_loai_banh'] = LoaiBanh.objects.count()
-
-    try:
-        from .models import DonHang
-        context['tong_don_hang'] = DonHang.objects.count()
-    except:
-        context['tong_don_hang'] = 0
+    context['tong_don_hang'] = DonHang.objects.count()
 
     return render(request, 'app/admin_dashboard.html', context)
 
@@ -508,19 +787,20 @@ def tin_tuc(request):
     end = start + per_page
     posts = filtered_posts[start:end]
 
-    page_numbers = range(1, total_pages + 1)
-
     context = {
         'posts': posts,
         'categories': categories,
         'current_category': category,
         'current_page': page,
         'total_pages': total_pages,
-        'page_numbers': page_numbers,
+        'page_numbers': range(1, total_pages + 1),
     }
     return render(request, 'app/TinTuc.html', context)
 
-#Admin - Quản lý bánh
+
+# =========================
+# ADMIN - BÁNH
+# =========================
 def quan_ly_banh(request):
     if request.session.get('ma_quyen') != 1:
         return redirect('home')
@@ -593,6 +873,7 @@ def xoa_banh(request, mabanh):
 
     return redirect('quan_ly_banh')
 
+
 def quan_ly_don_hang(request):
     if request.session.get('ma_quyen') != 1:
         return redirect('home')
@@ -653,41 +934,6 @@ def xoa_khuyen_mai(request, makhuyenmai):
     return redirect('quan_ly_khuyen_mai')
 
 
-def thong_ke(request):
-    if request.session.get('ma_quyen') != 1:
-        return redirect('home')
-
-    context = get_common_data(request)
-    context['tong_tai_khoan'] = TaiKhoan.objects.count()
-    context['tong_banh'] = Banh.objects.count()
-    context['tong_don_hang'] = DonHang.objects.count()
-    context['tong_doanh_thu'] = DonHang.objects.filter(trang_thai_don_hang='Hoàn thành').aggregate(
-        tong=Sum('tong_tien')
-    )['tong'] or 0
-
-    context['don_hoan_thanh'] = DonHang.objects.filter(trang_thai_don_hang='Hoàn thành').count()
-    context['don_cho_xu_ly'] = DonHang.objects.filter(trang_thai_don_hang='Chờ xử lý').count()
-    context['don_dang_giao'] = DonHang.objects.filter(trang_thai_don_hang='Đang giao').count()
-    context['don_da_huy'] = DonHang.objects.filter(trang_thai_don_hang='Đã hủy').count()
-
-    san_pham_ban_chay = (
-        ChiTietDonHang.objects
-        .select_related('ma_banh')
-        .values('ma_banh__ten_banh')
-        .annotate(tong_ban=Sum('so_luong'))
-        .order_by('-tong_ban')[:5]
-    )
-
-    context['san_pham_ban_chay'] = [
-        {
-            'ten_banh': item['ma_banh__ten_banh'],
-            'tong_ban': item['tong_ban']
-        }
-        for item in san_pham_ban_chay
-    ]
-
-    return render(request, 'app/ThongKe.html', context)
-
 def quan_ly_khach_hang(request):
     if request.session.get('ma_quyen') != 1:
         return redirect('home')
@@ -719,6 +965,7 @@ def mo_tai_khoan(request, mataikhoan):
         tai_khoan.save()
 
     return redirect('quan_ly_khach_hang')
+
 
 def thong_ke(request):
     filter_type = request.GET.get('filter_type', 'day')
@@ -809,6 +1056,7 @@ def thong_ke(request):
         'chart_data': json.dumps(chart_data),
     }
     return render(request, 'app/ThongKe.html', context)
+
 
 def chi_tiet_don_hang_admin(request, ma_don_hang):
     don_hang = get_object_or_404(

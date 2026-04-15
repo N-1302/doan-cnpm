@@ -1,0 +1,128 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="thanhtoan-page">
+    <div class="thanhtoan-container">
+        <div class="thanhtoan-header">
+            <p class="thanhtoan-subtitle">SPRINTTEAM BAKERY</p>
+            <h1 class="thanhtoan-title">THANH TOÁN</h1>
+            <div class="thanhtoan-breadcrumb">
+                <a href="{% url 'home' %}">Trang chủ</a>
+                <span>/</span>
+                <a href="{% url 'gio_hang' %}">Giỏ hàng</a>
+                <span>/</span>
+                <span>Thanh toán</span>
+            </div>
+        </div>
+
+        <div class="thanhtoan-layout">
+            <div class="thanhtoan-left">
+                <div class="thanhtoan-card">
+                    <h3 class="thanhtoan-card-title">Thông tin nhận hàng</h3>
+
+                    <div class="thanhtoan-form-grid">
+                        <div class="thanhtoan-form-group">
+                            <label for="hoTen">Họ và tên</label>
+                            <input type="text" id="hoTen" placeholder="Nhập họ và tên">
+                        </div>
+
+                        <div class="thanhtoan-form-group">
+                            <label for="soDienThoai">Số điện thoại</label>
+                            <input type="text" id="soDienThoai" placeholder="Nhập số điện thoại">
+                        </div>
+
+                        <div class="thanhtoan-form-group full-width">
+                            <label for="diaChi">Địa chỉ giao hàng</label>
+                            <input type="text" id="diaChi" placeholder="Nhập địa chỉ giao hàng">
+                        </div>
+
+                        <div class="thanhtoan-form-group full-width">
+                            <label for="ghiChu">Ghi chú</label>
+                            <textarea id="ghiChu" rows="4" placeholder="Nhập ghi chú cho đơn hàng nếu có"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="thanhtoan-card">
+                    <h3 class="thanhtoan-card-title">Phương thức thanh toán</h3>
+
+                    <div class="thanhtoan-methods">
+                        <label class="thanhtoan-method-item">
+                            <input type="radio" name="phuongThucThanhToan" value="COD" checked>
+                            <span class="thanhtoan-method-content">
+                                <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                <small>Thanh toán bằng tiền mặt khi nhận bánh</small>
+                            </span>
+                        </label>
+
+                        <label class="thanhtoan-method-item">
+                            <input type="radio" name="phuongThucThanhToan" value="Chuyển khoản">
+                            <span class="thanhtoan-method-content">
+                                <strong>Chuyển khoản ngân hàng</strong>
+                                <small>Thanh toán qua tài khoản ngân hàng</small>
+                            </span>
+                        </label>
+
+                        <label class="thanhtoan-method-item">
+                            <input type="radio" name="phuongThucThanhToan" value="Ví điện tử">
+                            <span class="thanhtoan-method-content">
+                                <strong>Ví điện tử</strong>
+                                <small>Thanh toán qua ví điện tử</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="thanhtoan-right">
+                <div class="thanhtoan-summary-card">
+                    <h3 class="thanhtoan-card-title">Đơn hàng của bạn</h3>
+
+                    <div id="thanhtoanOrderList" class="thanhtoan-order-list">
+                        <div class="thanhtoan-loading">Đang tải đơn hàng...</div>
+                    </div>
+
+                    <div class="thanhtoan-summary-box">
+                        <div class="thanhtoan-summary-row">
+                            <span>Tổng sản phẩm</span>
+                            <strong id="tongSanPhamThanhToan">0</strong>
+                        </div>
+
+                        <div class="thanhtoan-summary-row">
+                            <span>Tạm tính</span>
+                            <strong id="tamTinhThanhToan">0 đ</strong>
+                        </div>
+
+                        <div class="thanhtoan-summary-row">
+                            <span>Phí vận chuyển</span>
+                            <strong id="phiVanChuyen">0 đ</strong>
+                        </div>
+
+                        <div class="thanhtoan-summary-total">
+                            <span>Tổng cộng</span>
+                            <strong id="tongCongThanhToan">0 đ</strong>
+                        </div>
+                    </div>
+
+                    <button type="button" id="btnDatHang" class="thanhtoan-submit-btn">
+                        ĐẶT HÀNG
+                    </button>
+
+                    <a href="{% url 'gio_hang' %}" class="thanhtoan-back-btn">
+                        Quay lại giỏ hàng
+                    </a>
+
+                    <p id="thanhtoanMessage" class="thanhtoan-message"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'app/js/ThanhToan.js' %}"></script>
+{% endblock %}

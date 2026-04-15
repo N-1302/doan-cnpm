@@ -113,13 +113,15 @@ class GioHang(models.Model):
         managed = False
         db_table = 'giohang'
 
+    def __str__(self):
+        return f"GioHang {self.ma_gio_hang}"
+
 
 class ChiTietGioHang(models.Model):
     ma_gio_hang = models.ForeignKey(
         GioHang,
         on_delete=models.DO_NOTHING,
-        db_column='MaGioHang',
-        primary_key=True
+        db_column='MaGioHang'
     )
     ma_banh = models.ForeignKey(
         Banh,
@@ -134,6 +136,9 @@ class ChiTietGioHang(models.Model):
         managed = False
         db_table = 'chitietgiohang'
         unique_together = (('ma_gio_hang', 'ma_banh'),)
+
+    def __str__(self):
+        return f"{self.ma_gio_hang_id} - {self.ma_banh_id}"
 
 
 class DonHang(models.Model):
@@ -161,13 +166,15 @@ class DonHang(models.Model):
         managed = False
         db_table = 'donhang'
 
+    def __str__(self):
+        return f"DonHang {self.ma_don_hang}"
+
 
 class ChiTietDonHang(models.Model):
     ma_don_hang = models.ForeignKey(
         DonHang,
         on_delete=models.DO_NOTHING,
-        db_column='MaDonHang',
-        primary_key=True
+        db_column='MaDonHang'
     )
     ma_banh = models.ForeignKey(
         Banh,
@@ -182,6 +189,9 @@ class ChiTietDonHang(models.Model):
         managed = False
         db_table = 'chitietdonhang'
         unique_together = (('ma_don_hang', 'ma_banh'),)
+
+    def __str__(self):
+        return f"{self.ma_don_hang_id} - {self.ma_banh_id}"
 
 
 class DanhGia(models.Model):
@@ -207,6 +217,9 @@ class DanhGia(models.Model):
         managed = False
         db_table = 'danhgia'
 
+    def __str__(self):
+        return f"DanhGia {self.ma_danh_gia}"
+
 
 class LienHe(models.Model):
     ma_lien_he = models.AutoField(primary_key=True, db_column='MaLienHe')
@@ -228,6 +241,9 @@ class LienHe(models.Model):
         managed = False
         db_table = 'lienhe'
 
+    def __str__(self):
+        return self.ho_ten
+
 
 class ChatBox(models.Model):
     ma_tin_nhan = models.AutoField(primary_key=True, db_column='MaTinNhan')
@@ -239,6 +255,9 @@ class ChatBox(models.Model):
     class Meta:
         managed = False
         db_table = 'chatbox'
+
+    def __str__(self):
+        return f"TinNhan {self.ma_tin_nhan}"
 
 
 class ThanhToan(models.Model):
@@ -257,6 +276,9 @@ class ThanhToan(models.Model):
         managed = False
         db_table = 'thanhtoan'
 
+    def __str__(self):
+        return f"ThanhToan {self.ma_thanh_toan}"
+
 
 class VanChuyen(models.Model):
     ma_van_chuyen = models.AutoField(primary_key=True, db_column='MaVanChuyen')
@@ -273,3 +295,6 @@ class VanChuyen(models.Model):
     class Meta:
         managed = False
         db_table = 'vanchuyen'
+
+    def __str__(self):
+        return f"VanChuyen {self.ma_van_chuyen}"

@@ -1,9 +1,11 @@
 {% extends 'app/base.html' %}
 {% load static %}
-{% block main_content %}
 
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'app/css/ChiTietSanPham.css' %}">
+{% endblock %}
 
+{% block main_content %}
 <section class="detail-page">
     <div class="detail-container">
 
@@ -69,18 +71,26 @@
                 </div>
 
                 <div class="detail-actions">
-                    <button type="button" class="btn-buy" id="btnBuyNow">
+                    <button
+                        type="button"
+                        class="btn-buy"
+                        id="btnBuyNow"
+                    >
                         Mua ngay
                     </button>
 
-                    <form method="post" action="#">
-                        {% csrf_token %}
-                        <input type="hidden" name="quantity" id="cartQuantity" value="1">
-                        <button type="button" class="btn-cart" id="btnAddCart">
-                            Thêm vào giỏ hàng
-                        </button>
-                    </form>
+                    <button
+                        type="button"
+                        class="btn-cart"
+                        id="btnAddCart"
+                        data-mabanh="{{ product.MaBanh }}"
+                        data-soluongton="{{ product.SoLuongTon }}"
+                    >
+                        Thêm vào giỏ hàng
+                    </button>
                 </div>
+
+                <p id="detailMessage" class="detail-message"></p>
 
                 <div class="detail-service">
                     <div>Giao hàng nhanh</div>
@@ -95,12 +105,12 @@
             <div class="related-card">
                 <a href="{% url 'product_detail' item.MaBanh %}" class="related-link">
                     {% if item.HinhAnh %}
-                     <img src="{% static 'app/images/' %}{{ item.HinhAnh }}" alt="{{ item.TenBanh }}">
-                     {% else %}
-                     <img src="{% static 'app/images/looogoo.png' %}" alt="{{ item.TenBanh }}">
-                     {% endif %}
-                     <h3>{{ item.TenBanh }}</h3>
-                     <p class="related-price">{{ item.Gia }} đ</p>
+                        <img src="{% static 'app/images/' %}{{ item.HinhAnh }}" alt="{{ item.TenBanh }}">
+                    {% else %}
+                        <img src="{% static 'app/images/looogoo.png' %}" alt="{{ item.TenBanh }}">
+                    {% endif %}
+                    <h3>{{ item.TenBanh }}</h3>
+                    <p class="related-price">{{ item.Gia }} đ</p>
                 </a>
 
                 <div class="related-action">
@@ -124,7 +134,7 @@
 
 <div id="buyNowModal" class="buy-modal">
     <div class="buy-modal-content">
-        <button class="buy-modal-close" onclick="closeBuyNowModal()">×</button>
+        <button class="buy-modal-close" type="button" id="closeBuyNowModal">×</button>
 
         <h2 class="buy-modal-title">Mua Ngay</h2>
 
@@ -157,5 +167,4 @@
 </div>
 
 <script src="{% static 'app/js/ChiTietSanPham.js' %}"></script>
-
 {% endblock %}

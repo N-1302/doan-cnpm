@@ -20,9 +20,17 @@ urlpatterns = [
     path('dat-lai-mat-khau/', views.dat_lai_mat_khau, name='dat_lai_mat_khau'),
 
     # Giỏ hàng / thanh toán
+    path('gio-hang/', views.gio_hang, name='gio_hang'),
     path('cart/', views.cart, name='cart'),
     path('checkout/', views.checkout, name='checkout'),
     path('update_item/', views.updateItem, name='update_item'),
+
+    # API giỏ hàng
+    path('api/cart/', views.api_cart, name='api_cart'),
+    path('api/cart/add/', views.them_vao_gio, name='them_vao_gio'),
+    path('api/cart/update/', views.api_cart_update, name='api_cart_update'),
+    path('api/cart/remove/', views.api_cart_remove, name='api_cart_remove'),
+    path('api/dat-hang/', views.dat_hang, name='dat_hang'),
 
     # Admin
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
@@ -40,8 +48,6 @@ urlpatterns = [
     path('mo-tai-khoan/<int:mataikhoan>/', views.mo_tai_khoan, name='mo_tai_khoan'),
     path('thong-ke/', views.thong_ke, name='thong_ke'),
     path('admin/chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang_admin, name='chi_tiet_don_hang_admin'),
-
-path('thong-ke/', views.thong_ke, name='thong_ke'),
 
     # Các trang tĩnh
     path('lien-he/', views.lien_he, name='lien_he'),
