@@ -9,6 +9,14 @@ document.addEventListener("DOMContentLoaded", function () {
         return Number(value || 0).toLocaleString("vi-VN") + " đ";
     }
 
+    function isUserLoggedIn() {
+        const body = document.body;
+        if (!body) return false;
+
+        const userId = body.dataset.user || body.dataset.userId || body.dataset.loggedIn;
+        return !!(userId && String(userId).trim() !== "");
+    }
+
     function getCart() {
         try {
             return JSON.parse(localStorage.getItem("cart")) || [];
@@ -20,6 +28,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function saveCart(cart) {
         localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    function clearCart() {
+        localStorage.removeItem("cart");
     }
 
     function updateSummary(cart) {
@@ -44,9 +56,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderCart() {
-        const cart = getCart();
-
         if (!gioHangTableBody) return;
+
+        if (!isUserLoggedIn()) {
+            clearCart();
+            renderEmptyTable();
+            if (gioHangEmpty) gioHangEmpty.style.display = "block";
+            updateSummary([]);
+            return;
+        }
+
+        const cart = getCart();
 
         if (cart.length === 0) {
             renderEmptyTable();
@@ -112,6 +132,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         minusButtons.forEach(button => {
             button.addEventListener("click", function () {
+                if (!isUserLoggedIn()) {
+                    clearCart();
+                    renderCart();
+                    return;
+                }
+
                 const index = Number(this.dataset.index);
                 const cart = getCart();
 
@@ -130,6 +156,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         plusButtons.forEach(button => {
             button.addEventListener("click", function () {
+                if (!isUserLoggedIn()) {
+                    clearCart();
+                    renderCart();
+                    return;
+                }
+
                 const index = Number(this.dataset.index);
                 const cart = getCart();
 
@@ -144,6 +176,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         removeButtons.forEach(button => {
             button.addEventListener("click", function () {
+                if (!isUserLoggedIn()) {
+                    clearCart();
+                    renderCart();
+                    return;
+                }
+
                 const index = Number(this.dataset.index);
                 const cart = getCart();
 

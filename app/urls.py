@@ -24,7 +24,6 @@ urlpatterns = [
     path('gio-hang/', views.gio_hang, name='gio_hang'),
     path('cart/', views.cart, name='cart'),
     path('checkout/', views.checkout, name='checkout'),
-    path('update_item/', views.updateItem, name='update_item'),
 
     # API giỏ hàng
     path('api/cart/', views.api_cart, name='api_cart'),
@@ -32,6 +31,8 @@ urlpatterns = [
     path('api/cart/update/', views.api_cart_update, name='api_cart_update'),
     path('api/cart/remove/', views.api_cart_remove, name='api_cart_remove'),
     path('api/dat-hang/', views.dat_hang, name='dat_hang'),
+    path('api/kiem-tra-khuyen-mai/', views.api_kiem_tra_khuyen_mai, name='api_kiem_tra_khuyen_mai'),
+    path('api/danh-sach-khuyen-mai/', views.api_danh_sach_khuyen_mai, name='api_danh_sach_khuyen_mai'),
 
     # Admin
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),

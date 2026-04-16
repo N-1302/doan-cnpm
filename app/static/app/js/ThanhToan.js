@@ -3,9 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const tongSanPhamEl = document.getElementById("tongSanPhamThanhToan");
     const tamTinhEl = document.getElementById("tamTinhThanhToan");
     const phiVanChuyenEl = document.getElementById("phiVanChuyen");
+    const tienGiamGiaEl = document.getElementById("tienGiamGia");
     const tongCongEl = document.getElementById("tongCongThanhToan");
     const btnDatHang = document.getElementById("btnDatHang");
     const thanhtoanMessage = document.getElementById("thanhtoanMessage");
+    const saleList = document.getElementById("saleList");
+    const khuyenMaiMessage = document.getElementById("khuyenMaiMessage");
 
     const hoTenInput = document.getElementById("hoTen");
     const soDienThoaiInput = document.getElementById("soDienThoai");
@@ -14,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const chuyenKhoanBox = document.getElementById("chuyenKhoanBox");
     const viDienTuBox = document.getElementById("viDienTuBox");
+
+    let khuyenMaiDaApDung = null;
 
     function formatCurrency(value) {
         return Number(value || 0).toLocaleString("vi-VN") + " đ";
@@ -35,18 +40,37 @@ document.addEventListener("DOMContentLoaded", function () {
         thanhtoanMessage.classList.add(type);
     }
 
-    function updateSummary(cart) {
-        const tongSanPham = cart.reduce((sum, item) => sum + Number(item.soLuong || 0), 0);
-        const tamTinh = cart.reduce((sum, item) => {
+    function showKhuyenMaiMessage(message, type = "error") {
+        if (!khuyenMaiMessage) return;
+        khuyenMaiMessage.textContent = message;
+        khuyenMaiMessage.classList.remove("success", "error");
+        khuyenMaiMessage.classList.add(type);
+    }
+
+    function tinhPhiVanChuyen(tamTinh) {
+        if (tamTinh <= 0) return 0;
+        if (tamTinh < 800000) return 30000;
+        return 15000;
+    }
+
+    function tinhTamTinh(cart) {
+        return cart.reduce((sum, item) => {
             return sum + Number(item.gia || 0) * Number(item.soLuong || 0);
         }, 0);
-        const phiVanChuyen = 0;
-        const tongCong = tamTinh + phiVanChuyen;
+    }
+
+    function updateSummary(cart) {
+        const tongSanPham = cart.reduce((sum, item) => sum + Number(item.soLuong || 0), 0);
+        const tamTinh = tinhTamTinh(cart);
+        const phiVanChuyen = tinhPhiVanChuyen(tamTinh);
+        const tienGiam = khuyenMaiDaApDung ? Number(khuyenMaiDaApDung.tien_giam || 0) : 0;
+        const tongCong = tamTinh - tienGiam + phiVanChuyen;
 
         if (tongSanPhamEl) tongSanPhamEl.textContent = tongSanPham;
         if (tamTinhEl) tamTinhEl.textContent = formatCurrency(tamTinh);
         if (phiVanChuyenEl) phiVanChuyenEl.textContent = formatCurrency(phiVanChuyen);
-        if (tongCongEl) tongCongEl.textContent = formatCurrency(tongCong);
+        if (tienGiamGiaEl) tienGiamGiaEl.textContent = formatCurrency(tienGiam);
+        if (tongCongEl) tongCongEl.textContent = formatCurrency(tongCong < 0 ? 0 : tongCong);
     }
 
     function renderOrderList() {
@@ -114,6 +138,85 @@ document.addEventListener("DOMContentLoaded", function () {
         return "";
     }
 
+    async function apDungKhuyenMaiTheoMa(maGiamGia) {
+        const cart = getCart();
+        const tamTinh = tinhTamTinh(cart);
+
+        try {
+            const response = await fetch("/api/kiem-tra-khuyen-mai/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": typeof csrftoken !== "undefined" ? csrftoken : ""
+                },
+                body: JSON.stringify({
+                    ma_giam_gia: maGiamGia,
+                    tam_tinh: tamTinh
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                khuyenMaiDaApDung = {
+                    ...result,
+                    ma_giam_gia: maGiamGia
+                };
+                showKhuyenMaiMessage(
+                    `🎉 Bạn đã tiết kiệm được ${formatCurrency(result.tien_giam)}`,
+                    "success"
+                );
+            } else {
+                khuyenMaiDaApDung = null;
+                showKhuyenMaiMessage(result.message || "Không áp dụng được mã giảm giá", "error");
+            }
+
+            updateSummary(cart);
+        } catch (error) {
+            console.error(error);
+            khuyenMaiDaApDung = null;
+            showKhuyenMaiMessage("Có lỗi xảy ra khi kiểm tra mã giảm giá", "error");
+            updateSummary(cart);
+        }
+    }
+
+    async function loadDanhSachKhuyenMai() {
+        if (!saleList) return;
+
+        try {
+            const response = await fetch("/api/danh-sach-khuyen-mai/");
+            const result = await response.json();
+
+            if (!result.success || !Array.isArray(result.items) || result.items.length === 0) {
+                saleList.innerHTML = `<div class="thanhtoan-empty">Hiện chưa có mã giảm giá</div>`;
+                return;
+            }
+
+            saleList.innerHTML = result.items.map(item => `
+                <div class="sale-item">
+                    <div class="sale-item-left">
+                        <strong>${item.ten_khuyen_mai || item.ma_giam_gia}</strong>
+                        <span>Mã: ${item.ma_giam_gia}</span>
+                        <small>Giảm ${item.phan_tram_giam}%${item.dieu_kien_ap_dung ? " • Đơn từ " + Number(item.dieu_kien_ap_dung).toLocaleString("vi-VN") + " đ" : ""}</small>
+                    </div>
+                    <button type="button" class="sale-select-btn" data-code="${item.ma_giam_gia}">
+                        Chọn
+                    </button>
+                </div>
+            `).join("");
+
+            saleList.querySelectorAll(".sale-select-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const code = this.getAttribute("data-code");
+                    apDungKhuyenMaiTheoMa(code);
+                });
+            });
+        } catch (error) {
+            console.error(error);
+            saleList.innerHTML = `<div class="thanhtoan-empty">Không tải được mã giảm giá</div>`;
+        }
+    }
+
     async function submitOrder() {
         const error = validateForm();
         if (error) {
@@ -121,6 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        const cart = getCart();
         const phuongThucThanhToan =
             document.querySelector('input[name="phuongThucThanhToan"]:checked')?.value || "COD";
 
@@ -128,9 +232,17 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector('input[name="viDienTu"]:checked')?.value || "";
 
         const payload = {
+            ho_ten: hoTenInput.value.trim(),
+            so_dien_thoai: soDienThoaiInput.value.trim(),
             dia_chi: diaChiInput.value.trim(),
+            ghi_chu: ghiChuInput ? ghiChuInput.value.trim() : "",
             phuong_thuc_thanh_toan: phuongThucThanhToan,
-            vi_dien_tu: phuongThucThanhToan === "Ví điện tử" ? viDienTu : ""
+            vi_dien_tu: phuongThucThanhToan === "Ví điện tử" ? viDienTu : "",
+            ma_giam_gia: khuyenMaiDaApDung ? khuyenMaiDaApDung.ma_giam_gia : "",
+            cart: cart.map(item => ({
+                ma_banh: Number(item.maBanh || 0),
+                so_luong: Number(item.soLuong || 0)
+            }))
         };
 
         const oldText = btnDatHang.textContent;
@@ -152,8 +264,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (result.success) {
                 showMessage(`Đặt hàng thành công. Mã đơn hàng: #${result.ma_don_hang}`, "success");
-
                 localStorage.removeItem("cart");
+                khuyenMaiDaApDung = null;
 
                 btnDatHang.classList.remove("is-loading");
                 btnDatHang.classList.add("is-success");
@@ -189,4 +301,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     togglePaymentBoxes();
     renderOrderList();
+    loadDanhSachKhuyenMai();
 });

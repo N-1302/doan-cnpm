@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}?v=10">
+<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}?v=12">
 {% endblock %}
 
 {% block main_content %}
@@ -116,6 +116,15 @@
                         <div class="thanhtoan-loading">Đang tải đơn hàng...</div>
                     </div>
 
+                    <div class="thanhtoan-promo-box">
+                        <label>Mã giảm giá</label>
+                        <div id="saleList" class="thanhtoan-sale-list">
+                            <div class="thanhtoan-loading">Đang tải mã giảm giá...</div>
+                        </div>
+                    </div>
+                    <p id="khuyenMaiMessage" class="thanhtoan-message"></p>
+                </div>
+
                     <div class="thanhtoan-summary-box">
                         <div class="thanhtoan-summary-row">
                             <span>Tổng sản phẩm</span>
@@ -130,6 +139,11 @@
                         <div class="thanhtoan-summary-row">
                             <span>Phí vận chuyển</span>
                             <strong id="phiVanChuyen">0 đ</strong>
+                        </div>
+
+                        <div class="thanhtoan-summary-row">
+                            <span>Giảm giá</span>
+                            <strong id="tienGiamGia">0 đ</strong>
                         </div>
 
                         <div class="thanhtoan-summary-total">
@@ -153,5 +167,5 @@
     </div>
 </section>
 
-<script src="{% static 'app/js/ThanhToan.js' %}?v=10"></script>
+<script src="{% static 'app/js/ThanhToan.js' %}"></script>
 {% endblock %}

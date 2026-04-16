@@ -1,4 +1,3 @@
-from urllib import request
 from django.db import connection, transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -14,7 +13,7 @@ import json
 
 from .models import (
     TaiKhoan, LoaiBanh, Banh, DonHang, KhuyenMai,
-    ChiTietDonHang, GioHang, ChiTietGioHang
+    ChiTietDonHang, GioHang, ChiTietGioHang, ThanhToan
 )
 
 
@@ -83,11 +82,13 @@ def category(request):
 
     return render(request, 'app/category.html', {'categories': categories})
 
+
 def new_collection(request):
     ds_banh_moi = Banh.objects.all().order_by('-ma_banh')[:8]
     return render(request, 'app/newcollection.html', {
         'new_collection': ds_banh_moi
     })
+
 
 def dat_lai_mat_khau(request):
     ma_tai_khoan = request.session.get('reset_ma_tai_khoan')
@@ -526,13 +527,11 @@ def api_cart_update(request):
             if item.so_luong >= item.ma_banh.so_luong_ton:
                 return JsonResponse({'success': False, 'message': 'Số lượng vượt quá tồn kho'})
             item.so_luong += 1
-
         elif action == 'minus':
             item.so_luong -= 1
             if item.so_luong <= 0:
                 item.delete()
                 return JsonResponse({'success': True})
-
         else:
             return JsonResponse({'success': False, 'message': 'Hành động không hợp lệ'})
 
@@ -629,6 +628,7 @@ def gio_hang(request):
 def cart(request):
     return redirect('gio_hang')
 
+
 def checkout(request):
     ma_tai_khoan = request.session.get('ma_tai_khoan')
     if not ma_tai_khoan:
@@ -664,7 +664,6 @@ def checkout(request):
                 FROM chitietgiohang ct
                 INNER JOIN banh b ON ct.MaBanh = b.MaBanh
                 WHERE ct.MaGioHang = %s
-                ORDER BY ct.MaBanh ASC
             """, [ma_gio_hang])
 
             rows = cursor.fetchall()
@@ -681,25 +680,117 @@ def checkout(request):
                 tong_so_luong += row[3]
                 tong_tien += float(row[5])
 
+    phi_van_chuyen = tinh_phi_ship(tong_tien)
+    tong_thanh_toan = tong_tien + phi_van_chuyen
+
     context.update({
         'checkout_items': items,
         'tong_so_luong': tong_so_luong,
         'tong_tien': tong_tien,
+        'phi_van_chuyen': phi_van_chuyen,
+        'tong_thanh_toan': tong_thanh_toan,
     })
 
     return render(request, 'app/ThanhToan.html', context)
 
 
-def updateItem(request):
-    return JsonResponse({
-        'success': False,
-        'message': 'Hãy dùng api_cart_update hoặc them_vao_gio theo MySQL'
-    })
+# =========================
+# KHUYẾN MÃI
+# =========================
+
+def tinh_phi_ship(tong):
+    if tong <= 0:
+        return 0
+    elif tong < 800000:
+        return 30000
+    return 15000
+
+
+def ap_dung_khuyen_mai(tong, ma):
+    if not ma:
+        return {'success': False, 'message': 'Chưa nhập mã'}
+
+    km = KhuyenMai.objects.filter(ma_giam_gia__iexact=ma).first()
+    if not km:
+        return {'success': False, 'message': 'Mã không tồn tại'}
+
+    if km.so_luong is not None and km.so_luong <= 0:
+        return {'success': False, 'message': 'Mã đã hết lượt'}
+
+    if km.trang_thai and str(km.trang_thai).strip().lower() not in ['còn', 'con', 'đang áp dụng', 'dang ap dung', 'active']:
+        return {'success': False, 'message': 'Mã không khả dụng'}
+
+    giam = tong * float(km.phan_tram_giam or 0) / 100
+
+    return {
+        'success': True,
+        'khuyen_mai': km,
+        'tien_giam': giam,
+        'phan_tram_giam': float(km.phan_tram_giam or 0),
+        'ma_giam_gia': km.ma_giam_gia
+    }
+
+
+def api_kiem_tra_khuyen_mai(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    try:
+        data = json.loads(request.body or '{}')
+        ma = data.get('ma_giam_gia')
+        tong = float(data.get('tam_tinh', 0))
+
+        kq = ap_dung_khuyen_mai(tong, ma)
+        if not kq['success']:
+            return JsonResponse(kq)
+
+        phi = tinh_phi_ship(tong)
+        tong_tt = tong - kq['tien_giam'] + phi
+
+        return JsonResponse({
+            'success': True,
+            'ma_giam_gia': kq['ma_giam_gia'],
+            'phan_tram_giam': kq['phan_tram_giam'],
+            'tien_giam': kq['tien_giam'],
+            'tong_thanh_toan': tong_tt
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+def api_danh_sach_khuyen_mai(request):
+    try:
+        ds = KhuyenMai.objects.filter(so_luong__gt=0).order_by('-ma_khuyen_mai')
+
+        data = []
+        for km in ds:
+            if km.trang_thai and str(km.trang_thai).strip().lower() not in ['còn', 'con', 'đang áp dụng', 'dang ap dung', 'active']:
+                continue
+
+            data.append({
+                'ma_giam_gia': km.ma_giam_gia,
+                'ten_khuyen_mai': km.ten_khuyen_mai,
+                'phan_tram_giam': float(km.phan_tram_giam or 0),
+                'dieu_kien_ap_dung': km.dieu_kien_ap_dung or '',
+                'so_luong': km.so_luong or 0,
+                'trang_thai': km.trang_thai or ''
+            })
+
+        return JsonResponse({
+            'success': True,
+            'items': data
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        })
 
 
 # =========================
 # ĐẶT HÀNG (CHECKOUT)
 # =========================
+
 def dat_hang(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Phương thức không hợp lệ'})
@@ -709,7 +800,6 @@ def dat_hang(request):
         return JsonResponse({'success': False, 'message': 'Vui lòng đăng nhập để đặt hàng'})
 
     try:
-        # nhận cả JSON lẫn form submit thường
         if request.content_type and 'application/json' in request.content_type:
             data = json.loads(request.body or '{}')
         else:
@@ -718,80 +808,92 @@ def dat_hang(request):
         dia_chi = str(data.get('dia_chi', '')).strip()
         phuong_thuc_thanh_toan = str(data.get('phuong_thuc_thanh_toan', 'COD')).strip()
         vi_dien_tu = str(data.get('vi_dien_tu', '')).strip()
+        ma_giam_gia = str(data.get('ma_giam_gia', '')).strip()
+        cart = data.get('cart', [])
 
         if not dia_chi:
             return JsonResponse({'success': False, 'message': 'Vui lòng nhập địa chỉ giao hàng'})
 
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT MaGioHang
-                FROM giohang
-                WHERE MaTaiKhoan = %s
-                  AND TrangThaiGioHang = 'Đang chọn'
-                LIMIT 1
-            """, [ma_tai_khoan])
-            gio_hang_row = cursor.fetchone()
-
-        if not gio_hang_row:
-            return JsonResponse({'success': False, 'message': 'Không tìm thấy giỏ hàng'})
-
-        ma_gio_hang = gio_hang_row[0]
-
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT 
-                    ct.MaBanh,
-                    b.TenBanh,
-                    b.SoLuongTon,
-                    ct.SoLuong,
-                    ct.DonGia,
-                    ct.ThanhTien
-                FROM chitietgiohang ct
-                INNER JOIN banh b ON ct.MaBanh = b.MaBanh
-                WHERE ct.MaGioHang = %s
-            """, [ma_gio_hang])
-            chi_tiet = cursor.fetchall()
-
-        if not chi_tiet:
+        if not isinstance(cart, list) or len(cart) == 0:
             return JsonResponse({'success': False, 'message': 'Giỏ hàng đang trống'})
 
-        tong_tien = 0
-        for item in chi_tiet:
-            ma_banh, ten_banh, so_luong_ton, so_luong, don_gia, thanh_tien = item
-            if so_luong > so_luong_ton:
+        tong_tam_tinh = 0
+        chi_tiet_hop_le = []
+
+        for item in cart:
+            ma_banh = item.get('ma_banh')
+            so_luong = item.get('so_luong', 1)
+
+            try:
+                ma_banh = int(ma_banh)
+                so_luong = int(so_luong)
+            except (TypeError, ValueError):
+                return JsonResponse({'success': False, 'message': 'Dữ liệu sản phẩm không hợp lệ'})
+
+            banh = Banh.objects.filter(ma_banh=ma_banh).first()
+            if not banh:
+                return JsonResponse({'success': False, 'message': f'Không tìm thấy sản phẩm mã {ma_banh}'})
+
+            if so_luong <= 0:
+                return JsonResponse({'success': False, 'message': f'Số lượng sản phẩm "{banh.ten_banh}" không hợp lệ'})
+
+            if so_luong > banh.so_luong_ton:
                 return JsonResponse({
                     'success': False,
-                    'message': f'Sản phẩm "{ten_banh}" không đủ tồn kho'
+                    'message': f'Sản phẩm "{banh.ten_banh}" không đủ tồn kho'
                 })
-            tong_tien += float(thanh_tien)
+
+            don_gia = float(banh.gia)
+            thanh_tien = don_gia * so_luong
+            tong_tam_tinh += thanh_tien
+
+            chi_tiet_hop_le.append({
+                'ma_banh': ma_banh,
+                'so_luong': so_luong,
+                'don_gia': don_gia,
+                'thanh_tien': thanh_tien,
+                'banh_obj': banh
+            })
+
+        phi_ship = tinh_phi_ship(tong_tam_tinh)
+
+        khuyen_mai = None
+        tien_giam = 0
+
+        if ma_giam_gia:
+            ket_qua_km = ap_dung_khuyen_mai(tong_tam_tinh, ma_giam_gia)
+            if not ket_qua_km['success']:
+                return JsonResponse(ket_qua_km)
+
+            khuyen_mai = ket_qua_km['khuyen_mai']
+            tien_giam = ket_qua_km['tien_giam']
+
+        tong_tien = tong_tam_tinh - tien_giam + phi_ship
+        if tong_tien < 0:
+            tong_tien = 0
 
         with transaction.atomic():
             don_hang = DonHang.objects.create(
                 ma_tai_khoan_id=ma_tai_khoan,
-                ma_khuyen_mai=None,
+                ma_khuyen_mai=khuyen_mai,
                 ngay_dat=timezone.now(),
                 tong_tien=tong_tien,
                 dia_chi_giao_hang=dia_chi,
                 trang_thai_don_hang='Chờ xử lý'
             )
 
-            for item in chi_tiet:
-                ma_banh, ten_banh, so_luong_ton, so_luong, don_gia, thanh_tien = item
-
+            for item in chi_tiet_hop_le:
                 ChiTietDonHang.objects.create(
                     ma_don_hang=don_hang,
-                    ma_banh_id=ma_banh,
-                    so_luong=so_luong,
-                    don_gia=don_gia,
-                    thanh_tien=thanh_tien
+                    ma_banh_id=item['ma_banh'],
+                    so_luong=item['so_luong'],
+                    don_gia=item['don_gia'],
+                    thanh_tien=item['thanh_tien']
                 )
 
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        UPDATE banh
-                        SET SoLuongTon = SoLuongTon - %s
-                        WHERE MaBanh = %s
-                    """, [so_luong, ma_banh])
+                banh = item['banh_obj']
+                banh.so_luong_ton -= item['so_luong']
+                banh.save(update_fields=['so_luong_ton'])
 
             if phuong_thuc_thanh_toan == 'COD':
                 phuong_thuc_luu = 'COD'
@@ -800,7 +902,12 @@ def dat_hang(request):
                 phuong_thuc_luu = 'Chuyển khoản'
                 trang_thai_thanh_toan = 'Chờ thanh toán'
             elif phuong_thuc_thanh_toan == 'Ví điện tử':
-                phuong_thuc_luu = vi_dien_tu if vi_dien_tu else 'Ví điện tử'
+                if vi_dien_tu == 'MoMo':
+                    phuong_thuc_luu = 'MoMo'
+                elif vi_dien_tu == 'ZaloPay':
+                    phuong_thuc_luu = 'ZaloPay'
+                else:
+                    phuong_thuc_luu = 'Ví điện tử'
                 trang_thai_thanh_toan = 'Chờ thanh toán'
             else:
                 phuong_thuc_luu = 'COD'
@@ -812,18 +919,19 @@ def dat_hang(request):
                 trang_thai=trang_thai_thanh_toan
             )
 
-            with connection.cursor() as cursor:
-                cursor.execute("DELETE FROM chitietgiohang WHERE MaGioHang = %s", [ma_gio_hang])
-                cursor.execute("""
-                    UPDATE giohang
-                    SET TrangThaiGioHang = 'Đang chọn'
-                    WHERE MaGioHang = %s
-                """, [ma_gio_hang])
+            if khuyen_mai and khuyen_mai.so_luong is not None:
+                khuyen_mai.so_luong -= 1
+                khuyen_mai.save(update_fields=['so_luong'])
 
         return JsonResponse({
             'success': True,
             'message': 'Đặt hàng thành công',
-            'ma_don_hang': don_hang.ma_don_hang
+            'ma_don_hang': don_hang.ma_don_hang,
+            'tam_tinh': tong_tam_tinh,
+            'phi_ship': phi_ship,
+            'tien_giam': tien_giam,
+            'tong_tien': tong_tien,
+            'ma_giam_gia': ma_giam_gia
         })
 
     except Exception as e:
@@ -923,6 +1031,7 @@ def tin_tuc(request):
 # =========================
 # ADMIN - BÁNH
 # =========================
+
 def quan_ly_banh(request):
     if request.session.get('ma_quyen') != 1:
         return redirect('home')
@@ -1131,7 +1240,6 @@ def thong_ke(request):
             if item['thang']:
                 chart_labels.append(item['thang'].strftime('%m/%Y'))
                 chart_data.append(float(item['tong'] or 0))
-
     else:
         filter_type = 'day'
 

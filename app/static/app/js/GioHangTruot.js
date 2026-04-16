@@ -11,16 +11,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalBox = document.getElementById("gioHangTruotTongTien");
     const drawerCount = document.querySelector(".giohangtruot-count");
 
+    function isUserLoggedIn() {
+        const bodyUser = document.body?.dataset?.user || "";
+        const globalUser = typeof user !== "undefined" ? String(user || "") : "";
+        return bodyUser.trim() !== "" || globalUser.trim() !== "";
+    }
+
     function getCart() {
-        return JSON.parse(localStorage.getItem("cart")) || [];
+        try {
+            return JSON.parse(localStorage.getItem("cart")) || [];
+        } catch (error) {
+            console.error("Lỗi đọc giỏ hàng:", error);
+            return [];
+        }
     }
 
     function saveCart(cart) {
         localStorage.setItem("cart", JSON.stringify(cart));
     }
 
+    function clearCart() {
+        localStorage.removeItem("cart");
+    }
+
     function formatPrice(price) {
-        return Number(price).toLocaleString("vi-VN") + " đ";
+        return Number(price || 0).toLocaleString("vi-VN") + " đ";
     }
 
     function openCartDrawer(event) {
@@ -30,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cartDrawer.classList.add("active");
         cartOverlay.classList.add("active");
         document.body.classList.add("giohangtruot-open");
-        window.openCartDrawer = openCartDrawer;
     }
 
     function closeCartDrawer() {
@@ -85,12 +99,12 @@ document.addEventListener("DOMContentLoaded", function () {
             html += `
                 <div class="giohangtruot-item">
                     <div class="giohangtruot-item-left">
-                        <img src="${item.hinhAnh}" alt="${item.tenBanh}" class="giohangtruot-item-img">
+                        <img src="${item.hinhAnh || ""}" alt="${item.tenBanh || "Sản phẩm"}" class="giohangtruot-item-img">
                     </div>
 
                     <div class="giohangtruot-item-center">
-                        <h4 class="giohangtruot-item-name">${item.tenBanh} <span>(Số lượng ${qty})</span></h4>
-                        <p class="giohangtruot-item-note">Thêm nội dung đặt bánh</p>
+                        <h4 class="giohangtruot-item-name">${item.tenBanh || "Sản phẩm"} <span>(Số lượng ${qty})</span></h4>
+                        <p class="giohangtruot-item-note">${item.noiDung || "Thêm nội dung đặt bánh"}</p>
 
                         <div class="giohangtruot-qty-box">
                             <button class="qty-btn minus-btn" data-index="${index}">−</button>
@@ -134,44 +148,47 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".minus-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
                 const index = Number(this.dataset.index);
-                let cart = getCart();
+                const cart = getCart();
 
                 if (!cart[index]) return;
 
-                if (cart[index].soLuong > 1) {
-                    cart[index].soLuong -= 1;
+                if (Number(cart[index].soLuong || 1) > 1) {
+                    cart[index].soLuong = Number(cart[index].soLuong || 1) - 1;
                 } else {
                     cart.splice(index, 1);
                 }
 
                 saveCart(cart);
                 renderCart();
+                document.dispatchEvent(new CustomEvent("cartUpdated"));
             });
         });
 
         document.querySelectorAll(".plus-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
                 const index = Number(this.dataset.index);
-                let cart = getCart();
+                const cart = getCart();
 
                 if (!cart[index]) return;
 
-                cart[index].soLuong += 1;
+                cart[index].soLuong = Number(cart[index].soLuong || 1) + 1;
                 saveCart(cart);
                 renderCart();
+                document.dispatchEvent(new CustomEvent("cartUpdated"));
             });
         });
 
         document.querySelectorAll(".giohangtruot-remove-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
                 const index = Number(this.dataset.index);
-                let cart = getCart();
+                const cart = getCart();
 
                 if (!cart[index]) return;
 
                 cart.splice(index, 1);
                 saveCart(cart);
                 renderCart();
+                document.dispatchEvent(new CustomEvent("cartUpdated"));
             });
         });
     }
@@ -192,5 +209,10 @@ document.addEventListener("DOMContentLoaded", function () {
         renderCart();
     });
 
-    renderCart();
+    if (!isUserLoggedIn()) {
+        clearCart();
+        renderEmptyCart();
+    } else {
+        renderCart();
+    }
 });

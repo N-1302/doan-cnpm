@@ -266,11 +266,13 @@
     padding-right: 4px;
 }
 
-.thanhtoan-order-list::-webkit-scrollbar {
+.thanhtoan-order-list::-webkit-scrollbar,
+.thanhtoan-sale-list::-webkit-scrollbar {
     width: 6px;
 }
 
-.thanhtoan-order-list::-webkit-scrollbar-thumb {
+.thanhtoan-order-list::-webkit-scrollbar-thumb,
+.thanhtoan-sale-list::-webkit-scrollbar-thumb {
     background: #ddd;
     border-radius: 999px;
 }
@@ -337,6 +339,87 @@
     margin-left: 8px;
 }
 
+.thanhtoan-promo-box {
+    margin-bottom: 18px;
+    padding: 16px;
+    border: 1px dashed #e7ccd0;
+    border-radius: 16px;
+    background: #fff8f8;
+}
+
+.thanhtoan-promo-box label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #243247;
+}
+
+.thanhtoan-sale-list {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sale-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #ececec;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.sale-item-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.sale-item-left strong {
+    font-size: 15px;
+    color: #243247;
+    font-weight: 800;
+}
+
+.sale-item-left span {
+    font-size: 14px;
+    color: #c61f2a;
+    font-weight: 700;
+}
+
+.sale-item-left small {
+    font-size: 12px;
+    color: #6d7483;
+}
+
+.sale-select-btn {
+    min-width: 82px;
+    height: 40px;
+    border: none;
+    border-radius: 999px;
+    background: #243247;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.sale-select-btn:hover {
+    background: #192333;
+}
+
+#khuyenMaiMessage {
+    margin-top: 10px;
+    text-align: left;
+    min-height: 20px;
+}
+
 .thanhtoan-summary-box {
     border-top: 1px dashed #ececec;
     border-bottom: 1px dashed #ececec;
@@ -362,6 +445,10 @@
     color: #243247;
     font-size: 16px;
     white-space: nowrap;
+}
+
+#tienGiamGia {
+    color: #118a43;
 }
 
 .thanhtoan-summary-total {
@@ -485,6 +572,15 @@
 
     .thanhtoan-form-grid {
         grid-template-columns: 1fr;
+    }
+
+    .sale-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sale-select-btn {
+        width: 100%;
     }
 }
 
