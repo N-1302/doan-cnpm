@@ -1,0 +1,258 @@
+.my-orders-page {
+    background: #f7f3ea;
+    min-height: 100vh;
+    padding: 40px 0 70px;
+}
+
+.my-orders-container {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.my-orders-head {
+    margin-bottom: 28px;
+}
+
+.my-orders-title {
+    margin: 0 0 10px;
+    font-size: 42px;
+    font-weight: 700;
+    color: #b32025;
+}
+
+.my-orders-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 14px;
+    color: #8c8c8c;
+}
+
+.my-orders-breadcrumb a {
+    color: #8c8c8c;
+    text-decoration: none;
+}
+
+.orders-toolbar {
+    margin-bottom: 20px;
+}
+
+.orders-search-box input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #e4d9c8;
+    border-radius: 999px;
+    padding: 0 20px;
+    outline: none;
+    background: #fff;
+    font-size: 15px;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.order-card {
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    border: 1px solid #f0e4d7;
+}
+
+.order-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #f5ece2;
+    background: #fffaf5;
+}
+
+.order-label {
+    display: block;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.order-code {
+    font-size: 20px;
+    color: #b32025;
+}
+
+.order-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #8a6300;
+}
+
+.status-confirmed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-baking {
+    background: #fce8d5;
+    color: #a65200;
+}
+
+.status-shipping {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.order-card-body {
+    padding: 22px;
+}
+
+.order-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.order-info-item {
+    background: #fff;
+    border: 1px solid #f2e8dc;
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.order-info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-label {
+    display: block;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.info-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2f2f2f;
+    word-break: break-word;
+}
+
+.order-total {
+    color: #b32025;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.order-card-bottom {
+    padding: 0 22px 22px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.order-detail-btn,
+.go-shopping-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    height: 46px;
+    padding: 0 22px;
+    background: #b32025;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    transition: 0.25s ease;
+    border: none;
+}
+
+.order-detail-btn:hover,
+.go-shopping-btn:hover {
+    background: #971b1f;
+    color: #fff;
+}
+
+.empty-orders-box,
+.no-order-result {
+    background: #fff;
+    border-radius: 24px;
+    padding: 50px 24px;
+    text-align: center;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0e4d7;
+}
+
+.empty-orders-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+}
+
+.empty-orders-box h3 {
+    margin-bottom: 10px;
+    color: #b32025;
+}
+
+.empty-orders-box p,
+.no-order-result {
+    color: #666;
+    font-size: 15px;
+}
+
+.breadcrumb-link {
+    color: #9aa3b5;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    font-weight: 500;
+}
+
+.breadcrumb-link:hover {
+    color: #000000;
+    font-weight: 700;
+}
+
+.breadcrumb-current {
+    color: #2f2f2f;
+    font-weight: 700;
+}
+
+@media (max-width: 767px) {
+    .my-orders-title {
+        font-size: 30px;
+    }
+
+    .order-card-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-info-grid {
+        grid-template-columns: 1fr;
+    }
+}

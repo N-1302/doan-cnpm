@@ -3,23 +3,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const gioHangEmpty = document.getElementById("gioHangEmpty");
     const tongSanPhamEl = document.getElementById("tongSanPham");
     const tamTinhEl = document.getElementById("tamTinh");
+    const phiVanChuyenEl = document.getElementById("phiVanChuyen");
     const tongCongEl = document.getElementById("tongCong");
+    const btnThanhToan = document.getElementById("btnThanhToan");
 
     function formatCurrency(value) {
         return Number(value || 0).toLocaleString("vi-VN") + " đ";
+    }
+
+    function tinhPhiVanChuyen(tamTinh) {
+        if (tamTinh <= 0) return 0;
+        if (tamTinh < 800000) return 30000;
+        return 15000;
     }
 
     function isUserLoggedIn() {
         const body = document.body;
         if (!body) return false;
 
-        const userId = body.dataset.user || body.dataset.userId || body.dataset.loggedIn;
-        return !!(userId && String(userId).trim() !== "");
+        const value =
+            body.dataset.loggedIn ||
+            body.dataset.user ||
+            body.dataset.userId ||
+            "";
+
+        return ["true", "1", "yes"].includes(String(value).trim().toLowerCase()) ||
+            (String(value).trim() !== "" &&
+             !["false", "0", "none", "null", "undefined"].includes(String(value).trim().toLowerCase()));
     }
 
     function getCart() {
         try {
-            return JSON.parse(localStorage.getItem("cart")) || [];
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            return Array.isArray(cart) ? cart : [];
         } catch (error) {
             console.error("Lỗi đọc giỏ hàng:", error);
             return [];
@@ -28,10 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function saveCart(cart) {
         localStorage.setItem("cart", JSON.stringify(cart));
-    }
-
-    function clearCart() {
-        localStorage.removeItem("cart");
+        window.dispatchEvent(new Event("cartUpdated"));
     }
 
     function updateSummary(cart) {
@@ -39,10 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const tamTinh = cart.reduce((sum, item) => {
             return sum + Number(item.gia || 0) * Number(item.soLuong || 0);
         }, 0);
+        const phiVanChuyen = tinhPhiVanChuyen(tamTinh);
+        const tongCong = tamTinh + phiVanChuyen;
 
         if (tongSanPhamEl) tongSanPhamEl.textContent = tongSanPham;
         if (tamTinhEl) tamTinhEl.textContent = formatCurrency(tamTinh);
-        if (tongCongEl) tongCongEl.textContent = formatCurrency(tamTinh);
+        if (phiVanChuyenEl) phiVanChuyenEl.textContent = formatCurrency(phiVanChuyen);
+        if (tongCongEl) tongCongEl.textContent = formatCurrency(tongCong);
     }
 
     function renderEmptyTable() {
@@ -57,14 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderCart() {
         if (!gioHangTableBody) return;
-
-        if (!isUserLoggedIn()) {
-            clearCart();
-            renderEmptyTable();
-            if (gioHangEmpty) gioHangEmpty.style.display = "block";
-            updateSummary([]);
-            return;
-        }
 
         const cart = getCart();
 
@@ -90,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 src="${item.hinhAnh || ''}"
                                 alt="${item.tenBanh || 'Sản phẩm'}"
                                 class="giohang-product-img"
+                                onerror="this.src='/static/app/images/no-image.png'"
                             >
                             <div class="giohang-product-info">
                                 <h4>${item.tenBanh || 'Sản phẩm'}</h4>
@@ -126,25 +135,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function bindEvents() {
-        const minusButtons = document.querySelectorAll(".qty-minus");
-        const plusButtons = document.querySelectorAll(".qty-plus");
-        const removeButtons = document.querySelectorAll(".giohang-remove-btn");
-
-        minusButtons.forEach(button => {
+        document.querySelectorAll(".qty-minus").forEach(button => {
             button.addEventListener("click", function () {
-                if (!isUserLoggedIn()) {
-                    clearCart();
-                    renderCart();
-                    return;
-                }
-
                 const index = Number(this.dataset.index);
                 const cart = getCart();
 
                 if (!cart[index]) return;
 
-                if (Number(cart[index].soLuong) > 1) {
-                    cart[index].soLuong = Number(cart[index].soLuong) - 1;
+                if (Number(cart[index].soLuong || 1) > 1) {
+                    cart[index].soLuong = Number(cart[index].soLuong || 1) - 1;
                 } else {
                     cart.splice(index, 1);
                 }
@@ -154,34 +153,21 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        plusButtons.forEach(button => {
+        document.querySelectorAll(".qty-plus").forEach(button => {
             button.addEventListener("click", function () {
-                if (!isUserLoggedIn()) {
-                    clearCart();
-                    renderCart();
-                    return;
-                }
-
                 const index = Number(this.dataset.index);
                 const cart = getCart();
 
                 if (!cart[index]) return;
 
                 cart[index].soLuong = Number(cart[index].soLuong || 1) + 1;
-
                 saveCart(cart);
                 renderCart();
             });
         });
 
-        removeButtons.forEach(button => {
+        document.querySelectorAll(".giohang-remove-btn").forEach(button => {
             button.addEventListener("click", function () {
-                if (!isUserLoggedIn()) {
-                    clearCart();
-                    renderCart();
-                    return;
-                }
-
                 const index = Number(this.dataset.index);
                 const cart = getCart();
 
@@ -191,6 +177,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 saveCart(cart);
                 renderCart();
             });
+        });
+    }
+
+    if (btnThanhToan) {
+        btnThanhToan.addEventListener("click", function () {
+            const cart = getCart();
+
+            if (cart.length === 0) {
+                alert("Giỏ hàng của bạn đang trống.");
+                return;
+            }
+
+            if (!isUserLoggedIn()) {
+                alert("Vui lòng đăng nhập để thanh toán.");
+                window.location.href = "/login/";
+                return;
+            }
+
+            window.location.href = "/thanh-toan/";
         });
     }
 

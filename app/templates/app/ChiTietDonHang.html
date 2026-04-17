@@ -1,0 +1,102 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/ChiTietDonHang.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="order-detail-page">
+  <div class="order-detail-container">
+    <div class="order-detail-head">
+      <h1 class="order-detail-title">Chi tiết đơn hàng</h1>
+        <div class="order-detail-breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Trang chủ</a>
+            <span>›</span>
+            <a href="{% url 'don_hang_cua_toi' %}" class="breadcrumb-link active">Đơn hàng của tôi</a>
+            <span>›</span>
+            <span class="breadcrumb-current">#DH{{ don_hang.MaDonHang }}</span>
+        </div>
+    </div>
+
+    <div class="order-summary-box">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Mã đơn</span>
+          <strong class="summary-value order-code">#DH{{ don_hang.MaDonHang }}</strong>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">Ngày đặt</span>
+          <strong class="summary-value">{{ don_hang.NgayDat|date:"d/m/Y H:i" }}</strong>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">Trạng thái</span>
+          <strong class="summary-value">
+            <span class="detail-order-status
+              {% if don_hang.TrangThaiDonHang == 'Chờ xử lý' %}status-pending
+              {% elif don_hang.TrangThaiDonHang == 'Đã xác nhận' %}status-confirmed
+              {% elif don_hang.TrangThaiDonHang == 'Đang làm bánh' %}status-baking
+              {% elif don_hang.TrangThaiDonHang == 'Đang giao hàng' %}status-shipping
+              {% elif don_hang.TrangThaiDonHang == 'Hoàn thành' %}status-completed
+              {% elif don_hang.TrangThaiDonHang == 'Đã hủy' %}status-cancelled
+              {% endif %}
+            ">
+              {{ don_hang.TrangThaiDonHang }}
+            </span>
+          </strong>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">Tổng tiền</span>
+          <strong class="summary-value total-money">{{ don_hang.TongTien|floatformat:0 }}đ</strong>
+        </div>
+
+        <div class="summary-item full-width">
+          <span class="summary-label">Địa chỉ giao hàng</span>
+          <strong class="summary-value">{{ don_hang.DiaChiGiaoHang }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-products-box">
+      <div class="products-box-head">
+        <h2>Sản phẩm trong đơn</h2>
+        <a href="{% url 'don_hang_cua_toi' %}" class="back-orders-btn">← Quay lại đơn hàng của tôi</a>
+      </div>
+
+      {% if items %}
+        <div class="order-product-list">
+          {% for item in items %}
+          <div class="order-product-item">
+            <div class="order-product-left">
+              <div class="order-product-thumb">
+                <img src="{{ item.HinhAnh }}" alt="{{ item.TenBanh }}">
+              </div>
+
+              <div class="order-product-info">
+                <h3>{{ item.TenBanh }}</h3>
+                <p>Số lượng: {{ item.SoLuong }}</p>
+                <p>Đơn giá: {{ item.DonGia|floatformat:0 }}đ</p>
+              </div>
+            </div>
+
+            <div class="order-product-right">
+              <span class="line-total-label">Thành tiền</span>
+              <strong class="line-total-value">{{ item.ThanhTien|floatformat:0 }}đ</strong>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-detail-box">
+          Không có sản phẩm nào trong đơn hàng này.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'app/js/ChiTietDonHang.js' %}"></script>
+{% endblock %}

@@ -2,12 +2,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const passwordInput = document.getElementById("password");
     const togglePasswordBtn = document.getElementById("togglePassword");
     const eyeIcon = document.getElementById("eyeIcon");
-
     const usernameInput = document.getElementById("username");
     const rememberLogin = document.getElementById("rememberLogin");
     const form = document.getElementById("dangNhapForm");
-
+    const fbBtn = document.getElementById("fbBtn");
     const savedLogin = JSON.parse(localStorage.getItem("dangNhapInfo") || "{}");
+
+    if (fbBtn) {
+    fbBtn.addEventListener("click", function () {
+        alert("Tính năng đăng nhập Facebook đang phát triển 🚧");
+    });
+    }
+
 
     if (savedLogin.username) {
         usernameInput.value = savedLogin.username;

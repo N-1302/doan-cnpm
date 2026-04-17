@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load socialaccount %}
 {% block main_content %}
 
 <link rel="stylesheet" href="{% static 'app/css/DangNhap.css' %}">
@@ -73,12 +74,12 @@
                 </div>
 
                 <div class="dn-socials">
-                    <a href="#" class="dn-social-btn dn-facebook">
+                    <a href="javascript:void(0)" class="dn-social-btn dn-facebook disabled" id="fbBtn">
                         <i class="fa-brands fa-facebook-f"></i>
                         <span>Facebook</span>
                     </a>
 
-                    <a href="#" class="dn-social-btn dn-google">
+                    <a href="{% provider_login_url 'google' process='login' %}" class="dn-social-btn google-btn">
                         <i class="fa-brands fa-google"></i>
                         <span>Google</span>
                     </a>

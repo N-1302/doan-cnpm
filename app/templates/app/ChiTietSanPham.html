@@ -119,6 +119,212 @@
             </div>
         </div>
 
+        <!-- ĐÁNH GIÁ SẢN PHẨM -->
+        <div class="review-section">
+            <div class="review-summary-card">
+                <div class="review-summary-left">
+                    <h2 class="review-section-title">Đánh giá sản phẩm</h2>
+
+                    <div class="review-average-line">
+                        <span class="review-average-score">{{ diem_trung_binh }}</span>
+                        <span class="review-average-text">trên 5</span>
+                    </div>
+
+                    <div class="review-average-stars">
+                        {% if diem_trung_binh >= 1 %}
+                            <span class="filled">★</span>
+                        {% elif diem_trung_binh >= 0.5 %}
+                            <span class="half">★</span>
+                        {% else %}
+                            <span>☆</span>
+                        {% endif %}
+
+                        {% if diem_trung_binh >= 2 %}
+                            <span class="filled">★</span>
+                        {% elif diem_trung_binh >= 1.5 %}
+                            <span class="half">★</span>
+                        {% else %}
+                            <span>☆</span>
+                        {% endif %}
+
+                        {% if diem_trung_binh >= 3 %}
+                            <span class="filled">★</span>
+                        {% elif diem_trung_binh >= 2.5 %}
+                            <span class="half">★</span>
+                        {% else %}
+                            <span>☆</span>
+                        {% endif %}
+
+                        {% if diem_trung_binh >= 4 %}
+                            <span class="filled">★</span>
+                        {% elif diem_trung_binh >= 3.5 %}
+                            <span class="half">★</span>
+                        {% else %}
+                            <span>☆</span>
+                        {% endif %}
+
+                        {% if diem_trung_binh >= 5 %}
+                            <span class="filled">★</span>
+                        {% elif diem_trung_binh >= 4.5 %}
+                            <span class="half">★</span>
+                        {% else %}
+                            <span>☆</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="review-count-text">{{ tong_luot_danh_gia }} lượt đánh giá</div>
+                </div>
+            </div>
+
+            {% if thong_bao_danh_gia %}
+                <div class="review-alert review-alert-success">
+                    {{ thong_bao_danh_gia }}
+                </div>
+            {% endif %}
+
+            {% if loi_danh_gia %}
+                <div class="review-alert review-alert-error">
+                    {{ loi_danh_gia }}
+                </div>
+            {% endif %}
+
+            <div class="review-form-wrap">
+                <h3 class="review-form-title">
+                    {% if danh_gia_cua_toi %}
+                        Chỉnh sửa đánh giá của bạn
+                    {% else %}
+                        Viết đánh giá của bạn
+                    {% endif %}
+                </h3>
+
+                {% if not ma_tai_khoan %}
+                    <div class="review-note-box">
+                        Bạn cần <a href="{% url 'login' %}">đăng nhập</a> để đánh giá sản phẩm.
+                    </div>
+                {% elif not co_the_danh_gia %}
+                    <div class="review-note-box">
+                        Bạn cần mua sản phẩm này trước khi đánh giá.
+                    </div>
+                {% else %}
+                    <form method="post" class="review-form">
+                        {% csrf_token %}
+
+                        <div class="review-form-group">
+                            <label class="review-label">Chọn số sao</label>
+
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="so_sao" value="5"
+                                    {% if danh_gia_cua_toi and danh_gia_cua_toi.SoSao == 5 %}checked{% endif %}>
+                                <label for="star5" title="5 sao">★</label>
+
+                                <input type="radio" id="star4" name="so_sao" value="4"
+                                    {% if danh_gia_cua_toi and danh_gia_cua_toi.SoSao == 4 %}checked{% endif %}>
+                                <label for="star4" title="4 sao">★</label>
+
+                                <input type="radio" id="star3" name="so_sao" value="3"
+                                    {% if danh_gia_cua_toi and danh_gia_cua_toi.SoSao == 3 %}checked{% endif %}>
+                                <label for="star3" title="3 sao">★</label>
+
+                                <input type="radio" id="star2" name="so_sao" value="2"
+                                    {% if danh_gia_cua_toi and danh_gia_cua_toi.SoSao == 2 %}checked{% endif %}>
+                                <label for="star2" title="2 sao">★</label>
+
+                                <input type="radio" id="star1" name="so_sao" value="1"
+                                    {% if danh_gia_cua_toi and danh_gia_cua_toi.SoSao == 1 %}checked{% endif %}>
+                                <label for="star1" title="1 sao">★</label>
+                            </div>
+                        </div>
+
+                        <div class="review-form-group">
+                            <label for="noi_dung" class="review-label">Nội dung đánh giá</label>
+                            <textarea
+                                name="noi_dung"
+                                id="noi_dung"
+                                class="review-textarea"
+                                rows="5"
+                                placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm này..."
+                                required
+                            >{% if danh_gia_cua_toi %}{{ danh_gia_cua_toi.NoiDung }}{% endif %}</textarea>
+                        </div>
+
+                        <button type="submit" class="review-submit-btn">
+                            {% if danh_gia_cua_toi %}
+                                Cập nhật đánh giá
+                            {% else %}
+                                Gửi đánh giá
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="review-filter-wrap">
+                <a href="{% url 'product_detail' product.MaBanh %}"
+                   class="review-filter-btn {% if not review_filter %}active{% endif %}">
+                    Tất cả
+                </a>
+                <a href="{% url 'product_detail' product.MaBanh %}?so_sao=5"
+                   class="review-filter-btn {% if review_filter == '5' %}active{% endif %}">
+                    5 Sao
+                </a>
+                <a href="{% url 'product_detail' product.MaBanh %}?so_sao=4"
+                   class="review-filter-btn {% if review_filter == '4' %}active{% endif %}">
+                    4 Sao
+                </a>
+                <a href="{% url 'product_detail' product.MaBanh %}?so_sao=3"
+                   class="review-filter-btn {% if review_filter == '3' %}active{% endif %}">
+                    3 Sao
+                </a>
+                <a href="{% url 'product_detail' product.MaBanh %}?so_sao=2"
+                   class="review-filter-btn {% if review_filter == '2' %}active{% endif %}">
+                    2 Sao
+                </a>
+                <a href="{% url 'product_detail' product.MaBanh %}?so_sao=1"
+                   class="review-filter-btn {% if review_filter == '1' %}active{% endif %}">
+                    1 Sao
+                </a>
+            </div>
+
+            <div class="review-list-wrap">
+                <h3 class="review-list-title">Danh sách đánh giá</h3>
+
+                {% if reviews %}
+                    <div class="review-list">
+                        {% for review in reviews %}
+                            <div class="review-item">
+                                <div class="review-item-head">
+                                    <div class="review-user-avatar">
+                                        {{ review.HoTen|default:review.TenDangNhap|slice:":1"|upper }}
+                                    </div>
+
+                                    <div class="review-user-info">
+                                        <div class="review-user-name">
+                                            {{ review.HoTen|default:review.TenDangNhap }}
+                                        </div>
+                                        <div class="review-user-stars">
+                                            {% if review.SoSao >= 1 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                            {% if review.SoSao >= 2 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                            {% if review.SoSao >= 3 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                            {% if review.SoSao >= 4 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                            {% if review.SoSao >= 5 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="review-item-content">
+                                    {{ review.NoiDung }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="review-empty">
+                        Chưa có đánh giá phù hợp với bộ lọc này.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="related-grid">
             {% for item in related_products %}
             <div class="related-card">
@@ -202,7 +408,6 @@
     </div>
 </div>
 
-<!-- hidden data cho JS -->
 <input type="hidden" id="detailCheckoutUrl" value="{% url 'checkout' %}">
 <input type="hidden" id="currentProductId" value="{{ product.MaBanh }}">
 <input type="hidden" id="currentProductName" value="{{ product.TenBanh }}">

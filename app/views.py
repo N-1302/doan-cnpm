@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.db.models.functions import TruncDay, TruncMonth
 from datetime import timedelta, datetime
 from math import ceil
+from django.core.paginator import Paginator
 import random
 import json
 
@@ -258,8 +259,74 @@ def san_pham_theo_loai(request, maloai):
         'active_category': active_category
     })
 
+def da_mua_san_pham(ma_tai_khoan, ma_banh):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM donhang dh
+            INNER JOIN chitietdonhang ctdh ON dh.MaDonHang = ctdh.MaDonHang
+            WHERE dh.MaTaiKhoan = %s
+              AND ctdh.MaBanh = %s
+        """, [ma_tai_khoan, ma_banh])
+        row = cursor.fetchone()
+    return row and row[0] > 0
 
 def product_detail(request, mabanh):
+    thong_bao_danh_gia = ''
+    loi_danh_gia = ''
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+
+    # =========================
+    # XỬ LÝ GỬI ĐÁNH GIÁ
+    # =========================
+    if request.method == 'POST':
+        if not ma_tai_khoan:
+            loi_danh_gia = 'Vui lòng đăng nhập để đánh giá sản phẩm'
+        else:
+            so_sao = request.POST.get('so_sao', '').strip()
+            noi_dung = request.POST.get('noi_dung', '').strip()
+
+            try:
+                so_sao = int(so_sao)
+            except (TypeError, ValueError):
+                so_sao = 0
+
+            if so_sao < 1 or so_sao > 5:
+                loi_danh_gia = 'Vui lòng chọn số sao từ 1 đến 5'
+            elif not noi_dung:
+                loi_danh_gia = 'Vui lòng nhập nội dung đánh giá'
+            else:
+                bat_buoc_da_mua = True
+
+                if bat_buoc_da_mua and not da_mua_san_pham(ma_tai_khoan, mabanh):
+                    loi_danh_gia = 'Bạn cần mua sản phẩm này trước khi đánh giá'
+                else:
+                    with connection.cursor() as cursor:
+                        cursor.execute("""
+                            SELECT MaDanhGia
+                            FROM danhgia
+                            WHERE MaTaiKhoan = %s AND MaBanh = %s
+                            LIMIT 1
+                        """, [ma_tai_khoan, mabanh])
+                        danh_gia_cu = cursor.fetchone()
+
+                        if danh_gia_cu:
+                            cursor.execute("""
+                                UPDATE danhgia
+                                SET SoSao = %s, NoiDung = %s
+                                WHERE MaTaiKhoan = %s AND MaBanh = %s
+                            """, [so_sao, noi_dung, ma_tai_khoan, mabanh])
+                            thong_bao_danh_gia = 'Bạn đã cập nhật đánh giá thành công'
+                        else:
+                            cursor.execute("""
+                                INSERT INTO danhgia (MaTaiKhoan, MaBanh, SoSao, NoiDung)
+                                VALUES (%s, %s, %s, %s)
+                            """, [ma_tai_khoan, mabanh, so_sao, noi_dung])
+                            thong_bao_danh_gia = 'Gửi đánh giá thành công'
+
+    # =========================
+    # LẤY THÔNG TIN SẢN PHẨM
+    # =========================
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, MoTa, TrangThai, MaLoaiBanh
@@ -271,7 +338,15 @@ def product_detail(request, mabanh):
     if not row:
         return render(request, 'app/ChiTietSanPham.html', {
             'product': None,
-            'related_products': []
+            'related_products': [],
+            'reviews': [],
+            'diem_trung_binh': 0,
+            'tong_luot_danh_gia': 0,
+            'co_the_danh_gia': False,
+            'thong_bao_danh_gia': thong_bao_danh_gia,
+            'loi_danh_gia': loi_danh_gia,
+            'danh_gia_cua_toi': None,
+            'review_filter': '',
         })
 
     product = {
@@ -285,9 +360,12 @@ def product_detail(request, mabanh):
         'MaLoaiBanh': row[7],
     }
 
+    # =========================
+    # SẢN PHẨM LIÊN QUAN
+    # =========================
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT MaBanh, TenBanh, HinhAnh, Gia
+            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon
             FROM banh
             WHERE MaLoaiBanh = %s AND MaBanh != %s
             ORDER BY MaBanh ASC
@@ -298,7 +376,7 @@ def product_detail(request, mabanh):
     if not related_rows:
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT MaBanh, TenBanh, HinhAnh, Gia
+                SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon
                 FROM banh
                 WHERE MaBanh != %s
                 ORDER BY MaBanh ASC
@@ -313,11 +391,103 @@ def product_detail(request, mabanh):
             'TenBanh': item[1],
             'HinhAnh': item[2],
             'Gia': item[3],
+            'SoLuongTon': item[4],
         })
+
+    # =========================
+    # LỌC ĐÁNH GIÁ THEO SỐ SAO
+    # =========================
+    review_filter = request.GET.get('so_sao', '').strip()
+
+    query_reviews = """
+        SELECT 
+            dg.MaDanhGia,
+            dg.SoSao,
+            dg.NoiDung,
+            tk.HoTen,
+            tk.TenDangNhap
+        FROM danhgia dg
+        INNER JOIN taikhoan tk ON dg.MaTaiKhoan = tk.MaTaiKhoan
+        WHERE dg.MaBanh = %s
+    """
+    params_reviews = [mabanh]
+
+    if review_filter in ['5', '4', '3', '2', '1']:
+        query_reviews += " AND dg.SoSao = %s "
+        params_reviews.append(int(review_filter))
+
+    query_reviews += " ORDER BY dg.MaDanhGia DESC "
+
+    with connection.cursor() as cursor:
+        cursor.execute(query_reviews, params_reviews)
+        review_rows = cursor.fetchall()
+
+    reviews = []
+    for item in review_rows:
+        reviews.append({
+            'MaDanhGia': item[0],
+            'SoSao': item[1],
+            'NoiDung': item[2],
+            'HoTen': item[3],
+            'TenDangNhap': item[4],
+        })
+
+    # =========================
+    # ĐIỂM TRUNG BÌNH + SỐ LƯỢT
+    # =========================
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT ROUND(AVG(SoSao), 1), COUNT(*)
+            FROM danhgia
+            WHERE MaBanh = %s
+        """, [mabanh])
+        thong_ke_row = cursor.fetchone()
+
+    diem_trung_binh = thong_ke_row[0] if thong_ke_row and thong_ke_row[0] is not None else 0
+    tong_luot_danh_gia = thong_ke_row[1] if thong_ke_row else 0
+
+    # =========================
+    # ĐÁNH GIÁ CỦA TÔI
+    # =========================
+    danh_gia_cua_toi = None
+    if ma_tai_khoan:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT SoSao, NoiDung
+                FROM danhgia
+                WHERE MaTaiKhoan = %s AND MaBanh = %s
+                LIMIT 1
+            """, [ma_tai_khoan, mabanh])
+            row_my_review = cursor.fetchone()
+
+        if row_my_review:
+            danh_gia_cua_toi = {
+                'SoSao': row_my_review[0],
+                'NoiDung': row_my_review[1],
+            }
+
+    # =========================
+    # CÓ THỂ ĐÁNH GIÁ KHÔNG
+    # =========================
+    co_the_danh_gia = False
+    if ma_tai_khoan:
+        bat_buoc_da_mua = True
+        if bat_buoc_da_mua:
+            co_the_danh_gia = da_mua_san_pham(ma_tai_khoan, mabanh)
+        else:
+            co_the_danh_gia = True
 
     return render(request, 'app/ChiTietSanPham.html', {
         'product': product,
-        'related_products': related_products
+        'related_products': related_products,
+        'reviews': reviews,
+        'diem_trung_binh': diem_trung_binh,
+        'tong_luot_danh_gia': tong_luot_danh_gia,
+        'co_the_danh_gia': co_the_danh_gia,
+        'thong_bao_danh_gia': thong_bao_danh_gia,
+        'loi_danh_gia': loi_danh_gia,
+        'danh_gia_cua_toi': danh_gia_cua_toi,
+        'review_filter': review_filter,
     })
 
 
@@ -408,6 +578,7 @@ def loginPage(request):
         if tai_khoan and check_password(password, tai_khoan.mat_khau):
             request.session['ma_tai_khoan'] = tai_khoan.ma_tai_khoan
             request.session['ten_dang_nhap'] = tai_khoan.ten_dang_nhap
+            request.session['ho_ten'] = tai_khoan.ho_ten
             request.session['ma_quyen'] = tai_khoan.ma_quyen_id if tai_khoan.ma_quyen else None
 
             if tai_khoan.ma_quyen_id == 1:
@@ -882,6 +1053,16 @@ def dat_hang(request):
                 trang_thai_don_hang='Chờ xử lý'
             )
 
+            gio_hang = GioHang.objects.filter(
+                ma_tai_khoan_id=ma_tai_khoan,
+                trang_thai_gio_hang='Đang chọn'
+            ).first()
+
+            if gio_hang:
+                ChiTietGioHang.objects.filter(ma_gio_hang=gio_hang).delete()
+                gio_hang.trang_thai_gio_hang = 'Đã đặt hàng'
+                gio_hang.save(update_fields=['trang_thai_gio_hang'])
+
             for item in chi_tiet_hop_le:
                 ChiTietDonHang.objects.create(
                     ma_don_hang=don_hang,
@@ -1029,8 +1210,96 @@ def tin_tuc(request):
 
 
 # =========================
-# ADMIN - BÁNH
+# ADMIN 
 # =========================
+
+from django.core.paginator import Paginator
+
+def quan_ly_danh_gia(request):
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
+
+    context = get_common_data(request)
+
+    keyword = request.GET.get('keyword', '').strip()
+    so_sao = request.GET.get('so_sao', '').strip()
+    page_number = request.GET.get('page', 1)
+
+    query = """
+        SELECT 
+            dg.MaDanhGia,
+            dg.SoSao,
+            dg.NoiDung,
+            dg.MaTaiKhoan,
+            dg.MaBanh,
+            tk.HoTen,
+            tk.TenDangNhap,
+            b.TenBanh,
+            b.HinhAnh
+        FROM danhgia dg
+        INNER JOIN taikhoan tk ON dg.MaTaiKhoan = tk.MaTaiKhoan
+        INNER JOIN banh b ON dg.MaBanh = b.MaBanh
+        WHERE 1 = 1
+    """
+    params = []
+
+    if so_sao in ['5', '4', '3', '2', '1']:
+        query += " AND dg.SoSao = %s "
+        params.append(int(so_sao))
+
+    if keyword:
+        query += " AND (tk.HoTen LIKE %s OR tk.TenDangNhap LIKE %s) "
+        keyword_like = f"%{keyword}%"
+        params.extend([keyword_like, keyword_like])
+
+    query += " ORDER BY dg.MaDanhGia DESC "
+
+    with connection.cursor() as cursor:
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+
+    ds_danh_gia_all = []
+    for row in rows:
+        ds_danh_gia_all.append({
+            'MaDanhGia': row[0],
+            'SoSao': row[1],
+            'NoiDung': row[2],
+            'MaTaiKhoan': row[3],
+            'MaBanh': row[4],
+            'HoTen': row[5],
+            'TenDangNhap': row[6],
+            'TenBanh': row[7],
+            'HinhAnh': row[8],
+        })
+
+    paginator = Paginator(ds_danh_gia_all, 6)
+    ds_danh_gia = paginator.get_page(page_number)
+
+    query_string = ""
+    if keyword:
+        query_string += f"&keyword={keyword}"
+    if so_sao:
+        query_string += f"&so_sao={so_sao}"
+
+    context['ds_danh_gia'] = ds_danh_gia
+    context['keyword'] = keyword
+    context['so_sao'] = so_sao
+    context['page_obj'] = ds_danh_gia
+    context['query_string'] = query_string
+    return render(request, 'app/QuanLyDanhGia.html', context)
+
+
+def xoa_danh_gia(request, madanhgia):
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            DELETE FROM danhgia
+            WHERE MaDanhGia = %s
+        """, [madanhgia])
+
+    return redirect('quan_ly_danh_gia')
 
 def quan_ly_banh(request):
     if request.session.get('ma_quyen') != 1:
@@ -1305,3 +1574,115 @@ def chi_tiet_don_hang_admin(request, ma_don_hang):
         'chi_tiet_don': chi_tiet_don,
     }
     return render(request, 'app/ChiTietDonHangAdmin.html', context)
+
+# =========================
+# KHÁCH - ĐƠN HÀNG
+# =========================
+
+def don_hang_cua_toi(request):
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+    if not ma_tai_khoan:
+        return redirect('login')
+
+    context = get_common_data(request)
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                MaDonHang,
+                NgayDat,
+                TongTien,
+                DiaChiGiaoHang,
+                TrangThaiDonHang
+            FROM donhang
+            WHERE MaTaiKhoan = %s
+            ORDER BY MaDonHang DESC
+        """, [ma_tai_khoan])
+        rows = cursor.fetchall()
+
+    don_hangs = []
+    for row in rows:
+        don_hangs.append({
+            'MaDonHang': row[0],
+            'NgayDat': row[1],
+            'TongTien': float(row[2]) if row[2] is not None else 0,
+            'DiaChiGiaoHang': row[3] or '',
+            'TrangThaiDonHang': row[4] or 'Chờ xử lý',
+        })
+
+    context['don_hangs'] = don_hangs
+    return render(request, 'app/DonHangCuaToi.html', context)
+
+
+def chi_tiet_don_hang(request, ma_don_hang):
+    ma_tai_khoan = request.session.get('ma_tai_khoan')
+    if not ma_tai_khoan:
+        return redirect('login')
+
+    context = get_common_data(request)
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                dh.MaDonHang,
+                dh.NgayDat,
+                dh.TongTien,
+                dh.DiaChiGiaoHang,
+                dh.TrangThaiDonHang
+            FROM donhang dh
+            WHERE dh.MaDonHang = %s
+              AND dh.MaTaiKhoan = %s
+            LIMIT 1
+        """, [ma_don_hang, ma_tai_khoan])
+        don = cursor.fetchone()
+
+        if not don:
+            return redirect('don_hang_cua_toi')
+
+        cursor.execute("""
+            SELECT
+                b.MaBanh,
+                b.TenBanh,
+                b.HinhAnh,
+                ctdh.SoLuong,
+                ctdh.DonGia,
+                ctdh.ThanhTien
+            FROM chitietdonhang ctdh
+            INNER JOIN banh b ON ctdh.MaBanh = b.MaBanh
+            WHERE ctdh.MaDonHang = %s
+            ORDER BY ctdh.MaBanh DESC
+        """, [ma_don_hang])
+        rows = cursor.fetchall()
+
+    items = []
+    for row in rows:
+        hinh_anh = row[2] or ''
+        if hinh_anh:
+            hinh_anh = str(hinh_anh).strip()
+            if hinh_anh.startswith(('http://', 'https://', '/media/', '/static/')):
+                pass
+            else:
+                hinh_anh = f"/static/app/images/{hinh_anh}"
+        else:
+            hinh_anh = "/static/app/images/no-image.png"
+
+        items.append({
+            'MaBanh': row[0],
+            'TenBanh': row[1],
+            'HinhAnh': hinh_anh,
+            'SoLuong': row[3],
+            'DonGia': float(row[4]) if row[4] is not None else 0,
+            'ThanhTien': float(row[5]) if row[5] is not None else 0,
+        })
+
+    don_hang = {
+        'MaDonHang': don[0],
+        'NgayDat': don[1],
+        'TongTien': float(don[2]) if don[2] is not None else 0,
+        'DiaChiGiaoHang': don[3] or '',
+        'TrangThaiDonHang': don[4] or 'Chờ xử lý',
+    }
+
+    context['don_hang'] = don_hang
+    context['items'] = items
+    return render(request, 'app/ChiTietDonHang.html', context)

@@ -1,0 +1,168 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/QuanLyDanhGia.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="review-admin-page">
+    <div class="review-admin-container">
+        <a href="{% url 'admin_dashboard' %}" class="review-admin-back">← Quay về Dashboard</a>
+
+        <div class="review-admin-header">
+            <h1 class="review-admin-title">Quản lý đánh giá</h1>
+            <p class="review-admin-subtitle">
+                Xem, lọc, tìm kiếm và xóa các đánh giá không phù hợp.
+            </p>
+        </div>
+
+        <div class="review-admin-toolbar">
+            <form method="get" class="review-admin-filter-form">
+                <div class="review-admin-search-box">
+                    <input
+                        type="text"
+                        name="keyword"
+                        value="{{ keyword }}"
+                        placeholder="Tìm theo tên khách hàng hoặc tên đăng nhập..."
+                        class="review-admin-search-input"
+                    >
+                </div>
+
+                <div class="review-admin-filter-buttons">
+                    <a href="{% url 'quan_ly_danh_gia' %}?keyword={{ keyword|urlencode }}"
+                       class="review-filter-btn {% if not so_sao %}active{% endif %}">
+                        Tất cả
+                    </a>
+
+                    <a href="{% url 'quan_ly_danh_gia' %}?so_sao=5&keyword={{ keyword|urlencode }}"
+                       class="review-filter-btn {% if so_sao == '5' %}active{% endif %}">
+                        5⭐
+                    </a>
+
+                    <a href="{% url 'quan_ly_danh_gia' %}?so_sao=4&keyword={{ keyword|urlencode }}"
+                       class="review-filter-btn {% if so_sao == '4' %}active{% endif %}">
+                        4⭐
+                    </a>
+                </div>
+
+                <button type="submit" class="review-admin-search-btn">
+                    Tìm kiếm
+                </button>
+            </form>
+        </div>
+
+        {% if ds_danh_gia %}
+            <div class="review-admin-grid">
+                {% for dg in ds_danh_gia %}
+                    <div class="review-admin-card">
+                        <div class="review-admin-top">
+                            <div class="review-admin-image">
+                                {% if dg.HinhAnh %}
+                                    <img src="{% static 'app/images/' %}{{ dg.HinhAnh }}" alt="{{ dg.TenBanh }}">
+                                {% else %}
+                                    <img src="{% static 'app/images/looogoo.png' %}" alt="{{ dg.TenBanh }}">
+                                {% endif %}
+                            </div>
+
+                            <div class="review-admin-info">
+                                <h3>{{ dg.TenBanh }}</h3>
+
+                                <div class="review-admin-meta">
+                                    <span><strong>Mã đánh giá:</strong> {{ dg.MaDanhGia }}</span>
+                                    <span><strong>Khách hàng:</strong> {{ dg.HoTen|default:dg.TenDangNhap }}</span>
+                                    <span><strong>Tên đăng nhập:</strong> {{ dg.TenDangNhap }}</span>
+                                    <span><strong>Mã tài khoản:</strong> {{ dg.MaTaiKhoan }}</span>
+                                    <span><strong>Mã bánh:</strong> {{ dg.MaBanh }}</span>
+                                </div>
+
+                                <div class="review-admin-stars">
+                                    {% if dg.SoSao >= 1 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                    {% if dg.SoSao >= 2 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                    {% if dg.SoSao >= 3 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                    {% if dg.SoSao >= 4 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                    {% if dg.SoSao >= 5 %}<span class="filled">★</span>{% else %}<span>☆</span>{% endif %}
+                                </div>
+
+                                <div class="review-admin-content">
+                                    {{ dg.NoiDung }}
+                                </div>
+                            </div>
+
+                            <div class="review-admin-actions">
+                                <a href="{% url 'product_detail' dg.MaBanh %}" class="review-admin-view">
+                                    Xem sản phẩm
+                                </a>
+
+                                <a href="{% url 'xoa_danh_gia' dg.MaDanhGia %}"
+                                   class="review-admin-delete js-delete-review"
+                                   data-review-id="{{ dg.MaDanhGia }}">
+                                    Xóa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj and page_obj.paginator.num_pages > 1 %}
+                <div class="review-admin-pagination">
+
+                    {% if page_obj.number > 1 %}
+                        <a href="?page=1{{ query_string }}" class="review-admin-page-btn">Đầu</a>
+                    {% endif %}
+
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}{{ query_string }}" class="review-admin-page-btn">
+                            ← Trước
+                        </a>
+                    {% endif %}
+
+                    {% if page_obj.number|add:'-2' > 1 %}
+                        <a href="?page=1{{ query_string }}" class="review-admin-page-btn">1</a>
+                        {% if page_obj.number|add:'-2' > 2 %}
+                            <span class="review-admin-page-dots">...</span>
+                        {% endif %}
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num >= page_obj.number|add:'-1' and num <= page_obj.number|add:'1' %}
+                            {% if page_obj.number == num %}
+                                <span class="review-admin-page-btn active">{{ num }}</span>
+                            {% else %}
+                                <a href="?page={{ num }}{{ query_string }}" class="review-admin-page-btn">{{ num }}</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.number|add:'2' < page_obj.paginator.num_pages %}
+                        {% if page_obj.number|add:'2' < page_obj.paginator.num_pages|add:'-1' %}
+                            <span class="review-admin-page-dots">...</span>
+                        {% endif %}
+                        <a href="?page={{ page_obj.paginator.num_pages }}{{ query_string }}" class="review-admin-page-btn">
+                            {{ page_obj.paginator.num_pages }}
+                        </a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{{ query_string }}" class="review-admin-page-btn">
+                            Sau →
+                        </a>
+                    {% endif %}
+
+                    {% if page_obj.number < page_obj.paginator.num_pages %}
+                        <a href="?page={{ page_obj.paginator.num_pages }}{{ query_string }}" class="review-admin-page-btn">Cuối</a>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="review-admin-empty">
+                Không tìm thấy đánh giá phù hợp.
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<script src="{% static 'app/js/QuanLyDanhGia.js' %}"></script>
+{% endblock %}

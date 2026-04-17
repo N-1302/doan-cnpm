@@ -8,171 +8,172 @@
 <section class="ad-page">
     <div class="ad-container">
 
-        <div class="ad-header">
-            <div class="ad-header-left">
-                <p class="ad-subtitle">SPRINTTEAM ADMIN</p>
-                <h1 class="ad-title">Bảng điều khiển quản trị</h1>
-                <p class="ad-desc">
-                    Quản lý toàn bộ hệ thống bán bánh trực tuyến: sản phẩm, khách hàng, đơn hàng, khuyến mãi và thống kê doanh thu.
-                </p>
-            </div>
-
-            <div class="ad-header-right">
-                <div class="ad-admin-box">
-                    <span class="ad-admin-label">Xin chào</span>
-                    <strong>{{ ten_dang_nhap|default:"Admin" }}</strong>
-                </div>
-            </div>
+```
+    <div class="ad-header">
+        <div class="ad-header-left">
+            <p class="ad-subtitle">SPRINTTEAM ADMIN</p>
+            <h1 class="ad-title">Bảng điều khiển quản trị</h1>
+            <p class="ad-desc">
+                Quản lý toàn bộ hệ thống bán bánh trực tuyến: sản phẩm, khách hàng, đơn hàng, khuyến mãi và thống kê doanh thu.
+            </p>
         </div>
 
-        <div class="ad-stats-grid">
-            <div class="ad-stat-card">
-                <div class="ad-stat-icon"><i class="fa-solid fa-users"></i></div>
-                <div class="ad-stat-info">
-                    <span>Tài khoản</span>
-                    <h3>{{ tong_tai_khoan|default:"0" }}</h3>
-                </div>
-            </div>
-
-            <div class="ad-stat-card">
-                <div class="ad-stat-icon"><i class="fa-solid fa-cake-candles"></i></div>
-                <div class="ad-stat-info">
-                    <span>Sản phẩm bánh</span>
-                    <h3>{{ tong_banh|default:"0" }}</h3>
-                </div>
-            </div>
-
-            <div class="ad-stat-card">
-                <div class="ad-stat-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <div class="ad-stat-info">
-                    <span>Loại bánh</span>
-                    <h3>{{ tong_loai_banh|default:"0" }}</h3>
-                </div>
-            </div>
-
-            <div class="ad-stat-card">
-                <div class="ad-stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-                <div class="ad-stat-info">
-                    <span>Đơn hàng</span>
-                    <h3>{{ tong_don_hang|default:"0" }}</h3>
-                </div>
+        <div class="ad-header-right">
+            <div class="ad-admin-box">
+                <span class="ad-admin-label">Xin chào</span>
+                <strong>{{ ten_dang_nhap|default:"Admin" }}</strong>
             </div>
         </div>
-
-        <div class="ad-main-grid">
-            <div class="ad-panel ad-panel-large">
-                <div class="ad-panel-head">
-                    <h2>Chức năng quản trị</h2>
-                    <p>Phân quyền rõ giữa Admin và User</p>
-                </div>
-
-                <div class="ad-feature-grid">
-                    <div class="ad-feature-card">
-                        <div class="ad-feature-icon"><i class="fa-solid fa-cake-candles"></i></div>
-                        <h3>Quản lý bánh</h3>
-                        <p>Thêm, sửa, xóa thông tin bánh, giá bán, tồn kho, hình ảnh và mô tả sản phẩm.</p>
-                        <a href="{% url 'quan_ly_banh' %}" class="ad-feature-btn">Vào quản lý</a>
-                    </div>
-
-                    <div class="ad-feature-card">
-                        <div class="ad-feature-icon"><i class="fa-solid fa-user-group"></i></div>
-                        <h3>Quản lý khách hàng</h3>
-                        <p>Xem danh sách tài khoản, theo dõi thông tin người dùng, khóa hoặc mở tài khoản.</p>
-                        <a href="{% url 'quan_ly_khach_hang' %}" class="ad-feature-btn">Vào quản lý</a>
-                    </div>
-
-                    <div class="ad-feature-card">
-                        <div class="ad-feature-icon"><i class="fa-solid fa-receipt"></i></div>
-                        <h3>Quản lý đơn hàng</h3>
-                        <p>Xem chi tiết đơn, cập nhật trạng thái: chờ xử lý, xác nhận, đang giao, hoàn thành.</p>
-                        <a href="{% url 'quan_ly_don_hang' %}" class="ad-feature-btn">Vào quản lý</a>
-                    </div>
-
-                    <div class="ad-feature-card">
-                        <div class="ad-feature-icon"><i class="fa-solid fa-tags"></i></div>
-                        <h3>Khuyến mãi</h3>
-                        <p>Tạo mã giảm giá, quản lý chương trình ưu đãi, thời gian áp dụng và số lượng mã.</p>
-                        <a href="{% url 'quan_ly_khuyen_mai' %}" class="ad-feature-btn">Vào quản lý</a>
-                    </div>
-
-                    <div class="ad-feature-card">
-                        <div class="ad-feature-icon"><i class="fa-solid fa-chart-column"></i></div>
-                        <h3>Thống kê</h3>
-                        <p>Theo dõi doanh thu, số lượng đơn hàng, sản phẩm bán chạy và hiệu quả kinh doanh.</p>
-                        <a href="{% url 'thong_ke' %}" class="ad-feature-btn">Xem thống kê</a>
-                    </div>
-
-                    <div class="ad-feature-card">
-                        <div class="ad-feature-icon"><i class="fa-solid fa-cart-plus"></i></div>
-                        <h3>Người dùng</h3>
-                        <p>Khách hàng có thể xem bánh, thêm giỏ hàng, đặt mua và theo dõi đơn hàng của mình.</p>
-                        <a href="{% url 'home' %}" class="ad-feature-btn ad-feature-btn-outline">Xem giao diện user</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ad-side-col">
-                <div class="ad-panel">
-                    <div class="ad-panel-head">
-                        <h2>Phân quyền hệ thống</h2>
-                    </div>
-
-                    <div class="ad-role-box">
-                        <div class="ad-role-item">
-                            <h4><i class="fa-solid fa-user-shield"></i> Admin</h4>
-                            <ul>
-                                <li>Quản lý bánh</li>
-                                <li>Quản lý khách hàng</li>
-                                <li>Quản lý đơn hàng</li>
-                                <li>Quản lý khuyến mãi</li>
-                                <li>Xem thống kê</li>
-                            </ul>
-                        </div>
-
-                        <div class="ad-role-item">
-                            <h4><i class="fa-solid fa-user"></i> User</h4>
-                            <ul>
-                                <li>Xem sản phẩm</li>
-                                <li>Thêm vào giỏ hàng</li>
-                                <li>Đặt mua</li>
-                                <li>Theo dõi đơn hàng</li>
-                                <li>Cập nhật thông tin cá nhân</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ad-panel">
-                    <div class="ad-panel-head">
-                        <h2>Truy cập nhanh</h2>
-                    </div>
-
-                    <div class="ad-quick-links">
-                        <a href="{% url 'san_pham' %}" class="ad-quick-link">
-                            <i class="fa-solid fa-store"></i>
-                            <span>Xem trang sản phẩm</span>
-                        </a>
-
-                        <a href="{% url 'category' %}" class="ad-quick-link">
-                            <i class="fa-solid fa-list"></i>
-                            <span>Xem danh mục bánh</span>
-                        </a>
-
-                        <a href="{% url 'tin_tuc' %}" class="ad-quick-link">
-                            <i class="fa-solid fa-newspaper"></i>
-                            <span>Xem trang tin tức</span>
-                        </a>
-
-                        <a href="{% url 'logout' %}" class="ad-quick-link ad-logout-link">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            <span>Đăng xuất</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <div class="ad-stats-grid">
+        <div class="ad-stat-card">
+            <div class="ad-stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="ad-stat-info">
+                <span>Tài khoản</span>
+                <h3>{{ tong_tai_khoan|default:"0" }}</h3>
+            </div>
+        </div>
+
+        <div class="ad-stat-card">
+            <div class="ad-stat-icon"><i class="fa-solid fa-cake-candles"></i></div>
+            <div class="ad-stat-info">
+                <span>Sản phẩm bánh</span>
+                <h3>{{ tong_banh|default:"0" }}</h3>
+            </div>
+        </div>
+
+        <div class="ad-stat-card">
+            <div class="ad-stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="ad-stat-info">
+                <span>Loại bánh</span>
+                <h3>{{ tong_loai_banh|default:"0" }}</h3>
+            </div>
+        </div>
+
+        <div class="ad-stat-card">
+            <div class="ad-stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="ad-stat-info">
+                <span>Đơn hàng</span>
+                <h3>{{ tong_don_hang|default:"0" }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="ad-main-grid">
+        <div class="ad-panel ad-panel-large">
+            <div class="ad-panel-head">
+                <h2>Chức năng quản trị</h2>
+                <p>Phân quyền rõ giữa Admin và User</p>
+            </div>
+
+            <div class="ad-feature-grid">
+
+                <!-- QUẢN LÝ BÁNH -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-cake-candles"></i></div>
+                    <h3>Quản lý bánh</h3>
+                    <p>Thêm, sửa, xóa thông tin bánh, giá bán, tồn kho.</p>
+                    <a href="{% url 'quan_ly_banh' %}" class="ad-feature-btn">Vào quản lý</a>
+                </div>
+
+                <!-- KHÁCH HÀNG -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-user-group"></i></div>
+                    <h3>Quản lý khách hàng</h3>
+                    <p>Xem danh sách tài khoản, khóa/mở tài khoản.</p>
+                    <a href="{% url 'quan_ly_khach_hang' %}" class="ad-feature-btn">Vào quản lý</a>
+                </div>
+
+                <!-- ĐƠN HÀNG -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-receipt"></i></div>
+                    <h3>Quản lý đơn hàng</h3>
+                    <p>Cập nhật trạng thái đơn hàng.</p>
+                    <a href="{% url 'quan_ly_don_hang' %}" class="ad-feature-btn">Vào quản lý</a>
+                </div>
+
+                <!-- KHUYẾN MÃI -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-tags"></i></div>
+                    <h3>Khuyến mãi</h3>
+                    <p>Quản lý mã giảm giá.</p>
+                    <a href="{% url 'quan_ly_khuyen_mai' %}" class="ad-feature-btn">Vào quản lý</a>
+                </div>
+
+                <!-- THỐNG KÊ -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-chart-column"></i></div>
+                    <h3>Thống kê</h3>
+                    <p>Theo dõi doanh thu và sản phẩm bán chạy.</p>
+                    <a href="{% url 'thong_ke' %}" class="ad-feature-btn">Xem</a>
+                </div>
+
+                <!-- 🆕 QUẢN LÝ ĐÁNH GIÁ -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-star"></i></div>
+                    <h3>Quản lý đánh giá</h3>
+                    <p>Xem đánh giá khách hàng và xóa nội dung không phù hợp.</p>
+                    <a href="{% url 'quan_ly_danh_gia' %}" class="ad-feature-btn">Vào quản lý</a>
+                </div>
+
+                <!-- USER -->
+                <div class="ad-feature-card">
+                    <div class="ad-feature-icon"><i class="fa-solid fa-cart-plus"></i></div>
+                    <h3>Người dùng</h3>
+                    <p>Xem giao diện khách hàng.</p>
+                    <a href="{% url 'home' %}" class="ad-feature-btn ad-feature-btn-outline">Xem</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="ad-side-col">
+            <div class="ad-panel">
+                <div class="ad-panel-head">
+                    <h2>Phân quyền hệ thống</h2>
+                </div>
+
+                <div class="ad-role-box">
+                    <div class="ad-role-item">
+                        <h4><i class="fa-solid fa-user-shield"></i> Admin</h4>
+                        <ul>
+                            <li>Quản lý toàn bộ hệ thống</li>
+                        </ul>
+                    </div>
+
+                    <div class="ad-role-item">
+                        <h4><i class="fa-solid fa-user"></i> User</h4>
+                        <ul>
+                            <li>Mua hàng & đánh giá</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ad-panel">
+                <div class="ad-panel-head">
+                    <h2>Truy cập nhanh</h2>
+                </div>
+
+                <div class="ad-quick-links">
+                    <a href="{% url 'san_pham' %}" class="ad-quick-link">
+                        <i class="fa-solid fa-store"></i>
+                        <span>Xem sản phẩm</span>
+                    </a>
+
+                    <a href="{% url 'logout' %}" class="ad-quick-link ad-logout-link">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+```
+
 </section>
 
 <script src="{% static 'app/js/admin_dashboard.js' %}"></script>

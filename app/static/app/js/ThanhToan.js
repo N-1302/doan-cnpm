@@ -24,13 +24,34 @@ document.addEventListener("DOMContentLoaded", function () {
         return Number(value || 0).toLocaleString("vi-VN") + " đ";
     }
 
+    function isUserLoggedIn() {
+        const body = document.body;
+        if (!body) return false;
+
+        const value =
+            body.dataset.loggedIn ||
+            body.dataset.user ||
+            body.dataset.userId ||
+            "";
+
+        return ["true", "1", "yes"].includes(String(value).trim().toLowerCase()) ||
+            (String(value).trim() !== "" &&
+             !["false", "0", "none", "null", "undefined"].includes(String(value).trim().toLowerCase()));
+    }
+
     function getCart() {
         try {
-            return JSON.parse(localStorage.getItem("cart")) || [];
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            return Array.isArray(cart) ? cart : [];
         } catch (error) {
             console.error("Lỗi đọc giỏ hàng:", error);
             return [];
         }
+    }
+
+    function clearCart() {
+        localStorage.removeItem("cart");
+        window.dispatchEvent(new Event("cartUpdated"));
     }
 
     function showMessage(message, type = "error") {
@@ -64,19 +85,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const tamTinh = tinhTamTinh(cart);
         const phiVanChuyen = tinhPhiVanChuyen(tamTinh);
         const tienGiam = khuyenMaiDaApDung ? Number(khuyenMaiDaApDung.tien_giam || 0) : 0;
-        const tongCong = tamTinh - tienGiam + phiVanChuyen;
+        const tongCong = Math.max(0, tamTinh - tienGiam + phiVanChuyen);
 
         if (tongSanPhamEl) tongSanPhamEl.textContent = tongSanPham;
         if (tamTinhEl) tamTinhEl.textContent = formatCurrency(tamTinh);
         if (phiVanChuyenEl) phiVanChuyenEl.textContent = formatCurrency(phiVanChuyen);
         if (tienGiamGiaEl) tienGiamGiaEl.textContent = formatCurrency(tienGiam);
-        if (tongCongEl) tongCongEl.textContent = formatCurrency(tongCong < 0 ? 0 : tongCong);
+        if (tongCongEl) tongCongEl.textContent = formatCurrency(tongCong);
     }
 
     function renderOrderList() {
-        const cart = getCart();
-
         if (!thanhtoanOrderList) return;
+
+        const cart = getCart();
 
         if (cart.length === 0) {
             thanhtoanOrderList.innerHTML = `
@@ -94,7 +115,12 @@ document.addEventListener("DOMContentLoaded", function () {
             return `
                 <div class="thanhtoan-order-item">
                     <div class="thanhtoan-order-left">
-                        <img src="${item.hinhAnh || ""}" alt="${item.tenBanh || "Sản phẩm"}" class="thanhtoan-order-img">
+                        <img
+                            src="${item.hinhAnh || ""}"
+                            alt="${item.tenBanh || "Sản phẩm"}"
+                            class="thanhtoan-order-img"
+                            onerror="this.src='/static/app/images/no-image.png'"
+                        >
                         <div class="thanhtoan-order-info">
                             <h4>${item.tenBanh || "Sản phẩm"}</h4>
                             <span>Số lượng: ${soLuong}</span>
@@ -125,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function validateForm() {
         const cart = getCart();
 
+        if (!isUserLoggedIn()) return "Vui lòng đăng nhập để đặt hàng.";
         if (cart.length === 0) return "Giỏ hàng đang trống.";
         if (!hoTenInput || !hoTenInput.value.trim()) return "Vui lòng nhập họ và tên.";
         if (!soDienThoaiInput || !soDienThoaiInput.value.trim()) return "Vui lòng nhập số điện thoại.";
@@ -264,7 +291,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (result.success) {
                 showMessage(`Đặt hàng thành công. Mã đơn hàng: #${result.ma_don_hang}`, "success");
-                localStorage.removeItem("cart");
+                clearCart();
                 khuyenMaiDaApDung = null;
 
                 btnDatHang.classList.remove("is-loading");
@@ -277,16 +304,14 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 showMessage(result.message || "Đặt hàng thất bại.", "error");
                 btnDatHang.disabled = false;
-                btnDatHang.classList.remove("is-loading");
-                btnDatHang.classList.remove("is-success");
+                btnDatHang.classList.remove("is-loading", "is-success");
                 btnDatHang.textContent = oldText;
             }
         } catch (error) {
             console.error(error);
             showMessage("Có lỗi xảy ra khi gửi đơn hàng.", "error");
             btnDatHang.disabled = false;
-            btnDatHang.classList.remove("is-loading");
-            btnDatHang.classList.remove("is-success");
+            btnDatHang.classList.remove("is-loading", "is-success");
             btnDatHang.textContent = oldText;
         }
     }
@@ -297,6 +322,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (btnDatHang) {
         btnDatHang.addEventListener("click", submitOrder);
+    }
+
+    if (!isUserLoggedIn()) {
+        showMessage("Vui lòng đăng nhập để thanh toán.", "error");
     }
 
     togglePaymentBoxes();

@@ -618,6 +618,106 @@
   max-width: 80%;
 }
 
+
+.user-hover {
+  position: relative;
+  display: inline-block;
+  z-index: 9999;
+}
+
+.user-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  min-width: 160px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s;
+
+  z-index: 10000; /* quan trọng */
+}
+
+.user-hover:hover .user-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* tên user */
+.user-name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+/* đăng xuất */
+.logout-btn {
+  display: block;
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* hover đỏ */
+.logout-btn:hover {
+  color: #c8102e;
+}
+
+/* Card bị vô hiệu hóa */
+.product-disabled {
+  filter: grayscale(80%);
+  opacity: 0.75;
+}
+
+/* Khung ảnh để đặt trạng thái lên trên */
+.shopee-image-wrap {
+  position: relative;
+}
+
+/* Vòng tròn trạng thái ở giữa ảnh */
+.product-status-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.9);
+  color: #c8102e;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  padding: 10px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 5;
+}
+
+/* Nút không khả dụng */
+.disabled-btn {
+  background: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed;
+  border: none;
+}
+
 @media (max-width: 768px) {
   #chatbot-toggle {
     right: 70px;

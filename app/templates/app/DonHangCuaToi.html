@@ -1,0 +1,94 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/DonHangCuaToi.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="my-orders-page">
+  <div class="my-orders-container">
+    <div class="my-orders-head">
+      <h1 class="my-orders-title">Đơn hàng của tôi</h1>
+      <div class="my-orders-breadcrumb">
+        <a href="{% url 'home' %}" class="breadcrumb-link">Trang chủ</a>
+        <span>›</span>
+        <span class="breadcrumb-current">Đơn hàng của tôi</span>
+      </div>
+    </div>
+
+    {% if don_hangs %}
+      <div class="orders-toolbar">
+        <div class="orders-search-box">
+          <input type="text" id="orderSearchInput" placeholder="Tìm theo mã đơn hoặc trạng thái...">
+        </div>
+      </div>
+
+      <div class="orders-list" id="ordersList">
+        {% for don in don_hangs %}
+        <div class="order-card" data-order-code="DH{{ don.MaDonHang }}" data-order-status="{{ don.TrangThaiDonHang|lower }}">
+          <div class="order-card-top">
+            <div class="order-code-wrap">
+              <span class="order-label">Mã đơn</span>
+              <strong class="order-code">#DH{{ don.MaDonHang }}</strong>
+            </div>
+
+            <div class="order-status-wrap">
+              <span class="order-status
+                {% if don.TrangThaiDonHang == 'Chờ xử lý' %}status-pending
+                {% elif don.TrangThaiDonHang == 'Đã xác nhận' %}status-confirmed
+                {% elif don.TrangThaiDonHang == 'Đang làm bánh' %}status-baking
+                {% elif don.TrangThaiDonHang == 'Đang giao hàng' %}status-shipping
+                {% elif don.TrangThaiDonHang == 'Hoàn thành' %}status-completed
+                {% elif don.TrangThaiDonHang == 'Đã hủy' %}status-cancelled
+                {% endif %}
+              ">
+                {{ don.TrangThaiDonHang }}
+              </span>
+            </div>
+          </div>
+
+          <div class="order-card-body">
+            <div class="order-info-grid">
+              <div class="order-info-item">
+                <span class="info-label">Ngày đặt</span>
+                <span class="info-value">{{ don.NgayDat|date:"d/m/Y H:i" }}</span>
+              </div>
+
+              <div class="order-info-item">
+                <span class="info-label">Tổng tiền</span>
+                <span class="info-value order-total">{{ don.TongTien|floatformat:0 }}đ</span>
+              </div>
+
+              <div class="order-info-item full-width">
+                <span class="info-label">Địa chỉ giao hàng</span>
+                <span class="info-value">{{ don.DiaChiGiaoHang }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-card-bottom">
+            <a href="{% url 'chi_tiet_don_hang' don.MaDonHang %}" class="order-detail-btn">
+              Xem chi tiết
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="noOrderResult" class="no-order-result" style="display: none;">
+        Không tìm thấy đơn hàng phù hợp.
+      </div>
+    {% else %}
+      <div class="empty-orders-box">
+        <div class="empty-orders-icon">📦</div>
+        <h3>Bạn chưa có đơn hàng nào</h3>
+        <p>Hãy khám phá các mẫu bánh ngon và đặt đơn đầu tiên của bạn nhé.</p>
+        <a href="{% url 'san_pham' %}" class="go-shopping-btn">Mua sắm ngay</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<script src="{% static 'app/js/DonHangCuaToi.js' %}"></script>
+{% endblock %}

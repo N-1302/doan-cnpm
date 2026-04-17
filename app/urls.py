@@ -24,6 +24,8 @@ urlpatterns = [
     path('gio-hang/', views.gio_hang, name='gio_hang'),
     path('cart/', views.cart, name='cart'),
     path('checkout/', views.checkout, name='checkout'),
+    path('don-hang-cua-toi/', views.don_hang_cua_toi, name='don_hang_cua_toi'),
+    path('chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang, name='chi_tiet_don_hang'),
 
     # API giỏ hàng
     path('api/cart/', views.api_cart, name='api_cart'),
@@ -50,6 +52,9 @@ urlpatterns = [
     path('mo-tai-khoan/<int:mataikhoan>/', views.mo_tai_khoan, name='mo_tai_khoan'),
     path('thong-ke/', views.thong_ke, name='thong_ke'),
     path('admin/chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang_admin, name='chi_tiet_don_hang_admin'),
+    path('admin/danh-gia/', views.quan_ly_danh_gia, name='quan_ly_danh_gia'),
+    path('quan-tri/danh-gia/', views.quan_ly_danh_gia, name='quan_ly_danh_gia'),
+    path('quan-tri/danh-gia/xoa/<int:madanhgia>/', views.xoa_danh_gia, name='xoa_danh_gia'),
 
     # Các trang tĩnh
     path('lien-he/', views.lien_he, name='lien_he'),

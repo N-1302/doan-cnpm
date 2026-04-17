@@ -49,20 +49,26 @@
 
     <div class="shopee-grid">
       {% for product in products %}
-      <div class="shopee-card">
+      <div
+        class="shopee-card {% if product.trang_thai == 'Tạm ngưng bán' or product.so_luong_ton == 0 %}product-disabled{% endif %}"
+      >
         <div class="shopee-image-wrap">
           {% if product.hinh_anh %}
           <img
             class="shopee-image"
             src="{% static 'app/images/' %}{{ product.hinh_anh }}"
             alt="{{ product.ten_banh }}"
-          >
+          />
           {% else %}
           <img
             class="shopee-image"
             src="{% static 'app/images/looogoo.png' %}"
             alt="{{ product.ten_banh }}"
-          >
+          />
+          {% endif %} {% if product.trang_thai == "Tạm ngưng bán" %}
+          <div class="product-status-circle">Tạm ngưng bán</div>
+          {% elif product.so_luong_ton == 0 %}
+          <div class="product-status-circle">Hết hàng</div>
           {% endif %}
         </div>
 
@@ -73,22 +79,21 @@
             {{ product.mo_ta|default:"Bánh ngon mỗi ngày" }}
           </p>
 
-          <div class="shopee-old-price">
-            {{ product.gia }} VNĐ
-            <span class="discount-tag">-20%</span>
-          </div>
+          <div class="shopee-price">{{ product.gia }} <span>đ</span></div>
 
-          <div class="shopee-price">
-            {{ product.gia }} <span>đ</span>
-          </div>
-
-          <div class="shopee-stock">
-            Còn lại: {{ product.so_luong_ton }}
-          </div>
+          <div class="shopee-stock">Còn lại: {{ product.so_luong_ton }}</div>
 
           <div class="shopee-bottom">
-            <div class="shopee-hot">ĐANG BÁN CHẠY</div>
 
+            {% if product.trang_thai == "Ngưng bán" or product.so_luong_ton == 0 %}
+            <button
+              type="button"
+              class="buy-now-btn home-buy-now-btn disabled-btn"
+              disabled
+            >
+              Không khả dụng
+            </button>
+            {% else %}
             <button
               type="button"
               class="buy-now-btn home-buy-now-btn"
@@ -100,6 +105,7 @@
             >
               Mua ngay
             </button>
+            {% endif %}
           </div>
         </div>
       </div>

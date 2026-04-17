@@ -57,22 +57,29 @@
             </form>
           </div>
 
-          <div class="col-lg-4 col-md-4 col-6 text-end">
-            {% if request.session.ma_tai_khoan %}
-              <span class="me-2">Xin chào, {{ request.session.ten_dang_nhap }}</span>
-              <a href="{% url 'logout' %}" class="text-decoration-none">Đăng xuất</a>
-            {% else %}
-              <a href="{% url 'login' %}" class="text-decoration-none me-2">Đăng nhập</a>
-              <a href="{% url 'register' %}" class="text-decoration-none">Đăng ký</a>
-            {% endif %}
-
-            <a href="#" class="ms-3 text-decoration-none position-relative open-cart-btn">
-              <img id="cart-icon" src="{% static 'app/images/cart.png' %}" alt="cart" style="width: 28px;">
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ cartItems|default:0 }}
-              </span>
-            </a>
-          </div>
+          <div class="col-lg-4 col-md-4 col-6 text-end"> 
+            {% if request.session.ma_tai_khoan %} 
+            <!-- ĐÃ ĐĂNG NHẬP --> 
+            <div class="user-hover"> 
+              <img src="{% static 'app/images/user.jpg' %}"  class="user-avatar"/> 
+              <div class="user-menu"> 
+                <span class="user-name"> {{ request.session.ho_ten }} </span> 
+                <a href="{% url 'logout' %}" class="logout-btn"> Đăng xuất </a> 
+              </div> 
+            </div> 
+            {% else %} 
+            <!-- CHƯA ĐĂNG NHẬP --> 
+            <a href="{% url 'login' %}"> 
+              <img src="{% static 'app/images/user.jpg' %}" class="user-avatar" />
+            </a> 
+            {% endif %} 
+            <a href="#"class="ms-3 text-decoration-none position-relative open-cart-btn"> 
+              <img id="cart-icon" src="{% static 'app/images/cart.png' %}" alt="cart" style="width: 28px" /> 
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> 
+                {{ cartItems|default:0 }} 
+              </span> 
+            </a> 
+          </div> 
         </div>
       </div>
     </header>
@@ -142,24 +149,23 @@
             </div>
             <hr class="footer-line">
             <h4 class="fw-bold mb-3">Công ty cổ phần Bánh SprintTeam,</h4>
-            <p class="mb-3">Mã số doanh nghiệp: 0311426136 do Sở Kế Hoạch và Đầu Tư TP.Hồ Chí Minh cấp lần đầu ngày 19/12/2011.</p>
             <p class="mb-3">Trụ sở: 280 An Dương Vương, Phường Chợ Quán, TP.Hồ Chí Minh.</p>
-            <p class="mb-2">Điện thoại: (028) 3979 7350</p>
-            <p class="mb-0">Email: info@saigongivral.com</p>
+            <p class="mb-2">Điện thoại: 084 913 0206</p>
+            <p class="mb-0">Email: dangkhoi13022006@gmail.com</p>
           </div>
 
           <div class="col-lg-4 col-md-5">
             <h4 class="fw-bold mb-3">Hotline:</h4>
             <p class="mb-2"><strong>Hồ Chí Minh:</strong> 0944 630 055</p>
             <p class="mb-2"><strong>(028) 3979 7350</strong></p>
-            <p class="mb-4"><strong>CSKH:</strong> 0906 990 898</p>
+            <p class="mb-4"><strong>CSKH:</strong> 084 913 0206</p>
           </div>
         </div>
 
         <hr class="footer-line my-4">
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 footer-bottom">
-          <p class="mb-0">© All Right Reserved / Bản quyền thuộc về Givral</p>
+          <p class="mb-0">© All Right Reserved / Bản quyền thuộc về SPRINTTEAM</p>
           <div class="footer-bottom-links d-flex gap-3 flex-wrap">
             <a href="{% url 'bao_mat_thong_tin' %}">Bảo mật thông tin</a>
             <a href="{% url 'dieu_khoan_su_dung' %}">Điều khoản sử dụng</a>
