@@ -43,7 +43,7 @@
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-label">Tổng doanh thu</div>
-            <div class="stat-value">{{ tong_doanh_thu|floatformat:0 }} đ</div>
+            <div class="stat-value money-value" data-price="{{ tong_doanh_thu }}"></div>
         </div>
 
         <div class="stat-card">
@@ -115,7 +115,7 @@
                                 {{ don.trang_thai_don_hang }}
                             </span>
                         </td>
-                        <td>{{ don.tong_tien|floatformat:0 }} đ</td>
+                        <td class="money-value" data-price="{{ don.tong_tien }}"></td>
                         <td>
                             <a href="{% url 'chi_tiet_don_hang_admin' don.ma_don_hang %}" class="detail-btn">
                                 Xem chi tiết
@@ -140,4 +140,5 @@
     window.currentFilterType = "{{ filter_type }}";
 </script>
 <script src="{% static 'app/js/ThongKe.js' %}"></script>
+<script src="{% static 'app/js/trangchu.js' %}?v=2"></script>
 {% endblock %}

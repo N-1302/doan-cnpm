@@ -18,6 +18,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function formatPrice(price) {
+    let value = String(price ?? "").trim();
+
+    value = value.replace(/đ|vnd|vnđ/gi, "").trim();
+
+    if (/^\d{1,3}([.,]\d{3})+([.,]\d+)?$/.test(value)) {
+        value = value.replace(/[.,](?=\d{3}\b)/g, "");
+    }
+
+    value = value.replace(",", ".");
+
+    const number = parseFloat(value);
+    return (isNaN(number) ? 0 : number).toLocaleString("vi-VN") + " đ";
+    }
+
     if (filterType) {
         toggleFilterInputs();
         filterType.addEventListener("change", toggleFilterInputs);
@@ -79,5 +94,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
+    });
+
+    document.querySelectorAll(".money-value").forEach(el => {
+        const price = el.getAttribute("data-price");
+        el.textContent = formatPrice(price);
     });
 });
