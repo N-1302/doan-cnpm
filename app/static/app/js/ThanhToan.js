@@ -21,8 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let khuyenMaiDaApDung = null;
 
+    function formatPrice(price) {
+    return parsePrice(price).toLocaleString("vi-VN") + " đ";
+}
+
     function formatCurrency(value) {
-        return Number(value || 0).toLocaleString("vi-VN") + " đ";
+        return formatPrice(value);
     }
 
     function parsePrice(value) {
@@ -41,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return parseInt(raw.replace(/[^\d]/g, ""), 10) || 0;
     }
-    
+
     function isUserLoggedIn() {
         const body = document.body;
         if (!body) return false;

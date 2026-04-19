@@ -86,7 +86,7 @@
                 {{ product.mo_ta|default:"Ngon" }}
               </p>
 
-              <div class="shopee-price">{{ product.gia }} VNĐ</div>
+              <div class="shopee-price" data-price="{{ product.gia }}"></div>
 
               <div class="shopee-stock">Số lượng tồn: {{ product.so_luong_ton }}</div>
               <div class="product-status-text">Trạng thái: {{ product.trang_thai }}</div>
@@ -165,6 +165,6 @@
 <input type="hidden" id="buyNowProductId">
 <input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
 
-<script src="{% static 'app/js/trangchu.js' %}"></script>
+<script src="{% static 'app/js/trangchu.js' %}?v=2"></script>
 
 {% endblock %}

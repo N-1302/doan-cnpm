@@ -46,7 +46,7 @@
             <h3>{{ product.ten_banh }}</h3>
             <p>{{ product.mo_ta|default:"Chưa có mô tả" }}</p>
 
-            <div class="price">{{ product.gia }} <span>VNĐ</span></div>
+            <div class="shopee-price" data-price="{{ product.gia }}"></div>
             <div class="stock">Còn lại: {{ product.so_luong_ton }}</div>
             <div class="status">Trạng thái: {{ product.trang_thai|default:"Còn hàng" }}</div>
           </div>
@@ -127,5 +127,5 @@
 <input type="hidden" id="buyNowProductId">
 <input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
 
-<script src="{% static 'app/js/SanPham.js' %}"></script>
+<script src="{% static 'app/js/trangchu.js' %}?v=2"></script>
 {% endblock %}

@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (buyNowStock) buyNowStock.textContent = tonKho > 0 ? tonKho : "Hết hàng";
         if (buyNowQtyInput) buyNowQtyInput.value = tonKho > 0 ? 1 : 0;
-
+        
         clearPopupMessage();
         updatePopupButtons();
     }
@@ -285,5 +285,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.key === "Escape") closePopup();
     });
 
+    document.querySelectorAll(".shopee-price").forEach(el => {
+        const price = el.getAttribute("data-price");
+        el.textContent = formatPrice(price);
+    });
+
     updateBadge();
+
 });
+
