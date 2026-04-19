@@ -1071,16 +1071,19 @@ def dat_hang(request):
 
             for item in chi_tiet_hop_le:
                 ChiTietDonHang.objects.create(
-                    ma_don_hang=don_hang,
-                    ma_banh_id=item['ma_banh'],
-                    so_luong=item['so_luong'],
-                    don_gia=item['don_gia'],
-                    thanh_tien=item['thanh_tien']
-                )
+                ma_don_hang=don_hang,
+                ma_banh_id=item['ma_banh'],
+                so_luong=item['so_luong'],
+                don_gia=item['don_gia'],
+                thanh_tien=item['thanh_tien']
+            )
 
-                banh = item['banh_obj']
-                banh.so_luong_ton -= item['so_luong']
-                banh.save(update_fields=['so_luong_ton'])
+            banh = item['banh_obj']
+
+            banh.so_luong_ton -= item['so_luong']
+            banh.save(update_fields=['so_luong_ton'])
+
+            banh.refresh_from_db()
 
             if phuong_thuc_thanh_toan == 'COD':
                 phuong_thuc_luu = 'COD'

@@ -66,7 +66,7 @@
             class="btn-buy buy-now-btn product-buy-now-btn"
             data-id="{{ product.ma_banh }}"
             data-name="{{ product.ten_banh }}"
-            data-price="{{ product.gia|floatformat:0 }}"
+            data-price="{{ product.gia }}"
             data-stock="{{ product.so_luong_ton }}"
             data-image="{% static 'app/images/' %}{{ product.hinh_anh|default:'looogoo.png' }}"
           >
@@ -88,45 +88,44 @@
 <div class="buy-now-popup-overlay" id="buyNowPopupOverlay"></div>
 
 <div class="buy-now-popup" id="buyNowPopup">
-  <button type="button" class="buy-now-close" id="closeBuyNowPopup">
-    &times;
-  </button>
+    <button type="button" class="buy-now-close" id="closeBuyNowPopup">&times;</button>
 
-  <h2 class="buy-now-title">Mua Ngay</h2>
+    <h2 class="buy-now-title">Mua Ngay</h2>
 
-  <div class="buy-now-box">
-    <div class="buy-now-left">
-      <img id="buyNowImage" src="" alt="Sản phẩm" />
-    </div>
-
-    <div class="buy-now-right">
-      <h3 id="buyNowName">Tên bánh</h3>
-      <p class="buy-now-price" id="buyNowPrice">0 đ</p>
-
-      <div class="buy-now-quantity-wrap">
-        <span class="buy-now-quantity-label">Số lượng</span>
-        <div class="buy-now-quantity-box">
-          <button type="button" class="buy-now-qty-btn" id="buyNowMinus">-</button>
-          <input type="text" id="buyNowQtyInput" value="1" readonly />
-          <button type="button" class="buy-now-qty-btn" id="buyNowPlus">+</button>
+    <div class="buy-now-box">
+        <div class="buy-now-left">
+            <img id="buyNowImage" src="" alt="Sản phẩm">
         </div>
-      </div>
 
-      <p class="buy-now-stock-text">
-        Còn lại: <span id="buyNowStock">0</span>
-      </p>
+        <div class="buy-now-right">
+            <h3 id="buyNowName">Tên bánh</h3>
+            <p class="buy-now-price" id="buyNowPrice">0 đ</p>
 
-      <div class="buy-now-actions">
-        <button type="button" class="buy-now-pay-btn" id="buyNowConfirmBtn">
-          Mua ngay
-        </button>
-      </div>
+            <div class="buy-now-quantity-wrap">
+                <span class="buy-now-quantity-label">Số lượng</span>
+                <div class="buy-now-quantity-box">
+                    <button type="button" class="buy-now-qty-btn" id="buyNowMinus">-</button>
+                    <input type="text" id="buyNowQtyInput" value="1" readonly>
+                    <button type="button" class="buy-now-qty-btn" id="buyNowPlus">+</button>
+                </div>
+            </div>
+
+            <p class="buy-now-stock-text">
+                Còn lại: <span id="buyNowStock">0</span>
+            </p>
+
+            <div class="buy-now-actions">
+                <button type="button" class="buy-now-pay-btn" id="buyNowConfirmBtn">
+                    Mua ngay
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
-<input type="hidden" id="buyNowProductId" />
-<input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}" />
+<!-- hidden data cho JS -->
+<input type="hidden" id="buyNowProductId">
+<input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
 
 <script src="{% static 'app/js/SanPham.js' %}"></script>
 {% endblock %}

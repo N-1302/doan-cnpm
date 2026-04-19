@@ -78,7 +78,13 @@
                         <td>{{ banh.so_luong_ton }}</td>
                         <td>
                             <span class="qlb-status">
-                                {{ banh.trang_thai|default:"Đang bán" }}
+                                {% if banh.trang_thai == 'Tạm ngưng bán' %}
+                                    Tạm ngưng bán
+                                {% elif banh.so_luong_ton == 0 %}
+                                    Tạm hết
+                                {% else %}
+                                    Còn hàng
+                                {% endif %}
                             </span>
                         </td>
                         <td>

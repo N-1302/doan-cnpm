@@ -1,414 +1,419 @@
 .giohang-page {
-    background: #f7f3ea;
-    padding: 42px 0 80px;
-    min-height: 100vh;
+  background: #f7f3ea;
+  padding: 42px 0 80px;
+  min-height: 100vh;
 }
 
 .giohang-container {
-    width: 100%;
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 0 16px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 .giohang-header {
-    margin-bottom: 32px;
+  margin-bottom: 32px;
 }
 
 .giohang-subtitle {
-    margin: 0 0 8px;
-    color: #b88b4a;
-    font-size: 14px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-weight: 700;
+  margin: 0 0 8px;
+  color: #b88b4a;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .giohang-title {
-    margin: 0 0 12px;
-    font-size: 54px;
-    line-height: 1.05;
-    font-weight: 400;
-    color: #c61f2a;
-    text-transform: uppercase;
-    font-family: "Times New Roman", serif;
+  margin: 0 0 12px;
+  font-size: 54px;
+  line-height: 1.05;
+  font-weight: 400;
+  color: #c61f2a;
+  text-transform: uppercase;
+  font-family: "Times New Roman", serif;
 }
 
 .giohang-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    font-size: 14px;
-    color: #8d96a8;
-    text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #8d96a8;
+  text-transform: uppercase;
+}
+
+.giohang-breadcrumb strong {
+  color: #000 !important;
+  font-weight: 700;
 }
 
 .giohang-breadcrumb a {
-    color: #8d96a8;
-    text-decoration: none;
+  color: #8d96a8;
+  text-decoration: none;
 }
 
 .giohang-breadcrumb a:hover {
-    color: #c61f2a;
+  color: #c61f2a;
 }
 
 .giohang-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 28px;
-    align-items: start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 28px;
+  align-items: start;
 }
 
 .giohang-left {
-    min-width: 0;
+  min-width: 0;
 }
 
 .giohang-table-wrap {
-    background: #fff;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .giohang-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    display: table !important;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  display: table !important;
 }
 
 .giohang-table thead {
-    background: #fff5f6;
-    display: table-header-group !important;
+  background: #fff5f6;
+  display: table-header-group !important;
 }
 
 .giohang-table tbody {
-    display: table-row-group !important;
+  display: table-row-group !important;
 }
 
 .giohang-table tr {
-    display: table-row !important;
+  display: table-row !important;
 }
 
 .giohang-table th,
 .giohang-table td {
-    display: table-cell !important;
-    padding: 18px 14px;
-    text-align: left;
-    vertical-align: middle;
-    border-bottom: 1px solid #f2f2f2;
+  display: table-cell !important;
+  padding: 18px 14px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #f2f2f2;
 }
 
 .giohang-table th {
-    font-size: 14px;
-    color: #7c8391;
-    text-transform: uppercase;
-    font-weight: 700;
-    border-bottom: 1px solid #f0e4e5;
-    white-space: nowrap;
+  font-size: 14px;
+  color: #7c8391;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid #f0e4e5;
+  white-space: nowrap;
 }
 
 .giohang-table th:nth-child(1),
 .giohang-table td:nth-child(1) {
-    width: 46%;
+  width: 46%;
 }
 
 .giohang-table th:nth-child(2),
 .giohang-table td:nth-child(2) {
-    width: 14%;
+  width: 14%;
 }
 
 .giohang-table th:nth-child(3),
 .giohang-table td:nth-child(3) {
-    width: 16%;
+  width: 16%;
 }
 
 .giohang-table th:nth-child(4),
 .giohang-table td:nth-child(4) {
-    width: 18%;
+  width: 18%;
 }
 
 .giohang-table th:nth-child(5),
 .giohang-table td:nth-child(5) {
-    width: 6%;
-    text-align: center;
+  width: 6%;
+  text-align: center;
 }
 
 .giohang-product {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
 }
 
 .giohang-product-img {
-    width: 96px;
-    height: 96px;
-    border-radius: 14px;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 1px solid #f0f0f0;
-    background: #fff;
-    display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 14px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid #f0f0f0;
+  background: #fff;
+  display: block;
 }
 
 .giohang-product-info {
-    min-width: 0;
-    flex: 1;
+  min-width: 0;
+  flex: 1;
 }
 
 .giohang-product-info h4 {
-    margin: 0 0 8px;
-    font-size: 17px;
-    line-height: 1.35;
-    color: #243247;
-    font-weight: 800;
-    text-transform: uppercase;
-    word-break: break-word;
+  margin: 0 0 8px;
+  font-size: 17px;
+  line-height: 1.35;
+  color: #243247;
+  font-weight: 800;
+  text-transform: uppercase;
+  word-break: break-word;
 }
 
 .giohang-product-info p {
-    margin: 0;
-    color: #c61f2a;
-    font-size: 14px;
-    line-height: 1.5;
-    font-weight: 700;
-    word-break: break-word;
+  margin: 0;
+  color: #c61f2a;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 700;
+  word-break: break-word;
 }
 
 .giohang-price,
 .giohang-total {
-    font-size: 16px;
-    color: #c61f2a;
-    font-weight: 800;
-    white-space: nowrap;
+  font-size: 16px;
+  color: #c61f2a;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .giohang-qty-box {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid #d7d7d7;
-    border-radius: 999px;
-    overflow: hidden;
-    background: #fff;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #d7d7d7;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
 }
 
 .giohang-qty-btn {
-    width: 38px;
-    height: 40px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 22px;
-    color: #28354a;
-    transition: 0.2s ease;
+  width: 38px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  color: #28354a;
+  transition: 0.2s ease;
 }
 
 .giohang-qty-btn:hover {
-    background: #f7f7f7;
+  background: #f7f7f7;
 }
 
 .giohang-qty-number {
-    min-width: 42px;
-    padding: 0 6px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: #28354a;
+  min-width: 42px;
+  padding: 0 6px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #28354a;
 }
 
 .giohang-remove-cell {
-    text-align: center;
+  text-align: center;
 }
 
 .giohang-remove-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 50%;
-    background: #fff1f2;
-    color: #c61f2a;
-    font-size: 22px;
-    line-height: 1;
-    cursor: pointer;
-    transition: 0.25s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #fff1f2;
+  color: #c61f2a;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .giohang-remove-btn:hover {
-    background: #c61f2a;
-    color: #fff;
+  background: #c61f2a;
+  color: #fff;
 }
 
 .giohang-summary-card {
-    background: #fff;
-    border-radius: 18px;
-    padding: 24px 22px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 24px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 24px;
 }
 
 .giohang-summary-card h3 {
-    margin: 0 0 20px;
-    font-size: 22px;
-    color: #243247;
-    font-weight: 800;
+  margin: 0 0 20px;
+  font-size: 22px;
+  color: #243247;
+  font-weight: 800;
 }
 
 .giohang-summary-row,
 .giohang-summary-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .giohang-summary-row {
-    padding: 12px 0;
-    border-bottom: 1px dashed #ececec;
-    color: #596273;
-    font-size: 15px;
+  padding: 12px 0;
+  border-bottom: 1px dashed #ececec;
+  color: #596273;
+  font-size: 15px;
 }
 
 .giohang-summary-row strong {
-    color: #243247;
-    font-size: 16px;
-    white-space: nowrap;
+  color: #243247;
+  font-size: 16px;
+  white-space: nowrap;
 }
 
 .giohang-summary-total {
-    padding: 18px 0 20px;
-    margin-top: 6px;
-    color: #243247;
-    font-size: 18px;
-    font-weight: 800;
+  padding: 18px 0 20px;
+  margin-top: 6px;
+  color: #243247;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .giohang-summary-total strong {
-    font-size: 28px;
-    color: #c61f2a;
-    line-height: 1.2;
-    white-space: nowrap;
+  font-size: 28px;
+  color: #c61f2a;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .giohang-checkout-btn,
 .giohang-continue-btn,
 .giohang-shop-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 52px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 800;
-    transition: 0.25s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 52px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 800;
+  transition: 0.25s ease;
 }
 
 .giohang-checkout-btn {
-    background: #c61f2a;
-    color: #fff;
-    margin-bottom: 12px;
+  background: #c61f2a;
+  color: #fff;
+  margin-bottom: 12px;
 }
 
 .giohang-checkout-btn:hover {
-    background: #a91822;
-    color: #fff;
+  background: #a91822;
+  color: #fff;
 }
 
 .giohang-continue-btn,
 .giohang-shop-btn {
-    border: 1.5px solid #c61f2a;
-    color: #c61f2a;
-    background: #fff;
+  border: 1.5px solid #c61f2a;
+  color: #c61f2a;
+  background: #fff;
 }
 
 .giohang-continue-btn:hover,
 .giohang-shop-btn:hover {
-    background: #c61f2a;
-    color: #fff;
+  background: #c61f2a;
+  color: #fff;
 }
 
 .giohang-empty {
-    background: #fff;
-    border-radius: 18px;
-    padding: 56px 24px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  background: #fff;
+  border-radius: 18px;
+  padding: 56px 24px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .giohang-empty-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
+  font-size: 48px;
+  margin-bottom: 12px;
 }
 
 .giohang-empty h3 {
-    margin: 0 0 10px;
-    color: #243247;
-    font-size: 24px;
-    font-weight: 800;
+  margin: 0 0 10px;
+  color: #243247;
+  font-size: 24px;
+  font-weight: 800;
 }
 
 .giohang-empty p {
-    margin: 0 0 22px;
-    color: #6c7482;
-    font-size: 15px;
+  margin: 0 0 22px;
+  color: #6c7482;
+  font-size: 15px;
 }
 
 .giohang-loading {
-    text-align: center;
-    color: #666;
-    font-size: 16px;
-    padding: 30px 16px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+  padding: 30px 16px;
 }
 
 @media (max-width: 991px) {
-    .giohang-layout {
-        grid-template-columns: 1fr;
-    }
+  .giohang-layout {
+    grid-template-columns: 1fr;
+  }
 
-    .giohang-summary-card {
-        position: static;
-    }
+  .giohang-summary-card {
+    position: static;
+  }
 }
 
 @media (max-width: 768px) {
-    .giohang-title {
-        font-size: 38px;
-    }
+  .giohang-title {
+    font-size: 38px;
+  }
 
-    .giohang-table-wrap {
-        overflow-x: auto;
-    }
+  .giohang-table-wrap {
+    overflow-x: auto;
+  }
 
-    .giohang-table {
-        min-width: 920px;
-    }
+  .giohang-table {
+    min-width: 920px;
+  }
 }
 
 @media (max-width: 576px) {
-    .giohang-page {
-        padding: 28px 0 60px;
-    }
+  .giohang-page {
+    padding: 28px 0 60px;
+  }
 
-    .giohang-title {
-        font-size: 30px;
-    }
+  .giohang-title {
+    font-size: 30px;
+  }
 
-    .giohang-product-img {
-        width: 82px;
-        height: 82px;
-    }
+  .giohang-product-img {
+    width: 82px;
+    height: 82px;
+  }
 
-    .giohang-product-info h4 {
-        font-size: 15px;
-    }
+  .giohang-product-info h4 {
+    font-size: 15px;
+  }
 
-    .giohang-summary-total strong {
-        font-size: 24px;
-    }
+  .giohang-summary-total strong {
+    font-size: 24px;
+  }
 }

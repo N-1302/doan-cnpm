@@ -1,142 +1,142 @@
-{% extends 'app/base.html' %}
-{% load static %}
+  {% extends 'app/base.html' %}
+  {% load static %}
 
-{% block main_content %}
-<link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}">
+  {% block main_content %}
+  <link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}?v=99">
+  <link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}">
 
-<section class="product-section pb-5">
-  <div class="container">
+  <section class="product-page pb -5">
+    <div class="container">
 
-    <div class="product-top-heading">
-      <h1>NEW COLLECTION</h1>
-      <div class="product-breadcrumb">
-        <a href="{% url 'home' %}">TRANG CHỦ</a>
-        <span>›</span>
-        <a href="{% url 'category' %}">DANH SÁCH SẢN PHẨM</a>
-        <span>›</span>
-        <strong>NEW COLLECTION</strong>
-      </div>
-    </div>
-
-    <div class="product-grid">
-      {% for item in new_collection %}
-      <div class="product-card {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}product-disabled{% endif %}">
-        
-        <div class="product-badge">NEW</div>
-
-        {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
-          <div class="product-card-link disabled-link">
-        {% else %}
-          <a href="{% url 'product_detail' item.ma_banh %}" class="product-card-link">
-        {% endif %}
-
-            <div class="product-image">
-              {% if item.hinh_anh %}
-                <img
-                  class="shopee-image"
-                  src="{% static 'app/images/' %}{{ item.hinh_anh }}"
-                  alt="{{ item.ten_banh }}"
-                />
-              {% else %}
-                <img
-                  class="shopee-image"
-                  src="{% static 'app/images/looogoo.png' %}"
-                  alt="{{ item.ten_banh }}"
-                />
-              {% endif %}
-
-              {% if item.trang_thai == 'Tạm ngưng bán' %}
-                <div class="product-status-circle">Tạm ngưng bán</div>
-              {% elif item.so_luong_ton == 0 %}
-                <div class="product-status-circle">Hết hàng</div>
-              {% endif %}
-            </div>
-
-            <div class="product-info">
-              <h3>{{ item.ten_banh }}</h3>
-              <p>{{ item.mo_ta|default:"Bánh ngon mỗi ngày" }}</p>
-
-              <div class="price">{{ item.gia }} <span>VNĐ</span></div>
-              <div class="stock">Còn lại: {{ item.so_luong_ton }}</div>
-              <div class="status">Trạng thái: {{ item.trang_thai }}</div>
-            </div>
-
-        {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
+      <div class="giohang-header">
+          <p class="giohang-subtitle">SPRINTTEAM BAKERY</p>
+          <h1 class="giohang-title">New Collection</h1>
+          <div class="giohang-breadcrumb">
+            <a href="{% url 'home' %}">Trang chủ</a>
+            <span>/</span>
+            <strong>New Collection</strong>
           </div>
-        {% else %}
-          </a>
-        {% endif %}
+      </div>
 
-        <div class="product-actions">
+      <div class="product-grid">
+        {% for item in new_collection %}
+        <div class="product-card {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}product-disabled{% endif %}">
+          
+          <div class="product-badge">NEW</div>
 
           {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
-            <button class="btn-buy" disabled>Không khả dụng</button>
+            <div class="product-card-link disabled-link">
           {% else %}
-            <button
-              type="button"
-              class="btn-buy buy-now-btn product-buy-now-btn"
-              data-id="{{ item.ma_banh }}"
-              data-name="{{ item.ten_banh }}"
-              data-price="{{ item.gia|floatformat:0 }}"
-              data-stock="{{ item.so_luong_ton }}"
-              data-image="{% static 'app/images/' %}{{ item.hinh_anh|default:'no-image.png' }}"
-            >
-              Mua ngay
-            </button>
+            <a href="{% url 'product_detail' item.ma_banh %}" class="product-card-link">
           {% endif %}
+
+              <div class="product-image">
+                {% if item.hinh_anh %}
+                  <img
+                    class="shopee-image"
+                    src="{% static 'app/images/' %}{{ item.hinh_anh }}"
+                    alt="{{ item.ten_banh }}"
+                  />
+                {% else %}
+                  <img
+                    class="shopee-image"
+                    src="{% static 'app/images/looogoo.png' %}"
+                    alt="{{ item.ten_banh }}"
+                  />
+                {% endif %}
+
+                {% if item.trang_thai == 'Tạm ngưng bán' %}
+                  <div class="product-status-circle">Tạm ngưng bán</div>
+                {% elif item.so_luong_ton == 0 %}
+                  <div class="product-status-circle">Hết hàng</div>
+                {% endif %}
+              </div>
+
+              <div class="product-info">
+                <h3>{{ item.ten_banh }}</h3>
+                <p>{{ item.mo_ta|default:"Bánh ngon mỗi ngày" }}</p>
+
+                <div class="price">{{ item.gia }} <span>VNĐ</span></div>
+                <div class="stock">Còn lại: {{ item.so_luong_ton }}</div>
+                <div class="status">Trạng thái: {{ item.trang_thai }}</div>
+              </div>
+
+          {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
+            </div>
+          {% else %}
+            </a>
+          {% endif %}
+
+          <div class="product-actions">
+
+            {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
+              <button class="btn-buy" disabled>Không khả dụng</button>
+            {% else %}
+              <button
+                type="button"
+                class="btn-buy buy-now-btn product-buy-now-btn"
+                data-id="{{ item.ma_banh }}"
+                data-name="{{ item.ten_banh }}"
+                data-price="{{ item.gia }}"
+                data-stock="{{ item.so_luong_ton }}"
+                data-image="{% static 'app/images/' %}{{ item.hinh_anh|default:'no-image.png' }}"
+              >
+                Mua ngay
+              </button>
+            {% endif %}
+          </div>
+
+        </div>
+        {% empty %}
+        <div class="empty-box">
+          <p>Chưa có sản phẩm mới.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- POPUP MUA NGAY -->
+  <div class="buy-now-popup-overlay" id="buyNowPopupOverlay"></div>
+
+  <div class="buy-now-popup" id="buyNowPopup">
+    <button type="button" class="buy-now-close" id="closeBuyNowPopup">&times;</button>
+
+    <h2 class="buy-now-title">Mua Ngay</h2>
+
+    <div class="buy-now-box">
+      <div class="buy-now-left">
+        <img id="buyNowImage" src="" alt="Sản phẩm">
+      </div>
+
+      <div class="buy-now-right">
+        <h3 id="buyNowName">Tên bánh</h3>
+        <p class="buy-now-price" id="buyNowPrice">0 đ</p>
+
+        <div class="buy-now-quantity-wrap">
+          <span class="buy-now-quantity-label">Số lượng</span>
+          <div class="buy-now-quantity-box">
+            <button type="button" class="buy-now-qty-btn" id="buyNowMinus">-</button>
+            <input type="text" id="buyNowQtyInput" value="1" readonly>
+            <button type="button" class="buy-now-qty-btn" id="buyNowPlus">+</button>
+          </div>
         </div>
 
-      </div>
-      {% empty %}
-      <div class="empty-box">
-        <p>Chưa có sản phẩm mới.</p>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
+        <p class="buy-now-stock-text">
+          Còn lại: <span id="buyNowStock">0</span>
+        </p>
 
-<!-- POPUP MUA NGAY -->
-<div class="buy-now-popup-overlay" id="buyNowPopupOverlay"></div>
-
-<div class="buy-now-popup" id="buyNowPopup">
-  <button type="button" class="buy-now-close" id="closeBuyNowPopup">&times;</button>
-
-  <h2 class="buy-now-title">Mua Ngay</h2>
-
-  <div class="buy-now-box">
-    <div class="buy-now-left">
-      <img id="buyNowImage" src="" alt="Sản phẩm">
-    </div>
-
-    <div class="buy-now-right">
-      <h3 id="buyNowName">Tên bánh</h3>
-      <p class="buy-now-price" id="buyNowPrice">0 đ</p>
-
-      <div class="buy-now-quantity-wrap">
-        <span class="buy-now-quantity-label">Số lượng</span>
-        <div class="buy-now-quantity-box">
-          <button type="button" class="buy-now-qty-btn" id="buyNowMinus">-</button>
-          <input type="text" id="buyNowQtyInput" value="1" readonly>
-          <button type="button" class="buy-now-qty-btn" id="buyNowPlus">+</button>
+        <div class="buy-now-actions">
+          <button type="button" class="buy-now-pay-btn" id="buyNowConfirmBtn">
+            Mua ngay
+          </button>
         </div>
       </div>
-
-      <p class="buy-now-stock-text">
-        Còn lại: <span id="buyNowStock">0</span>
-      </p>
-
-      <div class="buy-now-actions">
-        <button type="button" class="buy-now-pay-btn" id="buyNowConfirmBtn">
-          Mua ngay
-        </button>
-      </div>
     </div>
   </div>
-</div>
 
-<input type="hidden" id="buyNowProductId">
-<input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
+  <input type="hidden" id="buyNowProductId">
+  <input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
 
-<script src="{% static 'app/js/trangchu.js' %}"></script>
-{% endblock %}
+  <script src="{% static 'app/js/trangchu.js' %}"></script>
+  {% endblock %}

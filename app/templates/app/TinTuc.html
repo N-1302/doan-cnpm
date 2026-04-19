@@ -1,35 +1,20 @@
 {% extends 'app/base.html' %} {% load static %} {% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}?v=99">
 <link rel="stylesheet" href="{% static 'app/css/Tintuc.css' %}" />
+<link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}">
 
-<div class="page-header">
+<section class="product-page pb-5">
   <div class="container">
-    <h1 class="news-page-title">Tin Tức</h1>
 
-    <div class="page-breadcrumb">
-      <a href="{% url 'home' %}">TRANG CHỦ</a>
-      <span>›</span>
-      <strong>TIN TỨC</strong>
-    </div>
-  </div>
-</div>
-
-<section class="news-page">
-  <div class="container">
-    <!-- banner trên -->
-    <div class="news-top-banner">
-      <div class="news-banner-item">
-        <img src="{% static 'app/images/tintuc/t1.jpg' %}" alt="Tin tức 1" />
+    <div class="giohang-header">
+          <p class="giohang-subtitle">SPRINTTEAM BAKERY</p>
+          <h1 class="giohang-title">TIN TỨC</h1>
+          <div class="giohang-breadcrumb">
+            <a href="{% url 'home' %}">Trang chủ</a>
+            <span>/</span>
+            <strong>TIN TỨC</strong>
+          </div>
       </div>
-      <div class="news-banner-item">
-        <img src="{% static 'app/images/tintuc/t2.jpg' %}" alt="Tin tức 2" />
-      </div>
-      <div class="news-banner-item">
-        <img src="{% static 'app/images/tintuc/t3.jpg' %}" alt="Tin tức 3" />
-      </div>
-      <div class="news-banner-item">
-        <img src="{% static 'app/images/tintuc/t4.jpg' %}" alt="Tin tức 4" />
-      </div>
-    </div>
 
     <div class="news-layout">
       <!-- cột trái -->
@@ -37,85 +22,108 @@
         <div class="news-grid">
           <!-- bài 1 -->
           <div class="news-card">
-            <img src="{% static 'app/images/tintuc/t1.jpg' %}" alt="Tin 1" />
+            <img src="{% static 'app/images/t1.jpg' %}" alt="Tin 1" />
             <div class="news-meta">
               <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
-              <span class="news-date">14/04/2026</span>
+              <span class="news-date">20/04/2026</span>
             </div>
-            <h3>CÓ GÌ MỚI TẠI SprintTeam THÁNG 4 NÀY?</h3>
+            <h3>Hè tới ứu đãi ngập tràn</h3>
             <p>
-              Tháng 4 này, SprintTeam chính thức “update” menu với những hương
-              vị vô cùng hấp dẫn.
+              Tháng 6 này SprintTeam mang đến ưu đãi hấp dẫn cho các tín đồ bánh kem và kem tươi, giúp mùa hè thêm ngọt ngào.
             </p>
           </div>
 
           <!-- bài 2 -->
           <div class="news-card">
-            <img src="{% static 'app/images/tintuc/t2.jpg' %}" alt="Tin 2" />
+            <img src="{% static 'app/images/t2.jpg' %}" alt="Tin 2" />
             <div class="news-meta">
               <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
-              <span class="news-date">05/03/2026</span>
+              <span class="news-date">19/04/2026</span>
             </div>
-            <h3>DUBAI CHOCOLATE CHEWY – CHIẾC BÁNH ĐANG “GÂY SỐT”</h3>
+            <h3>30/4 – MỪNG 30/4 VỚI ƯU ĐÃI ĐẶC BIỆT</h3>
             <p>
-              Lấy cảm hứng từ xu hướng tráng miệng đang được nhiều bạn trẻ yêu
-              thích.
+              Chào mừng ngày giải phóng miền Nam, SprintTeam dành tặng ưu đãi đặc biệt cho khách hàng với nhiều món quà hấp dẫn.
+            </p>
+          </div>
+
+          <!-- bài 8 -->
+          <div class="news-card">
+            <img src="{% static 'app/images/t8.jpg' %}" alt="Tin 8" />
+            <div class="news-meta">
+              <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
+              <span class="news-date">17/04/2026</span>
+            </div>
+            <h3>Flash Sale – Ưu đãi cuối tuần</h3>
+            <p>
+              Flash Sale cuối tuần với hàng loạt sản phẩm giảm giá sâu, chỉ trong 48 giờ duy nhất tại SprintTeam.
+            </p>
+          </div>
+
+          <!-- bài 7 -->
+          <div class="news-card">
+            <img src="{% static 'app/images/t7.jpg' %}" alt="Tin 7" />
+            <div class="news-meta">
+              <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
+              <span class="news-date">14/04/2026</span>
+            </div>
+            <h3>Mini-game Đoán đúng trúng bánh</h3>
+            <p>
+              Tham gia mini-game đoán đúng trúng bánh để có cơ hội nhận những phần quà hấp dẫn từ SprintTeam.
+            </p>
+          </div>
+
+          <!-- bài 5 -->
+          <div class="news-card">
+            <img src="{% static 'app/images/t5.jpg' %}" alt="Tin 5" />
+            <div class="news-meta">
+              <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
+              <span class="news-date">14/04/2026</span>
+            </div>
+            <h3>
+              Bánh Doraemon – Hương vị tuổi thơ, Ưu đãi ngập tràn
+            </h3>
+            <p>
+              Hương vị tuổi thơ với bánh Doraemon đặc biệt, cùng ưu đãi hấp dẫn từ SprintTeam.
             </p>
           </div>
 
           <!-- bài 3 -->
           <div class="news-card">
-            <img src="{% static 'app/images/tintuc/t3.jpg' %}" alt="Tin 3" />
+            <img src="{% static 'app/images/t3.jpg' %}" alt="Tin 3" />
             <div class="news-meta">
               <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
               <span class="news-date">27/02/2026</span>
             </div>
-            <h3>8/3 – VỊ NGỌT THAY LỜI MUỐN NÓI</h3>
+            <h3>GỬI TRAO YÊU THƯƠNG MỪNG 8/3</h3>
             <p>
               Bộ quà tặng và mẫu bánh dành riêng cho dịp 8/3 với thiết kế ngọt
               ngào, trang nhã.
             </p>
           </div>
 
-          <!-- bài 4 -->
-          <div class="news-card">
-            <img src="{% static 'app/images/tintuc/t4.jpg' %}" alt="Tin 4" />
-            <div class="news-meta">
-              <span class="news-tag">Uncategorized</span>
-              <span class="news-date">13/02/2026</span>
-            </div>
-            <h3>3 BƯỚC ĐỂ THƯỞNG THỨC BÁNH CHƯNG SprintTeam ĐÚNG CÁCH</h3>
-            <p>
-              Chỉ với vài bước đơn giản, bạn có thể thưởng thức trọn vị bánh
-              truyền thống.
-            </p>
-          </div>
-
-          <!-- bài 5 -->
-          <div class="news-card">
-            <img src="{% static 'app/images/tintuc/t5.jpg' %}" alt="Tin 5" />
-            <div class="news-meta">
-              <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
-              <span class="news-date">14/01/2026</span>
-            </div>
-            <h3>
-              NHÂN ĐÔI VỊ MÁT LẠNH: MUA KEM SprintTeam DELATO TẶNG KEM QUE
-            </h3>
-            <p>
-              Ưu đãi mùa hè dành cho tín đồ mê kem với nhiều hương vị hấp dẫn.
-            </p>
-          </div>
-
           <!-- bài 6 -->
           <div class="news-card">
-            <img src="{% static 'app/images/tintuc/t6.jpg' %}" alt="Tin 6" />
+            <img src="{% static 'app/images/t6.jpg' %}" alt="Tin 6" />
             <div class="news-meta">
               <span class="news-tag">Tin Tức Công Ty SprintTeam</span>
               <span class="news-date">06/01/2026</span>
             </div>
-            <h3>SprintTeam – TẾT ĐOÀN VIÊN, LỘC ĐẦY Ý VỊ</h3>
+            <h3>Chi ân khánh hàng ưu đãi thả ra</h3>
             <p>
-              Gói trọn hương vị Tết truyền thống trong những hộp quà sang trọng.
+              SprintTeam tri ân khách hàng với ưu đãi hấp dẫn, giảm giá lên đến 50% cho nhiều sản phẩm bánh kem và bánh ngọt.
+            </p>
+          </div>
+
+          <!-- bài 4 -->
+          <div class="news-card">
+            <img src="{% static 'app/images/t4.jpg' %}" alt="Tin 4" />
+            <div class="news-meta">
+              <span class="news-tag">Uncategorized</span>
+              <span class="news-date">30/12/2025</span>
+            </div>
+            <h3>QUÀ XUÂN TRAO TAY – LÌ XÌ TRAO LỘC</h3>
+            <p>
+              Tết đông đầy ý nghĩa với những hộp quà xuân sang trọng, đẳng cấp từ SprintTeam.
             </p>
           </div>
         </div>
@@ -127,38 +135,38 @@
           <h3>CÓ THỂ BẠN QUAN TÂM</h3>
 
           <div class="sidebar-post">
-            <img src="{% static 'app/images/tintuc/t1.jpg' %}" alt="Tin 1" />
+            <img src="{% static 'app/images/t1.jpg' %}" alt="Tin 1" />
             <div>
               <div class="sidebar-post-meta">
                 Tin Tức Công Ty SprintTeam | 14/04/2026
               </div>
-              <a href="#">CÓ GÌ MỚI TẠI SprintTeam THÁNG 4...</a>
+              <a href="#">Hè tới ứu đãi ngập tràn</a>
             </div>
           </div>
 
           <div class="sidebar-post">
-            <img src="{% static 'app/images/tintuc/t6.jpg' %}" alt="Tin 6" />
+            <img src="{% static 'app/images/t6.jpg' %}" alt="Tin 6" />
             <div>
               <div class="sidebar-post-meta">
                 Tin Tức Công Ty SprintTeam | 06/01/2026
               </div>
-              <a href="#">Gói trọn hương vị Tết truyền thống tr...</a>
+              <a href="#">Chi ân khánh hàng ưu đãi thả ra</a>
             </div>
           </div>
 
           <div class="sidebar-post">
-            <img src="{% static 'app/images/tintuc/t3.jpg' %}" alt="Tin 3" />
+            <img src="{% static 'app/images/t3.jpg' %}" alt="Tin 3" />
             <div>
               <div class="sidebar-post-meta">
                 Tin Tức Công Ty SprintTeam | 27/02/2026
               </div>
-              <a href="#">Bộ quà tặng và mẫu bánh dành riêng ...</a>
+              <a href="#">GỬI TRAO YÊU THƯƠNG MỪNG 8/3</a>
             </div>
           </div>
 
         <div class="sidebar-box">
           <img
-            src="{% static 'app/images/tintuc/sidebar1.jpg' %}"
+            src="{% static 'app/images/banner/banner2.jpg' %}"
             alt="Banner phụ"
             class="sidebar-banner"
           />

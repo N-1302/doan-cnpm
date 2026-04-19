@@ -1,18 +1,16 @@
-{% extends 'app/base.html' %}
-{% load static %}
+{% extends 'app/base.html' %} {% load static %} {% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/GioiThieu.css' %}" />
+<link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}?v=99" />
+<link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}" />
 
-{% block main_content %}
-<link rel="stylesheet" href="{% static 'app/css/GioiThieu.css' %}">
-
-<section class="about-page">
-  <div class="about-container">
-
-    <!-- Tiêu đề -->
-    <div class="about-hero">
-      <h1>Giới Thiệu</h1>
-      <div class="breadcrumb">
-        <a href="{% url 'home' %}">TRANG CHỦ</a>
-        <span>›</span>
+<section class="product-page">
+  <div class="container">
+    <div class="giohang-header">
+      <p class="giohang-subtitle">SPRINTTEAM BAKERY</p>
+      <h1 class="giohang-title">GIỚI THIỆU</h1>
+      <div class="giohang-breadcrumb">
+        <a href="{% url 'home' %}">Trang chủ</a>
+        <span>/</span>
         <strong>GIỚI THIỆU</strong>
       </div>
     </div>
@@ -20,7 +18,10 @@
     <!-- Khối 75 năm hoạt động -->
     <div class="about-block about-grid">
       <div class="about-image">
-        <img src="{% static 'app/images/gioithieu-1.jpg' %}" alt="SprintTeam Bakery">
+        <img
+          src="{% static 'app/images/gioithieu-1.jpg' %}"
+          alt="SprintTeam Bakery"
+        />
       </div>
 
       <div class="about-content">
@@ -31,16 +32,17 @@
         </div>
 
         <p>
-          SprintTeam là thương hiệu bánh mang phong cách tinh tế, được xây dựng với cảm hứng
-          từ nghệ thuật làm bánh hiện đại và sự chỉn chu trong từng chi tiết. Trong suốt quá
-          trình phát triển, chúng tôi luôn đặt chất lượng sản phẩm và trải nghiệm khách hàng
-          lên hàng đầu.
+          SprintTeam là thương hiệu bánh mang phong cách tinh tế, được xây dựng
+          với cảm hứng từ nghệ thuật làm bánh hiện đại và sự chỉn chu trong từng
+          chi tiết. Trong suốt quá trình phát triển, chúng tôi luôn đặt chất
+          lượng sản phẩm và trải nghiệm khách hàng lên hàng đầu.
         </p>
 
         <p>
-          Không chỉ chú trọng vào hương vị, SprintTeam còn theo đuổi sự hài hòa giữa hình thức,
-          chất lượng và cảm xúc mà mỗi chiếc bánh mang lại, để mỗi sản phẩm không chỉ là món ăn
-          mà còn là món quà ý nghĩa trong những dịp đặc biệt.
+          Không chỉ chú trọng vào hương vị, SprintTeam còn theo đuổi sự hài hòa
+          giữa hình thức, chất lượng và cảm xúc mà mỗi chiếc bánh mang lại, để
+          mỗi sản phẩm không chỉ là món ăn mà còn là món quà ý nghĩa trong những
+          dịp đặc biệt.
         </p>
 
         <div class="vision-mission">
@@ -49,8 +51,9 @@
             <div class="vm-text">
               <h3>Trở thành thương hiệu bánh được yêu thích</h3>
               <p>
-                Không ngừng đổi mới và nâng cao chất lượng để trở thành lựa chọn hàng đầu
-                cho khách hàng trong các dịp sinh nhật, lễ tặng và thưởng thức hằng ngày.
+                Không ngừng đổi mới và nâng cao chất lượng để trở thành lựa chọn
+                hàng đầu cho khách hàng trong các dịp sinh nhật, lễ tặng và
+                thưởng thức hằng ngày.
               </p>
             </div>
           </div>
@@ -60,8 +63,9 @@
             <div class="vm-text">
               <h3>Trao gửi giá trị qua từng chiếc bánh</h3>
               <p>
-                Mang đến những sản phẩm thơm ngon, đẹp mắt và an toàn, góp phần tạo nên
-                những khoảnh khắc ngọt ngào, trọn vẹn và đáng nhớ cho mọi khách hàng.
+                Mang đến những sản phẩm thơm ngon, đẹp mắt và an toàn, góp phần
+                tạo nên những khoảnh khắc ngọt ngào, trọn vẹn và đáng nhớ cho
+                mọi khách hàng.
               </p>
             </div>
           </div>
@@ -71,40 +75,63 @@
 
     <!-- Khối 500 loại bánh + slider -->
     <div class="cake-types">
+      <div class="cake-types-heading">
+        <span class="big-number">500</span>
+        <span class="plus-sign">+</span>
+        <span class="big-text">Loại Bánh</span>
+      </div>
 
-  <div class="cake-types-heading">
-    <span class="big-number">500</span>
-    <span class="plus-sign">+</span>
-    <span class="big-text">Loại Bánh</span>
-  </div>
+      <p class="cake-types-desc">
+        Danh mục sản phẩm đa dạng, phù hợp mọi nhu cầu: Với hơn 500 sản phẩm
+        bánh phong phú, SprintTeam không ngừng khẳng định vị thế của một thương
+        hiệu danh tiếng, mang đến những hương vị tinh tế và chất lượng vượt
+        trội.
+      </p>
 
-  <p class="cake-types-desc">
-    Danh mục sản phẩm đa dạng, phù hợp mọi nhu cầu: Với hơn 500 sản phẩm bánh phong phú, SprintTeam không ngừng khẳng định vị thế của một thương hiệu danh tiếng, mang đến những hương vị tinh tế và chất lượng vượt trội.
-  </p>
+      <div class="cake-slider">
+        <div class="cake-track" id="cakeTrack">
+          <div class="cake-item">
+            <img src="{% static 'app/images/b1.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b2.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b3.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b4.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b5.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b6.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b7.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b8.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b9.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b10.jpg' %}" />
+          </div>
+          <div class="cake-item">
+            <img src="{% static 'app/images/b11.jpg' %}" />
+          </div>
+        </div>
+      </div>
 
-  <div class="cake-slider">
-    <div class="cake-track" id="cakeTrack">
-
-      <div class="cake-item"><img src="{% static 'app/images/b1.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b2.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b3.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b4.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b5.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b6.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b7.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b8.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b9.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b10.jpg' %}"></div>
-      <div class="cake-item"><img src="{% static 'app/images/b11.jpg' %}"></div>
+      <div class="slider-dots">
+        <span class="active" onclick="goToSlide(0)"></span>
+        <span onclick="goToSlide(1)"></span>
+        <span onclick="goToSlide(2)"></span>
+      </div>
     </div>
-  </div>
-
-  <div class="slider-dots">
-    <span class="active" onclick="goToSlide(0)"></span>
-    <span onclick="goToSlide(1)"></span>
-    <span onclick="goToSlide(2)"></span>
-  </div>
-</div>
 
     <!-- Dải đỏ giá trị -->
     <div class="about-values">
@@ -142,14 +169,14 @@
             Hương vị tinh tế, chỉn chu trong từng sản phẩm.
           </p>
           <p>
-            Từ những dòng bánh truyền thống đến các sản phẩm hiện đại, mỗi chiếc bánh đều
-            được chăm chút kỹ lưỡng nhằm cân bằng giữa hương vị, thẩm mỹ và cảm nhận thưởng thức.
-            Đây cũng là định hướng mà thương hiệu luôn theo đuổi trong hành trình phục vụ khách hàng.
+            Từ những dòng bánh truyền thống đến các sản phẩm hiện đại, mỗi chiếc
+            bánh đều được chăm chút kỹ lưỡng nhằm cân bằng giữa hương vị, thẩm
+            mỹ và cảm nhận thưởng thức. Đây cũng là định hướng mà thương hiệu
+            luôn theo đuổi trong hành trình phục vụ khách hàng.
           </p>
         </div>
       </div>
     </div>
-
   </div>
 </section>
 

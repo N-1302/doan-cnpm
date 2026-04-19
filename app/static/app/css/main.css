@@ -624,7 +624,9 @@
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .user-avatar:hover {
@@ -812,8 +814,11 @@
   text-decoration: none;
   font-size: 22px;
   line-height: 1;
-  transition: transform 0.25s ease, box-shadow 0.25s ease,
-    background-color 0.25s ease, color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
@@ -855,8 +860,8 @@
 }
 
 .disabled-link {
-    pointer-events: none;
-    cursor: default;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* ===== RESPONSIVE FOOTER SOCIAL ===== */

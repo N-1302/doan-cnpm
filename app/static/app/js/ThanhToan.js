@@ -435,10 +435,13 @@ document.addEventListener("DOMContentLoaded", function () {
             vi_dien_tu: phuongThucThanhToan === "Ví điện tử" ? viDienTu : "",
             ma_giam_gia: khuyenMaiDaApDung ? khuyenMaiDaApDung.ma_giam_gia : "",
             cart: cart.map(item => ({
-                ma_banh: Number(item.maBanh || 0),
-                so_luong: Number(item.soLuong || 0)
+                ma_banh: Number(item.maBanh ?? item.ma_banh ?? 0),
+                so_luong: Number(item.soLuong ?? item.so_luong ?? 0)
             }))
         };
+
+console.log("CART localStorage =", cart);
+console.log("PAYLOAD GUI LEN =", payload);
 
         const oldText = btnDatHang.textContent;
         btnDatHang.disabled = true;

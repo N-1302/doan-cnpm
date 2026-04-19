@@ -1,51 +1,56 @@
-{% extends 'app/base.html' %}
-{% load static %}
-{% block main_content %}
+{% extends 'app/base.html' %} {% load static %} {% block main_content %}
+<link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}?v=99" />
+<link rel="stylesheet" href="{% static 'app/css/category.css' %}" />
+<link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}" />
 
-<link rel="stylesheet" href="{% static 'app/css/category.css' %}">
-
-<section class="givral-category-page">
-    <div class="givral-category-container">
-
-        <div class="givral-category-head">
-            <h1 class="givral-category-title">Danh sách sản phẩm</h1>
-
-            <div class="givral-category-breadcrumb">
-              <a href="/">TRANG CHỦ</a>
-              <span>›</span>
-              <span class="active-breadcrumb">DANH SÁCH SẢN PHẨM</span>
-            </div>
-        </div>
-
-        <div class="givral-category-grid">
-            {% for loai in categories %}
-            <div class="givral-category-card">
-                <a href="/san-pham/{{ loai.MaLoaiBanh }}/" class="givral-category-link">
-                    <div class="givral-category-image-wrap">
-                        {% if loai.HinhAnh %}
-                            <img src="{% static 'app/images/' %}{{ loai.HinhAnh }}" alt="{{ loai.TenLoaiBanh }}" class="givral-category-image">
-                        {% else %}
-                            <img src="{% static 'app/images/looogoo.png' %}" alt="{{ loai.TenLoaiBanh }}" class="givral-category-image">
-                        {% endif %}
-                    </div>
-
-                    <div class="givral-category-info">
-                        <h3 class="givral-category-name">{{ loai.TenLoaiBanh }}</h3>
-
-                        <p class="givral-category-count">
-                            {{ loai.so_luong_san_pham|default:"0" }} sản phẩm
-                        </p>
-                    </div>
-                </a>
-            </div>
-            {% empty %}
-            <div class="givral-category-empty">
-                Hiện chưa có danh mục sản phẩm nào.
-            </div>
-            {% endfor %}
-        </div>
-
+<section class="product-page pb-5">
+  <div class="container">
+    <div class="giohang-header">
+      <p class="giohang-subtitle">SPRINTTEAM BAKERY</p>
+      <h1 class="giohang-title">DANH SÁCH SẢN PHẨM</h1>
+      <div class="giohang-breadcrumb">
+        <a href="{% url 'home' %}">Trang chủ</a>
+        <span>/</span>
+        <strong>DANH SÁCH SẢN PHẨM</strong>
+      </div>
     </div>
+
+    <div class="givral-category-grid">
+      {% for loai in categories %}
+      <div class="givral-category-card">
+        <a href="/san-pham/{{ loai.MaLoaiBanh }}/" class="givral-category-link">
+          <div class="givral-category-image-wrap">
+            {% if loai.HinhAnh %}
+            <img
+              src="{% static 'app/images/' %}{{ loai.HinhAnh }}"
+              alt="{{ loai.TenLoaiBanh }}"
+              class="givral-category-image"
+            />
+            {% else %}
+            <img
+              src="{% static 'app/images/looogoo.png' %}"
+              alt="{{ loai.TenLoaiBanh }}"
+              class="givral-category-image"
+            />
+            {% endif %}
+          </div>
+
+          <div class="givral-category-info">
+            <h3 class="givral-category-name">{{ loai.TenLoaiBanh }}</h3>
+
+            <p class="givral-category-count">
+              {{ loai.so_luong_san_pham|default:"0" }} sản phẩm
+            </p>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <div class="givral-category-empty">
+        Hiện chưa có danh mục sản phẩm nào.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </section>
 
 {% endblock %}

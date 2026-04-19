@@ -1,420 +1,368 @@
 .product-page {
-    padding: 40px 0 60px;
-    background: #f5f1eb;
-    min-height: 100vh;
+  padding: 40px 0 60px;
+  background: #f5f1eb;
+  min-height: 100vh;
 }
 
 .product-page .container {
-    width: 90%;
-    max-width: 1520px;
-    margin: 0 auto;
-}
-
-/* tiêu đề đầu trang */
-.product-top-heading {
-    margin-bottom: 40px;
-}
-
-.product-top-heading h1 {
-    font-family: "Times New Roman", serif;
-    font-size: 82px;
-    font-weight: 400;
-    color: #c8102e;
-    margin: 0 0 14px;
-    line-height: 1;
-    text-transform: uppercase;
-}
-
-.product-breadcrumb {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    font-size: 17px;
-    color: #93a0bb;
-    text-transform: uppercase;
-}
-
-.product-breadcrumb a {
-    color: #93a0bb;
-    text-decoration: none;
-    transition: 0.25s ease;
-}
-
-.product-breadcrumb a:hover {
-    color: #c8102e;
-}
-
-.product-breadcrumb strong {
-    color: #000;
-    font-weight: 700;
+  width: 100%;
+  max-width: 1520px;
+  margin: 0 auto;
 }
 
 /* grid sản phẩm */
 .product-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 26px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px;
 }
 
 .product-card {
-    background: #fff;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    transition: 0.3s ease;
-    position: relative;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  transition: 0.3s ease;
+  position: relative;
 }
 
 .product-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
 }
 
 .product-card-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    position: relative;
-    z-index: 1;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  z-index: 1;
 }
 
 .product-card-link:hover {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 .product-image {
-    width: 100%;
-    height: 320px;
-    background: #f2f2f2;
-    overflow: hidden;
+  width: 100%;
+  height: 320px;
+  background: #f2f2f2;
+  overflow: hidden;
 }
 
 .product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.35s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
 }
 
 .product-card:hover .product-image img {
-    transform: scale(1.04);
+  transform: scale(1.04);
 }
 
 /* nội dung */
 .product-info {
-    padding: 22px 16px 10px;
-    text-align: center;
-    background: transparent;
+  padding: 22px 16px 10px;
+  text-align: center;
+  background: transparent;
 }
 
 .product-info h3 {
-    font-size: 22px;
-    color: #111;
-    margin: 0 0 10px;
-    font-weight: 600;
-    min-height: 58px;
-    line-height: 1.35;
+  font-size: 22px;
+  color: #111;
+  margin: 0 0 10px;
+  font-weight: 600;
+  min-height: 58px;
+  line-height: 1.35;
 }
 
 .product-info p {
-    color: #777;
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 48px;
-    margin-bottom: 14px;
+  color: #777;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 48px;
+  margin-bottom: 14px;
 }
 
 .price {
-    font-size: 28px;
-    font-weight: 700;
-    color: #c8102e;
-    margin-bottom: 10px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #c8102e;
+  margin-bottom: 10px;
 }
 
 .stock,
 .status {
-    font-size: 15px;
-    color: #666;
-    margin-bottom: 8px;
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 8px;
 }
 
 .btn-buy {
-    width: 100%;
-    min-height: 48px;
-    padding: 13px 22px;
-    border-radius: 999px;
-    font-size: 16px;
-    font-weight: 700;
-    transition: 0.25s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #c8102e;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+  width: 100%;
+  min-height: 48px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #c8102e;
+  color: #fff;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-buy:hover {
-    background: #a50d26;
-    color: #fff;
+  background: #a50d26;
+  color: #fff;
 }
 
 .empty-box {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 40px;
-    background: #fff;
-    color: #777;
-    font-size: 16px;
-    border-radius: 16px;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  background: #fff;
+  color: #777;
+  font-size: 16px;
+  border-radius: 16px;
 }
 
 /* =========================
    POPUP MUA NGAY
 ========================= */
 .buy-now-popup-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.25s ease;
-    z-index: 9998;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s ease;
+  z-index: 9998;
 }
 
 #buyNowPopupMessage {
-    color: #d70018;
-    font-weight: 600;
-    margin-top: 12px;
-    margin-bottom: 0;
+  color: #d70018;
+  font-weight: 600;
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 
 .buy-now-popup-overlay.active {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .buy-now-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 90%;
-    max-width: 820px;
-    background: #fff;
-    border-radius: 20px;
-    padding: 28px;
-    transform: translate(-50%, -50%) scale(0.95);
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.25s ease;
-    z-index: 9999;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  max-width: 820px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s ease;
+  z-index: 9999;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
 .buy-now-popup.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .buy-now-close {
-    position: absolute;
-    top: 10px;
-    right: 16px;
-    border: none;
-    background: transparent;
-    font-size: 34px;
-    line-height: 1;
-    color: #c8102e;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  border: none;
+  background: transparent;
+  font-size: 34px;
+  line-height: 1;
+  color: #c8102e;
+  cursor: pointer;
 }
 
 .buy-now-title {
-    text-align: center;
-    font-size: 34px;
-    color: #c8102e;
-    margin: 0 0 22px;
-    font-family: "Times New Roman", serif;
-    text-transform: uppercase;
+  text-align: center;
+  font-size: 34px;
+  color: #c8102e;
+  margin: 0 0 22px;
+  font-family: "Times New Roman", serif;
+  text-transform: uppercase;
 }
 
 .buy-now-box {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 28px;
-    align-items: center;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 28px;
+  align-items: center;
 }
 
 .buy-now-left img {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
-    border-radius: 16px;
-    display: block;
-    background: #f2f2f2;
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+  background: #f2f2f2;
 }
 
 .buy-now-right h3 {
-    font-size: 28px;
-    margin: 0 0 12px;
-    color: #111;
-    line-height: 1.4;
+  font-size: 28px;
+  margin: 0 0 12px;
+  color: #111;
+  line-height: 1.4;
 }
 
 .buy-now-price {
-    font-size: 30px;
-    font-weight: 700;
-    color: #c8102e;
-    margin-bottom: 18px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #c8102e;
+  margin-bottom: 18px;
 }
 
 .buy-now-quantity-wrap {
-    margin-bottom: 14px;
+  margin-bottom: 14px;
 }
 
 .buy-now-quantity-label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
 }
 
 .buy-now-quantity-box {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 999px;
-    overflow: hidden;
-    background: #fff;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
 }
 
 .buy-now-qty-btn {
-    width: 42px;
-    height: 42px;
-    border: none;
-    background: #fff;
-    font-size: 22px;
-    cursor: pointer;
-    color: #c8102e;
-    font-weight: 700;
-    transition: 0.2s ease;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  color: #c8102e;
+  font-weight: 700;
+  transition: 0.2s ease;
 }
 
 .buy-now-qty-btn:hover {
-    background: #f7f7f7;
+  background: #f7f7f7;
 }
 
 #buyNowQtyInput {
-    width: 60px;
-    height: 42px;
-    border: none;
-    outline: none;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 700;
-    background: #fff;
-    color: #111;
+  width: 60px;
+  height: 42px;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  background: #fff;
+  color: #111;
 }
 
 .buy-now-stock-text {
-    color: #666;
-    font-size: 15px;
-    margin-bottom: 22px;
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 22px;
 }
 
 .buy-now-actions {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .buy-now-pay-btn {
-    min-width: 180px;
-    height: 48px;
-    border: none;
-    border-radius: 999px;
-    background: #c8102e;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 0 28px;
-    transition: 0.25s ease;
+  min-width: 180px;
+  height: 48px;
+  border: none;
+  border-radius: 999px;
+  background: #c8102e;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 28px;
+  transition: 0.25s ease;
 }
 
 .buy-now-pay-btn:hover {
-    background: #a50d26;
+  background: #a50d26;
 }
 
 /* responsive */
 @media (max-width: 1200px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 900px) {
     .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .product-top-heading h1 {
-        font-size: 64px;
-    }
-}
-
-@media (max-width: 900px) {
-    .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .product-top-heading h1 {
-        font-size: 52px;
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .buy-now-box {
-        grid-template-columns: 1fr;
-        gap: 20px;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
 
     .buy-now-left img {
-        height: 280px;
+      height: 280px;
     }
-}
+  }
 
-@media (max-width: 576px) {
+  @media (max-width: 576px) {
     .product-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .product-top-heading h1 {
-        font-size: 42px;
+      grid-template-columns: 1fr;
     }
 
     .product-breadcrumb {
-        font-size: 14px;
+      font-size: 14px;
     }
 
     .buy-now-popup {
-        width: calc(100% - 24px);
-        padding: 18px;
+      width: calc(100% - 24px);
+      padding: 18px;
     }
 
     .buy-now-title {
-        font-size: 28px;
+      font-size: 28px;
     }
 
     .buy-now-right h3 {
-        font-size: 22px;
+      font-size: 22px;
     }
 
     .buy-now-price {
-        font-size: 24px;
+      font-size: 24px;
     }
 
     .buy-now-left img {
-        height: 240px;
+      height: 240px;
     }
 
     .btn-buy,
     .buy-now-pay-btn {
-        width: 100%;
+      width: 100%;
     }
+  }
 }
