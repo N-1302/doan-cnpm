@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-
     const btnDecrease = document.getElementById("btnDecrease");
     const btnIncrease = document.getElementById("btnIncrease");
     const quantityInput = document.getElementById("quantity");
@@ -23,6 +22,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const checkoutUrlInput = document.getElementById("detailCheckoutUrl");
     const detailMessage = document.getElementById("detailMessage");
+
+    function closeModalFn() {
+        if (modal) modal.classList.remove("active");
+        if (modalOverlay) modalOverlay.classList.remove("active");
+        document.body.classList.remove("popup-open");
+    }
+
+    closeModal?.addEventListener("click", function (e) {
+        e.preventDefault();
+        closeModalFn();
+    });
+
+    modalOverlay?.addEventListener("click", function () {
+        closeModalFn();
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+            closeModalFn();
+        }
+    });
 
     function showMessage(message, type = "success") {
         if (!detailMessage) return;
@@ -48,7 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getCart() {
-        return JSON.parse(localStorage.getItem("cart")) || [];
+        try {
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            return Array.isArray(cart) ? cart : [];
+        } catch (error) {
+            console.error("Lỗi đọc giỏ hàng:", error);
+            return [];
+        }
     }
 
     function saveCart(cart) {
@@ -62,28 +88,111 @@ document.addEventListener("DOMContentLoaded", function () {
         if (badge) badge.textContent = total;
     }
 
+    function getStock(product) {
+        return Number(
+            product?.soLuongTon ??
+            product?.so_luong_ton ??
+            product?.tonKho ??
+            product?.stock ??
+            0
+        );
+    }
+
+    function normalizeCart(cart) {
+        let changed = false;
+
+        cart = cart.map(item => {
+            let soLuong = Number(item.soLuong || 1);
+            const tonKho = getStock(item);
+
+            if (soLuong < 1) {
+                soLuong = 1;
+                changed = true;
+            }
+
+            if (tonKho > 0 && soLuong > tonKho) {
+                soLuong = tonKho;
+                changed = true;
+            }
+
+            return {
+                ...item,
+                soLuong: soLuong
+            };
+        });
+
+        if (changed) {
+            saveCart(cart);
+        }
+
+        return cart;
+    }
+
     function addToCart(product, quantity) {
-        let cart = getCart();
+        let cart = normalizeCart(getCart());
+
+        const maBanh = String(product.maBanh || "").trim();
+        const tonKho = getStock(product);
+
+        quantity = Number(quantity || 1);
+        if (quantity < 1) quantity = 1;
+
+        if (!maBanh) {
+            showMessage("Không tìm thấy mã sản phẩm", "error");
+            return false;
+        }
+
+        if (tonKho <= 0) {
+            showMessage("Sản phẩm hiện đã hết hàng", "error");
+            return false;
+        }
+
+        if (quantity > tonKho) {
+            quantity = tonKho;
+        }
 
         const index = cart.findIndex(
-            item => String(item.maBanh) === String(product.maBanh)
+            item => String(item.maBanh) === maBanh
         );
 
         if (index !== -1) {
-            cart[index].soLuong += quantity;
+            const soLuongHienTai = Number(cart[index].soLuong || 0);
+            let tongSoLuongMoi = soLuongHienTai + quantity;
+
+            cart[index].soLuongTon = tonKho;
+            cart[index].gia = parsePrice(product.gia);
+            cart[index].tenBanh = product.tenBanh;
+            cart[index].hinhAnh = product.hinhAnh;
+            cart[index].noiDung = product.noiDung || cart[index].noiDung || "";
+
+            if (tongSoLuongMoi > tonKho) {
+                tongSoLuongMoi = tonKho;
+                cart[index].soLuong = tongSoLuongMoi;
+                saveCart(cart);
+                updateBadge();
+                document.dispatchEvent(new CustomEvent("cartUpdated"));
+                showMessage(`Sản phẩm chỉ còn ${tonKho} cái trong kho`, "error");
+                return false;
+            }
+
+            cart[index].soLuong = tongSoLuongMoi;
         } else {
             cart.push({
-                maBanh: product.maBanh,
+                maBanh: maBanh,
                 tenBanh: product.tenBanh,
                 gia: parsePrice(product.gia),
                 hinhAnh: product.hinhAnh,
-                soLuong: quantity
+                soLuong: quantity,
+                soLuongTon: tonKho,
+                noiDung: product.noiDung || ""
             });
         }
 
+        cart = normalizeCart(cart);
         saveCart(cart);
         updateBadge();
         document.dispatchEvent(new CustomEvent("cartUpdated"));
+        return true;
     }
 
     function openCartDrawerSafe() {
@@ -117,29 +226,38 @@ document.addEventListener("DOMContentLoaded", function () {
     function openModal(product) {
         currentProduct = product;
 
-        if (modalImage) modalImage.src = product.hinhAnh;
-        if (modalName) modalName.textContent = product.tenBanh;
+        if (modalImage) modalImage.src = product.hinhAnh || "";
+        if (modalName) modalName.textContent = product.tenBanh || "Sản phẩm";
         if (modalPrice) modalPrice.textContent = formatPrice(product.gia);
-        if (modalStock) modalStock.textContent = product.soLuongTon || 0;
-        if (modalQtyInput) modalQtyInput.value = getQuantity();
+        if (modalStock) modalStock.textContent = getStock(product);
+
+        const soLuongDangChon = getQuantity();
+        const tonKho = getStock(product);
+        const soLuongHopLe = tonKho > 0 ? Math.min(soLuongDangChon, tonKho) : 1;
+
+        if (modalQtyInput) modalQtyInput.value = soLuongHopLe;
 
         if (modal) modal.classList.add("active");
         if (modalOverlay) modalOverlay.classList.add("active");
-    }
-
-    function closeModalFn() {
-        if (modal) modal.classList.remove("active");
-        if (modalOverlay) modalOverlay.classList.remove("active");
+        document.body.classList.add("popup-open");
     }
 
     btnDecrease?.addEventListener("click", function () {
         let q = getQuantity();
-        if (q > 1) setQuantity(q - 1);
+        if (q > 1) {
+            setQuantity(q - 1);
+            showMessage("", "success");
+        }
     });
 
     btnIncrease?.addEventListener("click", function () {
         let q = getQuantity();
-        const max = Number(btnAddCart?.getAttribute("data-stock") || 1);
+        const max = Number(btnAddCart?.getAttribute("data-stock") || 0);
+
+        if (max <= 0) {
+            showMessage("Sản phẩm hiện đã hết hàng", "error");
+            return;
+        }
 
         if (q < max) {
             setQuantity(q + 1);
@@ -153,14 +271,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const product = getMainProduct();
         const quantity = getQuantity();
 
-        console.log("btnAddCart clicked", product);
-
         if (!product || !product.maBanh) {
             showMessage("Không tìm thấy mã sản phẩm", "error");
             return;
         }
 
-        addToCart(product, quantity);
+        const success = addToCart(product, quantity);
+        if (!success) return;
+
         showMessage("Đã thêm vào giỏ hàng", "success");
         openCartDrawerSafe();
     });
@@ -173,8 +291,6 @@ document.addEventListener("DOMContentLoaded", function () {
             hinhAnh: btnBuyNow.getAttribute("data-image"),
             soLuongTon: btnBuyNow.getAttribute("data-stock")
         };
-
-        console.log("btnBuyNow clicked", product);
 
         if (!product.maBanh) {
             showMessage("Không tìm thấy mã sản phẩm", "error");
@@ -202,12 +318,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     modalDecrease?.addEventListener("click", function () {
         let q = Number(modalQtyInput?.value || 1);
-        if (q > 1) modalQtyInput.value = q - 1;
+        if (q > 1) {
+            modalQtyInput.value = q - 1;
+        }
     });
 
     modalIncrease?.addEventListener("click", function () {
         let q = Number(modalQtyInput?.value || 1);
-        const max = Number(currentProduct?.soLuongTon || 1);
+        const max = getStock(currentProduct);
+
+        if (max <= 0) return;
 
         if (q < max) {
             modalQtyInput.value = q + 1;
@@ -218,15 +338,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!currentProduct) return;
 
         const quantity = Number(modalQtyInput?.value || 1);
+        const success = addToCart(currentProduct, quantity);
 
-        addToCart(currentProduct, quantity);
+        if (!success) return;
 
         const url = checkoutUrlInput?.value || "/checkout/";
         window.location.href = url;
     });
-
-    closeModal?.addEventListener("click", closeModalFn);
-    modalOverlay?.addEventListener("click", closeModalFn);
 
     updateBadge();
 });

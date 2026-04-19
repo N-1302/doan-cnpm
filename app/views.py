@@ -9,6 +9,7 @@ from django.db.models.functions import TruncDay, TruncMonth
 from datetime import timedelta, datetime
 from math import ceil
 from django.core.paginator import Paginator
+from django.contrib import messages
 import random
 import json
 
@@ -347,6 +348,7 @@ def product_detail(request, mabanh):
             'loi_danh_gia': loi_danh_gia,
             'danh_gia_cua_toi': None,
             'review_filter': '',
+            'ma_tai_khoan': ma_tai_khoan,
         })
 
     product = {
@@ -488,8 +490,8 @@ def product_detail(request, mabanh):
         'loi_danh_gia': loi_danh_gia,
         'danh_gia_cua_toi': danh_gia_cua_toi,
         'review_filter': review_filter,
+        'ma_tai_khoan': ma_tai_khoan,
     })
-
 
 def search(request):
     context = get_common_data(request)
@@ -641,7 +643,8 @@ def api_cart(request):
 
     for ct in chi_tiet:
         banh = ct.ma_banh
-        thanh_tien = ct.thanh_tien if ct.thanh_tien is not None else (ct.don_gia * ct.so_luong)
+        don_gia = float(banh.gia or 0)
+        thanh_tien = don_gia * ct.so_luong
 
         total_items += ct.so_luong
         subtotal += thanh_tien
@@ -660,8 +663,8 @@ def api_cart(request):
             'ten_banh': banh.ten_banh,
             'hinh_anh': hinh if hinh else '/static/app/images/no-image.png',
             'so_luong': ct.so_luong,
-            'don_gia': float(ct.don_gia),
-            'thanh_tien': float(thanh_tien),
+            'don_gia': don_gia,
+            'thanh_tien': thanh_tien,
             'mo_ta_ngan': 'Thêm nội dung đặt bánh' if 'B-' in banh.ten_banh.upper() else ''
         })
 
@@ -669,7 +672,7 @@ def api_cart(request):
         'success': True,
         'items': items,
         'total_items': total_items,
-        'subtotal': float(subtotal)
+        'subtotal': subtotal
     })
 
 
@@ -765,13 +768,16 @@ def them_vao_gio(request):
             ma_banh=banh
         ).first()
 
+        don_gia_hien_tai = banh.gia
+
         if item:
             tong_so_luong_moi = item.so_luong + so_luong
             if tong_so_luong_moi > banh.so_luong_ton:
                 return JsonResponse({'success': False, 'message': 'Số lượng vượt quá tồn kho'})
 
             item.so_luong = tong_so_luong_moi
-            item.thanh_tien = item.so_luong * item.don_gia
+            item.don_gia = don_gia_hien_tai
+            item.thanh_tien = item.so_luong * don_gia_hien_tai
             item.save()
         else:
             if so_luong > banh.so_luong_ton:
@@ -781,8 +787,8 @@ def them_vao_gio(request):
                 ma_gio_hang=gio_hang,
                 ma_banh=banh,
                 so_luong=so_luong,
-                don_gia=banh.gia,
-                thanh_tien=banh.gia * so_luong
+                don_gia=don_gia_hien_tai,
+                thanh_tien=don_gia_hien_tai * so_luong
             )
 
         return JsonResponse({'success': True, 'message': 'Đã thêm vào giỏ hàng'})
@@ -830,8 +836,8 @@ def checkout(request):
                     b.TenBanh,
                     b.HinhAnh,
                     ct.SoLuong,
-                    ct.DonGia,
-                    ct.ThanhTien
+                    b.Gia AS DonGia,
+                    (b.Gia * ct.SoLuong) AS ThanhTien
                 FROM chitietgiohang ct
                 INNER JOIN banh b ON ct.MaBanh = b.MaBanh
                 WHERE ct.MaGioHang = %s
@@ -845,11 +851,11 @@ def checkout(request):
                     'ten_banh': row[1],
                     'hinh_anh': row[2],
                     'so_luong': row[3],
-                    'don_gia': float(row[4]),
-                    'thanh_tien': float(row[5]),
+                    'don_gia': float(row[4]) if row[4] is not None else 0,
+                    'thanh_tien': float(row[5]) if row[5] is not None else 0,
                 })
                 tong_so_luong += row[3]
-                tong_tien += float(row[5])
+                tong_tien += float(row[5]) if row[5] is not None else 0
 
     phi_van_chuyen = tinh_phi_ship(tong_tien)
     tong_thanh_toan = tong_tien + phi_van_chuyen
@@ -1014,7 +1020,7 @@ def dat_hang(request):
                     'message': f'Sản phẩm "{banh.ten_banh}" không đủ tồn kho'
                 })
 
-            don_gia = float(banh.gia)
+            don_gia = float(banh.gia or 0)
             thanh_tien = don_gia * so_luong
             tong_tam_tinh += thanh_tien
 
@@ -1136,7 +1142,56 @@ def admin_dashboard(request):
 
 
 def lien_he(request):
-    return render(request, 'app/LienHe.html')
+    context = get_common_data(request)
+
+    if request.method == 'POST':
+        ho_ten = request.POST.get('HoTen', '').strip()
+        email = request.POST.get('Email', '').strip()
+        so_dien_thoai = request.POST.get('SoDienThoai', '').strip()
+        noi_dung = request.POST.get('NoiDung', '').strip()
+
+        ma_tai_khoan = request.session.get('ma_tai_khoan')
+
+        context.update({
+            'old_hoten': ho_ten,
+            'old_email': email,
+            'old_sodienthoai': so_dien_thoai,
+            'old_noidung': noi_dung,
+        })
+
+        if not ho_ten or not email or not noi_dung:
+            messages.error(request, 'Vui lòng nhập đầy đủ các trường bắt buộc.')
+            return render(request, 'app/LienHe.html', context)
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO lienhe (
+                        MaTaiKhoan,
+                        HoTen,
+                        Email,
+                        SoDienThoai,
+                        NoiDung,
+                        TrangThaiXuLy
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, [
+                    ma_tai_khoan if ma_tai_khoan else None,
+                    ho_ten,
+                    email,
+                    so_dien_thoai if so_dien_thoai else None,
+                    noi_dung,
+                    'Chưa xử lý'
+                ])
+
+            messages.success(request, 'Gửi thông tin liên hệ thành công! Cửa hàng sẽ phản hồi sớm nhất.')
+            return redirect('lien_he')
+
+        except Exception as e:
+            messages.error(request, f'Có lỗi xảy ra khi gửi liên hệ: {str(e)}')
+            return render(request, 'app/LienHe.html', context)
+
+    return render(request, 'app/LienHe.html', context)
 
 
 def chinh_sach_giao_hang(request):
@@ -1213,7 +1268,150 @@ def tin_tuc(request):
 # ADMIN 
 # =========================
 
-from django.core.paginator import Paginator
+def quan_ly_lien_he(request):
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
+
+    context = get_common_data(request)
+
+    keyword = request.GET.get('keyword', '').strip()
+    trang_thai = request.GET.get('trang_thai', '').strip()
+
+    query = """
+        SELECT 
+            lh.MaLienHe,
+            lh.MaTaiKhoan,
+            lh.HoTen,
+            lh.Email,
+            lh.SoDienThoai,
+            lh.NoiDung,
+            lh.NgayGui,
+            lh.TrangThaiXuLy
+        FROM lienhe lh
+        WHERE 1 = 1
+    """
+    params = []
+
+    if keyword:
+        query += """
+            AND (
+                lh.HoTen LIKE %s
+                OR lh.Email LIKE %s
+                OR lh.SoDienThoai LIKE %s
+                OR lh.NoiDung LIKE %s
+            )
+        """
+        keyword_like = f"%{keyword}%"
+        params.extend([keyword_like, keyword_like, keyword_like, keyword_like])
+
+    if trang_thai:
+        query += " AND lh.TrangThaiXuLy = %s "
+        params.append(trang_thai)
+
+    query += " ORDER BY lh.MaLienHe DESC "
+
+    with connection.cursor() as cursor:
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+
+    ds_lien_he = []
+    for row in rows:
+        ds_lien_he.append({
+            'MaLienHe': row[0],
+            'MaTaiKhoan': row[1],
+            'HoTen': row[2],
+            'Email': row[3],
+            'SoDienThoai': row[4] or '',
+            'NoiDung': row[5],
+            'NgayGui': row[6],
+            'TrangThaiXuLy': row[7] or 'Chưa xử lý',
+        })
+
+    context['ds_lien_he'] = ds_lien_he
+    context['keyword'] = keyword
+    context['trang_thai'] = trang_thai
+    return render(request, 'app/QuanLyLienHe.html', context)
+
+
+def cap_nhat_trang_thai_lien_he(request, malienhe):
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
+
+    if request.method == 'POST':
+        trang_thai_moi = request.POST.get('trang_thai_xu_ly', '').strip()
+
+        if trang_thai_moi in ['Chưa xử lý', 'Đang xử lý', 'Đã xử lý']:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE lienhe
+                    SET TrangThaiXuLy = %s
+                    WHERE MaLienHe = %s
+                """, [trang_thai_moi, malienhe])
+
+    return redirect('quan_ly_lien_he')
+
+def phan_hoi_lien_he(request, malienhe):
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
+
+    if request.method == 'POST':
+        noi_dung_phan_hoi = request.POST.get('noi_dung_phan_hoi', '').strip()
+
+        if not noi_dung_phan_hoi:
+            messages.error(request, 'Vui lòng nhập nội dung phản hồi')
+            return redirect('quan_ly_lien_he')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT Email, HoTen, NoiDung
+                FROM lienhe
+                WHERE MaLienHe = %s
+            """, [malienhe])
+            row = cursor.fetchone()
+
+        if not row:
+            messages.error(request, 'Không tìm thấy liên hệ')
+            return redirect('quan_ly_lien_he')
+
+        email_khach = row[0]
+        ho_ten = row[1]
+        noi_dung_goc = row[2]
+
+        try:
+            send_mail(
+                subject='Phản hồi từ cửa hàng SPRINTTEAM',
+                message=f"""
+Xin chào {ho_ten},
+
+Cửa hàng đã nhận được liên hệ của bạn:
+
+"{noi_dung_goc}"
+
+Phản hồi:
+{noi_dung_phan_hoi}
+
+Trân trọng,
+SPRINTTEAM
+    """,
+            from_email='your_email@gmail.com',  # ⚠️ QUAN TRỌNG
+            recipient_list=[email_khach],
+            fail_silently=False,
+)
+
+            # cập nhật trạng thái
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    UPDATE lienhe
+                    SET TrangThaiXuLy = 'Đã xử lý'
+                    WHERE MaLienHe = %s
+                """, [malienhe])
+
+            messages.success(request, 'Đã gửi phản hồi cho khách')
+
+        except Exception as e:
+            messages.error(request, f'Lỗi gửi email: {str(e)}')
+
+    return redirect('quan_ly_lien_he')
 
 def quan_ly_danh_gia(request):
     if request.session.get('ma_quyen') != 1:
@@ -1468,79 +1666,127 @@ def mo_tai_khoan(request, mataikhoan):
 
 
 def thong_ke(request):
-    filter_type = request.GET.get('filter_type', 'day')
-    selected_date = request.GET.get('selected_date', '')
-    selected_month = request.GET.get('selected_month', '')
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
 
-    don_hang_qs = DonHang.objects.select_related('ma_tai_khoan').all().order_by('-ngay_dat')
+    filter_type = request.GET.get('filter_type', 'all').strip()
+    selected_date = request.GET.get('selected_date', '').strip()
+    selected_month = request.GET.get('selected_month', '').strip()
 
+    ds_don_hang = []
     chart_labels = []
     chart_data = []
-    now = timezone.now()
+    tong_doanh_thu = 0
+    tong_don_hang = 0
+    don_hoan_thanh = 0
+    don_cho_xu_ly = 0
 
-    if filter_type == 'month':
-        if selected_month:
-            year, month = map(int, selected_month.split('-'))
-        else:
-            year = now.year
-            month = now.month
-            selected_month = f"{year}-{month:02d}"
+    where_sql = ""
+    params = []
 
-        ds_don_hang = don_hang_qs.filter(
-            ngay_dat__year=year,
-            ngay_dat__month=month
-        )
-
-        tong_doanh_thu = ds_don_hang.aggregate(total=Sum('tong_tien'))['total'] or 0
-        tong_don_hang = ds_don_hang.count()
-        don_hoan_thanh = ds_don_hang.filter(trang_thai_don_hang='Hoàn thành').count()
-        don_cho_xu_ly = ds_don_hang.filter(trang_thai_don_hang='Chờ xử lý').count()
-
-        doanh_thu_theo_thang = (
-            DonHang.objects
-            .filter(ngay_dat__year=year)
-            .annotate(thang=TruncMonth('ngay_dat'))
-            .values('thang')
-            .annotate(tong=Sum('tong_tien'))
-            .order_by('thang')
-        )
-
-        for item in doanh_thu_theo_thang:
-            if item['thang']:
-                chart_labels.append(item['thang'].strftime('%m/%Y'))
-                chart_data.append(float(item['tong'] or 0))
+    if filter_type == 'day' and selected_date:
+        where_sql = "WHERE DATE(dh.NgayDat) = %s"
+        params = [selected_date]
+    elif filter_type == 'month' and selected_month:
+        try:
+            year, month = selected_month.split('-')
+            where_sql = "WHERE YEAR(dh.NgayDat) = %s AND MONTH(dh.NgayDat) = %s"
+            params = [year, month]
+        except ValueError:
+            filter_type = 'all'
+            selected_month = ''
+            where_sql = ""
+            params = []
     else:
-        filter_type = 'day'
+        filter_type = 'all'
+        where_sql = ""
+        params = []
 
-        if selected_date:
-            target_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+    with connection.cursor() as cursor:
+        cursor.execute(f"""
+            SELECT 
+                dh.MaDonHang,
+                dh.NgayDat,
+                dh.TongTien,
+                dh.TrangThaiDonHang,
+                tk.MaTaiKhoan,
+                tk.HoTen,
+                tk.TenDangNhap
+            FROM donhang dh
+            LEFT JOIN taikhoan tk ON dh.MaTaiKhoan = tk.MaTaiKhoan
+            {where_sql}
+            ORDER BY dh.NgayDat DESC
+        """, params)
+        rows = cursor.fetchall()
+
+        for row in rows:
+            ds_don_hang.append({
+                'ma_don_hang': row[0],
+                'ngay_dat': row[1],
+                'tong_tien': float(row[2]) if row[2] is not None else 0,
+                'trang_thai_don_hang': row[3] or 'Chờ xử lý',
+                'ma_tai_khoan': {
+                    'ma_tai_khoan': row[4],
+                    'ho_ten': row[5] or '',
+                    'ten_dang_nhap': row[6] or ''
+                } if row[4] else None
+            })
+
+        cursor.execute(f"""
+            SELECT 
+                COUNT(*) AS tong_don,
+                COALESCE(SUM(dh.TongTien), 0) AS tong_doanh_thu,
+                SUM(CASE WHEN dh.TrangThaiDonHang = 'Hoàn thành' THEN 1 ELSE 0 END) AS don_hoan_thanh,
+                SUM(CASE WHEN dh.TrangThaiDonHang = 'Chờ xử lý' THEN 1 ELSE 0 END) AS don_cho_xu_ly
+            FROM donhang dh
+            {where_sql}
+        """, params)
+        stat_row = cursor.fetchone()
+
+        tong_don_hang = stat_row[0] or 0
+        tong_doanh_thu = float(stat_row[1] or 0)
+        don_hoan_thanh = stat_row[2] or 0
+        don_cho_xu_ly = stat_row[3] or 0
+
+        if filter_type == 'day' and selected_date:
+            cursor.execute("""
+                SELECT HOUR(NgayDat) AS gio, SUM(TongTien) AS tong
+                FROM donhang
+                WHERE DATE(NgayDat) = %s
+                GROUP BY HOUR(NgayDat)
+                ORDER BY gio ASC
+            """, [selected_date])
+            chart_rows = cursor.fetchall()
+            for row in chart_rows:
+                chart_labels.append(f"{int(row[0]):02d}:00")
+                chart_data.append(float(row[1] or 0))
+
+        elif filter_type == 'month' and selected_month:
+            year, month = selected_month.split('-')
+            cursor.execute("""
+                SELECT DATE(NgayDat) AS ngay, SUM(TongTien) AS tong
+                FROM donhang
+                WHERE YEAR(NgayDat) = %s AND MONTH(NgayDat) = %s
+                GROUP BY DATE(NgayDat)
+                ORDER BY ngay ASC
+            """, [year, month])
+            chart_rows = cursor.fetchall()
+            for row in chart_rows:
+                if row[0]:
+                    chart_labels.append(row[0].strftime('%d/%m'))
+                    chart_data.append(float(row[1] or 0))
         else:
-            target_date = now.date()
-            selected_date = target_date.strftime('%Y-%m-%d')
-
-        ds_don_hang = don_hang_qs.filter(ngay_dat__date=target_date)
-
-        tong_doanh_thu = ds_don_hang.aggregate(total=Sum('tong_tien'))['total'] or 0
-        tong_don_hang = ds_don_hang.count()
-        don_hoan_thanh = ds_don_hang.filter(trang_thai_don_hang='Hoàn thành').count()
-        don_cho_xu_ly = ds_don_hang.filter(trang_thai_don_hang='Chờ xử lý').count()
-
-        doanh_thu_theo_ngay = (
-            DonHang.objects
-            .filter(
-                ngay_dat__year=target_date.year,
-                ngay_dat__month=target_date.month
-            )
-            .annotate(ngay=TruncDay('ngay_dat'))
-            .values('ngay')
-            .annotate(tong=Sum('tong_tien'))
-            .order_by('ngay')
-        )
-
-        for item in doanh_thu_theo_ngay:
-            if item['ngay']:
-                chart_labels.append(item['ngay'].strftime('%d/%m'))
-                chart_data.append(float(item['tong'] or 0))
+            cursor.execute("""
+                SELECT DATE(NgayDat) AS ngay, SUM(TongTien) AS tong
+                FROM donhang
+                GROUP BY DATE(NgayDat)
+                ORDER BY ngay ASC
+            """)
+            chart_rows = cursor.fetchall()
+            for row in chart_rows:
+                if row[0]:
+                    chart_labels.append(row[0].strftime('%d/%m/%Y'))
+                    chart_data.append(float(row[1] or 0))
 
     context = {
         'filter_type': filter_type,
@@ -1558,16 +1804,47 @@ def thong_ke(request):
 
 
 def chi_tiet_don_hang_admin(request, ma_don_hang):
+    if request.session.get('ma_quyen') != 1:
+        return redirect('home')
+
     don_hang = get_object_or_404(
         DonHang.objects.select_related('ma_tai_khoan'),
         ma_don_hang=ma_don_hang
     )
 
-    chi_tiet_don = (
-        ChiTietDonHang.objects
-        .filter(ma_don_hang=don_hang)
-        .select_related('ma_banh')
-    )
+    if request.method == 'POST':
+        trang_thai_moi = request.POST.get('trang_thai_don_hang', '').strip()
+        if trang_thai_moi:
+            don_hang.trang_thai_don_hang = trang_thai_moi
+            don_hang.save(update_fields=['trang_thai_don_hang'])
+        return redirect('chi_tiet_don_hang_admin', ma_don_hang=ma_don_hang)
+
+    chi_tiet_don = []
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                b.MaBanh,
+                b.TenBanh,
+                b.HinhAnh,
+                ctdh.SoLuong,
+                ctdh.DonGia,
+                ctdh.ThanhTien
+            FROM chitietdonhang ctdh
+            INNER JOIN banh b ON ctdh.MaBanh = b.MaBanh
+            WHERE ctdh.MaDonHang = %s
+            ORDER BY b.MaBanh ASC
+        """, [ma_don_hang])
+        rows = cursor.fetchall()
+
+    for row in rows:
+        chi_tiet_don.append({
+            'MaBanh': row[0],
+            'TenBanh': row[1],
+            'HinhAnh': row[2],
+            'SoLuong': row[3],
+            'DonGia': float(row[4]) if row[4] is not None else 0,
+            'ThanhTien': float(row[5]) if row[5] is not None else 0,
+        })
 
     context = {
         'don_hang': don_hang,

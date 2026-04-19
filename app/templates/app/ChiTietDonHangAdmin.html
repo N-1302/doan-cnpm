@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block main_content %}
 <link rel="stylesheet" href="{% static 'app/css/ChiTietDonHangAdmin.css' %}">
@@ -9,7 +10,7 @@
     <div class="order-detail-header">
         <div>
             <h1>Chi tiết đơn hàng #{{ don_hang.ma_don_hang }}</h1>
-            <p>Xem thông tin khách hàng và các bánh trong đơn</p>
+            <p>Xem thông tin khách hàng, sản phẩm và cập nhật trạng thái đơn hàng</p>
         </div>
         <a href="{% url 'thong_ke' %}" class="back-btn">← Quay lại Thống kê</a>
     </div>
@@ -19,21 +20,43 @@
             <h3>Thông tin đơn hàng</h3>
             <p><strong>Mã đơn:</strong> #{{ don_hang.ma_don_hang }}</p>
             <p><strong>Ngày đặt:</strong> {{ don_hang.ngay_dat|date:"d/m/Y H:i" }}</p>
-            <p><strong>Trạng thái:</strong> {{ don_hang.trang_thai_don_hang }}</p>
-            <p><strong>Tổng tiền:</strong> {{ don_hang.tong_tien|floatformat:0 }} đ</p>
+            <p><strong>Trạng thái hiện tại:</strong> {{ don_hang.trang_thai_don_hang }}</p>
+            <p><strong>Tổng tiền:</strong> {{ don_hang.tong_tien|floatformat:0|intcomma }} đ</p>
             <p><strong>Địa chỉ giao hàng:</strong> {{ don_hang.dia_chi_giao_hang }}</p>
         </div>
 
         <div class="info-card">
             <h3>Thông tin khách hàng</h3>
             {% if don_hang.ma_tai_khoan %}
-                <p><strong>Họ tên:</strong> {{ don_hang.ma_tai_khoan.ho_ten }}</p>
+                <p><strong>Họ tên:</strong> {{ don_hang.ma_tai_khoan.ho_ten|default:don_hang.ma_tai_khoan.ten_dang_nhap }}</p>
                 <p><strong>Email:</strong> {{ don_hang.ma_tai_khoan.email }}</p>
-                <p><strong>SĐT:</strong> {{ don_hang.ma_tai_khoan.sdt }}</p>
+                <p><strong>SĐT:</strong> {{ don_hang.ma_tai_khoan.sdt|default:"---" }}</p>
             {% else %}
                 <p>Không có thông tin tài khoản.</p>
             {% endif %}
         </div>
+    </div>
+
+    <div class="info-card update-status-card">
+        <h3>Cập nhật trạng thái đơn hàng</h3>
+        <form method="POST" class="status-form">
+            {% csrf_token %}
+            <div class="status-form-row">
+                <label for="trang_thai_don_hang">Chọn trạng thái mới</label>
+                <select name="trang_thai_don_hang" id="trang_thai_don_hang">
+                    <option value="Chờ xử lý" {% if don_hang.trang_thai_don_hang == 'Chờ xử lý' %}selected{% endif %}>Chờ xử lý</option>
+                    <option value="Đang xử lý" {% if don_hang.trang_thai_don_hang == 'Đang xử lý' %}selected{% endif %}>Đang xử lý</option>
+                    <option value="Đang giao" {% if don_hang.trang_thai_don_hang == 'Đang giao' %}selected{% endif %}>Đang giao</option>
+                    <option value="Đang giao hàng" {% if don_hang.trang_thai_don_hang == 'Đang giao hàng' %}selected{% endif %}>Đang giao hàng</option>
+                    <option value="Hoàn thành" {% if don_hang.trang_thai_don_hang == 'Hoàn thành' %}selected{% endif %}>Hoàn thành</option>
+                    <option value="Đã hủy" {% if don_hang.trang_thai_don_hang == 'Đã hủy' %}selected{% endif %}>Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="status-form-actions">
+                <button type="submit" class="save-btn">Lưu trạng thái</button>
+            </div>
+        </form>
     </div>
 
     <div class="detail-table-card">
@@ -53,16 +76,20 @@
                     {% for item in chi_tiet_don %}
                     <tr>
                         <td>
-                            {% if item.ma_banh.hinh_anh %}
-                                <img src="/static/images/{{ item.ma_banh.hinh_anh }}" alt="{{ item.ma_banh.ten_banh }}" class="cake-thumb">
+                            {% if item.HinhAnh %}
+                                <img
+                                    src="{% static 'app/images/' %}{{ item.HinhAnh }}"
+                                    alt="{{ item.TenBanh }}"
+                                    class="cake-thumb"
+                                >
                             {% else %}
                                 <div class="no-image">No image</div>
                             {% endif %}
                         </td>
-                        <td>{{ item.ma_banh.ten_banh }}</td>
-                        <td>{{ item.don_gia|floatformat:0 }} đ</td>
-                        <td>{{ item.so_luong }}</td>
-                        <td>{{ item.thanh_tien|floatformat:0 }} đ</td>
+                        <td>{{ item.TenBanh }}</td>
+                        <td>{{ item.DonGia|floatformat:0|intcomma }} đ</td>
+                        <td>{{ item.SoLuong }}</td>
+                        <td>{{ item.ThanhTien|floatformat:0|intcomma }} đ</td>
                     </tr>
                     {% empty %}
                     <tr>

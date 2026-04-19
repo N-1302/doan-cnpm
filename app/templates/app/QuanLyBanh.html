@@ -61,7 +61,7 @@
                         <td>{{ banh.ma_banh }}</td>
                         <td>
                             {% if banh.hinh_anh %}
-                                <img src="{{ banh.hinh_anh }}" alt="{{ banh.ten_banh }}" class="qlb-thumb">
+                                <img src="{% static 'app/images/' %}{{ banh.hinh_anh }}" alt="{{ banh.ten_banh }}" class="qlb-thumb">
                             {% else %}
                                 <div class="qlb-no-image">No image</div>
                             {% endif %}

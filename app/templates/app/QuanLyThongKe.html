@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block main_content %}
 
 <link rel="stylesheet" href="{% static 'app/css/ThongKe.css' %}">
@@ -23,7 +24,7 @@
         <div class="tk-stats-grid">
             <div class="tk-stat-card">
                 <span class="tk-label">Tổng doanh thu</span>
-                <h3>{{ tong_doanh_thu|default:"0" }}</h3>
+                <h3>{{ tong_doanh_thu|floatformat:0|intcomma }} đ</h3>
             </div>
 
             <div class="tk-stat-card">
@@ -52,14 +53,14 @@
                     <thead>
                         <tr>
                             <th>Tên bánh</th>
-                            <th>Số lượng bán</th>
+                            <th>Doanh thu</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in san_pham_ban_chay %}
                         <tr>
                             <td>{{ item.ten_banh }}</td>
-                            <td>{{ item.tong_ban }}</td>
+                            <td>{{ item.ThanhTien|floatformat:0|intcomma }} đ</td>
                         </tr>
                         {% empty %}
                         <tr>

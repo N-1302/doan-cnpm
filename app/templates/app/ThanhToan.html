@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}?v=12">
+<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}">
 {% endblock %}
 
 {% block main_content %}
@@ -87,7 +87,7 @@
                                 <p><strong>Ngân hàng:</strong> BIDV</p>
                                 <p><strong>Số tài khoản:</strong> 6560479868</p>
                                 <p><strong>Chủ tài khoản:</strong> SPRINTTEAM BAKERY</p>
-                                <p><strong>Nội dung CK:</strong> THANHTOAN-{{ request.session.ma_tai_khoan|default:'KHACH' }}</p>
+                                <p><strong>Nội dung CK:</strong> THANHTOAN-{{ ma_tai_khoan|default:'KHACH' }}</p>
                             </div>
                         </div>
                     </div>
@@ -122,50 +122,55 @@
                             <div class="thanhtoan-loading">Đang tải mã giảm giá...</div>
                         </div>
                     </div>
+
                     <p id="khuyenMaiMessage" class="thanhtoan-message"></p>
                 </div>
 
-                    <div class="thanhtoan-summary-box">
-                        <div class="thanhtoan-summary-row">
-                            <span>Tổng sản phẩm</span>
-                            <strong id="tongSanPhamThanhToan">0</strong>
-                        </div>
-
-                        <div class="thanhtoan-summary-row">
-                            <span>Tạm tính</span>
-                            <strong id="tamTinhThanhToan">0 đ</strong>
-                        </div>
-
-                        <div class="thanhtoan-summary-row">
-                            <span>Phí vận chuyển</span>
-                            <strong id="phiVanChuyen">0 đ</strong>
-                        </div>
-
-                        <div class="thanhtoan-summary-row">
-                            <span>Giảm giá</span>
-                            <strong id="tienGiamGia">0 đ</strong>
-                        </div>
-
-                        <div class="thanhtoan-summary-total">
-                            <span>Tổng cộng</span>
-                            <strong id="tongCongThanhToan">0 đ</strong>
-                        </div>
+                <div class="thanhtoan-summary-box">
+                    <div class="thanhtoan-summary-row">
+                        <span>Tổng sản phẩm</span>
+                        <strong id="tongSanPhamThanhToan">0</strong>
                     </div>
 
-                    <button type="button" id="btnDatHang" class="thanhtoan-submit-btn">
-                        ĐẶT HÀNG
-                    </button>
+                    <div class="thanhtoan-summary-row">
+                        <span>Tạm tính</span>
+                        <strong id="tamTinhThanhToan">0 đ</strong>
+                    </div>
 
-                    <a href="{% url 'gio_hang' %}" class="thanhtoan-back-btn">
-                        Quay lại giỏ hàng
-                    </a>
+                    <div class="thanhtoan-summary-row">
+                        <span>Phí vận chuyển</span>
+                        <strong id="phiVanChuyen">0 đ</strong>
+                    </div>
 
-                    <p id="thanhtoanMessage" class="thanhtoan-message"></p>
+                    <div class="thanhtoan-summary-row">
+                        <span>Giảm giá</span>
+                        <strong id="tienGiamGia">0 đ</strong>
+                    </div>
+
+                    <div class="thanhtoan-summary-total">
+                        <span>Tổng cộng</span>
+                        <strong id="tongCongThanhToan">0 đ</strong>
+                    </div>
                 </div>
+
+                <button type="button" id="btnDatHang" class="thanhtoan-submit-btn">
+                    ĐẶT HÀNG
+                </button>
+
+                <a href="{% url 'gio_hang' %}" class="thanhtoan-back-btn">
+                    Quay lại giỏ hàng
+                </a>
+
+                <p id="thanhtoanMessage" class="thanhtoan-message"></p>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    document.body.dataset.loggedIn = "{{ da_dang_nhap|yesno:'true,false' }}";
+    document.body.dataset.userId = "{{ ma_tai_khoan|default:'' }}";
+</script>
 
 <script src="{% static 'app/js/ThanhToan.js' %}"></script>
 {% endblock %}

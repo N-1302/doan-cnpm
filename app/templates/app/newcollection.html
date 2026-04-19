@@ -2,76 +2,94 @@
 {% load static %}
 
 {% block main_content %}
-<link rel="stylesheet" href="{% static 'app/css/category.css' %}" />
-
-<div class="product-header">
-  <div class="container">
-    <h1 class="givral-category-title">NEW COLLECTION</h1>
-
-    <div class="givral-category-breadcrumb">
-      <a href="{% url 'home' %}">TRANG CHỦ</a>
-      <span>›</span>
-      <a href="{% url 'category' %}">DANH SÁCH BÁNH</a>
-      <span>›</span>
-      <span class="active-breadcrumb">NEW COLLECTION</span>
-    </div>
-  </div>
-</div>
+<link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}">
 
 <section class="product-section pb-5">
   <div class="container">
-    <div class="shopee-grid">
+
+    <div class="product-top-heading">
+      <h1>NEW COLLECTION</h1>
+      <div class="product-breadcrumb">
+        <a href="{% url 'home' %}">TRANG CHỦ</a>
+        <span>›</span>
+        <a href="{% url 'category' %}">DANH SÁCH SẢN PHẨM</a>
+        <span>›</span>
+        <strong>NEW COLLECTION</strong>
+      </div>
+    </div>
+
+    <div class="product-grid">
       {% for item in new_collection %}
-      <div class="shopee-card">
+      <div class="product-card {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}product-disabled{% endif %}">
+        
         <div class="product-badge">NEW</div>
 
-        <div class="shopee-image-wrap">
-          {% if item.hinh_anh %}
-          <img
-            class="shopee-image"
-            src="{% static 'app/images/' %}{{ item.hinh_anh }}"
-            alt="{{ item.ten_banh }}"
-          />
+        {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
+          <div class="product-card-link disabled-link">
+        {% else %}
+          <a href="{% url 'product_detail' item.ma_banh %}" class="product-card-link">
+        {% endif %}
+
+            <div class="product-image">
+              {% if item.hinh_anh %}
+                <img
+                  class="shopee-image"
+                  src="{% static 'app/images/' %}{{ item.hinh_anh }}"
+                  alt="{{ item.ten_banh }}"
+                />
+              {% else %}
+                <img
+                  class="shopee-image"
+                  src="{% static 'app/images/looogoo.png' %}"
+                  alt="{{ item.ten_banh }}"
+                />
+              {% endif %}
+
+              {% if item.trang_thai == 'Tạm ngưng bán' %}
+                <div class="product-status-circle">Tạm ngưng bán</div>
+              {% elif item.so_luong_ton == 0 %}
+                <div class="product-status-circle">Hết hàng</div>
+              {% endif %}
+            </div>
+
+            <div class="product-info">
+              <h3>{{ item.ten_banh }}</h3>
+              <p>{{ item.mo_ta|default:"Bánh ngon mỗi ngày" }}</p>
+
+              <div class="price">{{ item.gia }} <span>VNĐ</span></div>
+              <div class="stock">Còn lại: {{ item.so_luong_ton }}</div>
+              <div class="status">Trạng thái: {{ item.trang_thai }}</div>
+            </div>
+
+        {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
+          </div>
+        {% else %}
+          </a>
+        {% endif %}
+
+        <div class="product-actions">
+
+          {% if item.trang_thai == 'Tạm ngưng bán' or item.so_luong_ton == 0 %}
+            <button class="btn-buy" disabled>Không khả dụng</button>
           {% else %}
-          <img
-            class="shopee-image"
-            src="{% static 'app/images/looogoo.png' %}"
-            alt="{{ item.ten_banh }}"
-          />
+            <button
+              type="button"
+              class="btn-buy buy-now-btn product-buy-now-btn"
+              data-id="{{ item.ma_banh }}"
+              data-name="{{ item.ten_banh }}"
+              data-price="{{ item.gia|floatformat:0 }}"
+              data-stock="{{ item.so_luong_ton }}"
+              data-image="{% static 'app/images/' %}{{ item.hinh_anh|default:'no-image.png' }}"
+            >
+              Mua ngay
+            </button>
           {% endif %}
         </div>
 
-        <div class="shopee-info">
-          <h5 class="shopee-name">{{ item.ten_banh }}</h5>
-
-          <p class="shopee-desc">
-            {{ item.mo_ta|default:"Bánh ngon mỗi ngày" }}
-          </p>
-
-          <div class="shopee-price">{{ item.gia }} <span>VNĐ</span></div>
-
-          <div class="shopee-stock">Còn lại: {{ item.so_luong_ton }}</div>
-
-          <div class="shopee-bottom">
-            <div class="shopee-hot">SẢN PHẨM MỚI</div>
-
-            <button
-            type="button"
-            class="buy-now-btn home-buy-now-btn"
-            data-id="{{ item.ma_banh }}"
-            data-name="{{ item.ten_banh }}"
-            data-price="{{ item.gia }}"
-            data-stock="{{ item.so_luong_ton }}"
-            data-image="{% static 'app/images/' %}{{ item.hinh_anh|default:'looogoo.png' }}"
-            >
-                Mua ngay
-            </button>
-          </div>
-        </div>
       </div>
       {% empty %}
-      <div class="col-12">
-        <p class="text-center">Chưa có sản phẩm mới.</p>
+      <div class="empty-box">
+        <p>Chưa có sản phẩm mới.</p>
       </div>
       {% endfor %}
     </div>

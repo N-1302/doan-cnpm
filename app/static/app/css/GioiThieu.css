@@ -217,6 +217,118 @@ body {
 .health-text h2 {
   font-size: 48px;
 }
+.health-banner {
+    position: relative;
+    width: 100%;
+    min-height: 720px;
+    background: url("../images/banner.jpg") no-repeat center center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    margin-top: 60px;
+    overflow: hidden;
+}
+
+.health-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(60, 40, 15, 0.22);
+    z-index: 1;
+}
+
+.health-overlay {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 80px 0;
+}
+
+.health-text {
+    max-width: 760px;
+    margin-left: 120px;
+    color: #fff;
+}
+
+.health-text h2 {
+    margin: 0 0 26px;
+    font-size: 72px;
+    line-height: 1.15;
+    font-weight: 400;
+    color: #fff;
+    font-family: "Times New Roman", serif;
+}
+
+.health-subtitle {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin-bottom: 26px;
+    color: #fff;
+}
+
+.health-text p {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #fff;
+    margin: 0 0 18px;
+}
+
+/* tránh CSS cũ của about-image ảnh hưởng */
+.health-banner .about-image,
+.health-banner img {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .health-banner {
+        min-height: 560px;
+    }
+
+    .health-text {
+        max-width: 90%;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .health-text h2 {
+        font-size: 50px;
+    }
+
+    .health-subtitle {
+        font-size: 19px;
+    }
+
+    .health-text p {
+        font-size: 17px;
+    }
+}
+
+@media (max-width: 576px) {
+    .health-banner {
+        min-height: 480px;
+    }
+
+    .health-text {
+        margin-left: 20px;
+        margin-right: 20px;
+        max-width: calc(100% - 40px);
+    }
+
+    .health-text h2 {
+        font-size: 36px;
+        line-height: 1.25;
+    }
+
+    .health-subtitle {
+        font-size: 17px;
+    }
+
+    .health-text p {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 992px) {

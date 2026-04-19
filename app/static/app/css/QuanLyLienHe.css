@@ -1,0 +1,356 @@
+* {
+    box-sizing: border-box;
+}
+
+.admin-contact-page {
+    min-height: 100vh;
+    background: #f6f8fc;
+    padding: 28px;
+}
+
+.admin-contact-container {
+    max-width: 1450px;
+    margin: 0 auto;
+}
+
+.admin-contact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-contact-header h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 800;
+    color: #1f2937;
+}
+
+.admin-contact-header p {
+    margin: 8px 0 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.message-wrap {
+    margin-bottom: 18px;
+}
+
+.contact-alert {
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.contact-alert.success {
+    background: #e9f8ee;
+    color: #167c3a;
+    border: 1px solid #bce5c8;
+}
+
+.contact-alert.error {
+    background: #fff1f1;
+    color: #c62828;
+    border: 1px solid #f3b5b5;
+}
+
+.filter-form {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 6px 22px rgba(15, 23, 42, 0.05);
+    margin-bottom: 22px;
+}
+
+.filter-form input,
+.filter-form select {
+    min-height: 46px;
+    border: 1px solid #dbe1ea;
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.filter-form input:focus,
+.filter-form select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.filter-form input {
+    flex: 1;
+    min-width: 280px;
+}
+
+.filter-form select {
+    min-width: 200px;
+}
+
+.filter-form button {
+    min-width: 120px;
+    border: none;
+    border-radius: 12px;
+    background: #e11d2e;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0 18px;
+    transition: all 0.2s ease;
+}
+
+.filter-form button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.contact-table-wrap {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 22px rgba(15, 23, 42, 0.05);
+    overflow-x: auto;
+}
+
+.contact-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1500px;
+}
+
+.contact-table thead {
+    background: #f8fafc;
+}
+
+.contact-table th,
+.contact-table td {
+    padding: 16px 14px;
+    text-align: left;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: top;
+    font-size: 14px;
+}
+
+.contact-table th {
+    color: #111827;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.contact-table td {
+    color: #374151;
+}
+
+.noi-dung {
+    max-width: 320px;
+    line-height: 1.6;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-pending {
+    background: #fff7e6;
+    color: #b76e00;
+}
+
+.status-processing {
+    background: #e8f1ff;
+    color: #1d4ed8;
+}
+
+.status-done {
+    background: #e8f8ee;
+    color: #15803d;
+}
+
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reply-textarea {
+    width: 240px;
+    min-height: 90px;
+    border: 1px solid #dbe1ea;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    resize: vertical;
+    outline: none;
+    background: #fff;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+
+.reply-textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.reply-textarea::placeholder {
+    color: #9ca3af;
+}
+
+.reply-btn {
+    min-height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #fff;
+    padding: 0 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reply-btn:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.update-box {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.update-box select {
+    min-height: 40px;
+    border: 1px solid #dbe1ea;
+    border-radius: 10px;
+    padding: 0 10px;
+    background: #fff;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.update-box select:focus {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+.save-btn {
+    min-height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: #111827;
+    color: #fff;
+    padding: 0 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.empty-row {
+    text-align: center !important;
+    color: #6b7280 !important;
+    padding: 28px !important;
+}
+
+.admin-label {
+    color: #e11d2e;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1.5px solid #e11d2e;
+    color: #e11d2e;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #e11d2e;
+    color: #fff;
+}
+
+@media (max-width: 992px) {
+    .admin-contact-page {
+        padding: 20px;
+    }
+
+    .admin-contact-header h1 {
+        font-size: 26px;
+    }
+
+    .filter-form {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-contact-page {
+        padding: 16px;
+    }
+
+    .admin-contact-header h1 {
+        font-size: 24px;
+    }
+
+    .admin-contact-header p {
+        font-size: 14px;
+    }
+
+    .filter-form {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filter-form input,
+    .filter-form select,
+    .filter-form button {
+        width: 100%;
+    }
+
+    .reply-textarea {
+        width: 100%;
+        min-width: 220px;
+    }
+
+    .update-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .update-box select,
+    .save-btn {
+        width: 100%;
+    }
+}

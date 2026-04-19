@@ -141,14 +141,6 @@
     margin-bottom: 8px;
 }
 
-/* nút */
-.product-actions {
-    margin-top: 14px;
-    padding: 0 16px 20px;
-    position: relative;
-    z-index: 5;
-}
-
 .btn-buy {
     width: 100%;
     min-height: 48px;
@@ -192,6 +184,13 @@
     visibility: hidden;
     transition: 0.25s ease;
     z-index: 9998;
+}
+
+#buyNowPopupMessage {
+    color: #d70018;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 0;
 }
 
 .buy-now-popup-overlay.active {

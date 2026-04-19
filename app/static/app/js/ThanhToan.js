@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const chuyenKhoanBox = document.getElementById("chuyenKhoanBox");
     const viDienTuBox = document.getElementById("viDienTuBox");
+    const backToCartBtn = document.querySelector(".thanhtoan-back-btn");
 
     let khuyenMaiDaApDung = null;
 
@@ -24,6 +25,23 @@ document.addEventListener("DOMContentLoaded", function () {
         return Number(value || 0).toLocaleString("vi-VN") + " đ";
     }
 
+    function parsePrice(value) {
+        if (!value) return 0;
+
+        let raw = String(value).trim();
+        raw = raw.replace(/đ|vnd|vnđ/gi, "").trim();
+
+        if (/^\d{1,3}(\.\d{3})+$/.test(raw)) {
+            return parseInt(raw.replace(/\./g, ""), 10);
+        }
+
+        if (/^\d{1,3}(,\d{3})+$/.test(raw)) {
+            return parseInt(raw.replace(/,/g, ""), 10);
+        }
+
+        return parseInt(raw.replace(/[^\d]/g, ""), 10) || 0;
+    }
+    
     function isUserLoggedIn() {
         const body = document.body;
         if (!body) return false;
@@ -41,6 +59,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getCart() {
         try {
+            const buyNowItem = JSON.parse(localStorage.getItem("buyNowItem") || "null");
+            if (Array.isArray(buyNowItem) && buyNowItem.length > 0) {
+                return buyNowItem;
+            }
+
             const cart = JSON.parse(localStorage.getItem("cart") || "[]");
             return Array.isArray(cart) ? cart : [];
         } catch (error) {
@@ -49,9 +72,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function saveCurrentCheckoutCart(cart) {
+        if (Array.isArray(JSON.parse(localStorage.getItem("buyNowItem") || "null"))) {
+            localStorage.setItem("buyNowItem", JSON.stringify(cart));
+        } else {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+    }
+
     function clearCart() {
         localStorage.removeItem("cart");
+        localStorage.removeItem("buyNowItem");
         window.dispatchEvent(new Event("cartUpdated"));
+        document.dispatchEvent(new CustomEvent("cartUpdated"));
     }
 
     function showMessage(message, type = "error") {
@@ -80,6 +113,46 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 0);
     }
 
+    function getTonKho(item) {
+        return Number(
+            item.soLuongTon ??
+            item.so_luong_ton ??
+            item.tonKho ??
+            item.stock ??
+            0
+        );
+    }
+
+    function normalizeCart(cart) {
+        let changed = false;
+
+        cart = cart
+            .map(item => {
+                let soLuong = Number(item.soLuong || 1);
+                const tonKho = getTonKho(item);
+
+                if (soLuong < 1) {
+                    soLuong = 1;
+                    changed = true;
+                }
+
+                if (tonKho > 0 && soLuong > tonKho) {
+                    soLuong = tonKho;
+                    changed = true;
+                }
+
+                item.soLuong = soLuong;
+                return item;
+            })
+            .filter(item => Number(item.soLuong || 0) > 0);
+
+        if (changed) {
+            saveCurrentCheckoutCart(cart);
+        }
+
+        return cart;
+    }
+
     function updateSummary(cart) {
         const tongSanPham = cart.reduce((sum, item) => sum + Number(item.soLuong || 0), 0);
         const tamTinh = tinhTamTinh(cart);
@@ -97,7 +170,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderOrderList() {
         if (!thanhtoanOrderList) return;
 
-        const cart = getCart();
+        let cart = getCart();
+        cart = normalizeCart(cart);
 
         if (cart.length === 0) {
             thanhtoanOrderList.innerHTML = `
@@ -111,6 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const soLuong = Number(item.soLuong || 0);
             const gia = Number(item.gia || 0);
             const thanhTien = soLuong * gia;
+            const tonKho = getTonKho(item);
 
             return `
                 <div class="thanhtoan-order-item">
@@ -124,6 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="thanhtoan-order-info">
                             <h4>${item.tenBanh || "Sản phẩm"}</h4>
                             <span>Số lượng: ${soLuong}</span>
+                            ${tonKho > 0 ? `<small>Còn lại: ${tonKho}</small>` : ""}
                         </div>
                     </div>
                     <div class="thanhtoan-order-price">
@@ -148,8 +224,76 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function addToCart(product, quantity) {
+        let cart = normalizeCart(getCart());
+
+        const maBanh = String(product.maBanh || "").trim();
+        const tonKho = getStock(product);
+
+        quantity = Number(quantity || 1);
+        if (quantity < 1) quantity = 1;
+
+        if (!maBanh) {
+            showMessage("Không tìm thấy mã sản phẩm", "error");
+            return false;
+        }
+
+        if (tonKho <= 0) {
+            showMessage("Sản phẩm hiện đã hết hàng", "error");
+            return false;
+        }
+
+        if (quantity > tonKho) {
+            quantity = tonKho;
+        }
+
+        const index = cart.findIndex(
+            item => String(item.maBanh) === maBanh
+        );
+
+        if (index !== -1) {
+            const soLuongHienTai = Number(cart[index].soLuong || 0);
+            let tongSoLuongMoi = soLuongHienTai + quantity;
+
+            cart[index].soLuongTon = tonKho;
+            cart[index].gia = parsePrice(product.gia);
+            cart[index].tenBanh = product.tenBanh;
+            cart[index].hinhAnh = product.hinhAnh;
+            cart[index].noiDung = product.noiDung || cart[index].noiDung || "";
+
+            if (tongSoLuongMoi > tonKho) {
+                tongSoLuongMoi = tonKho;
+                cart[index].soLuong = tongSoLuongMoi;
+                saveCart(cart);
+                updateBadge();
+                document.dispatchEvent(new CustomEvent("cartUpdated"));
+                showMessage(`Sản phẩm chỉ còn ${tonKho} cái trong kho`, "error");
+                return false;
+            }
+
+            cart[index].soLuong = tongSoLuongMoi;
+        } else {
+            cart.push({
+                maBanh: maBanh,
+                tenBanh: product.tenBanh,
+                gia: parsePrice(product.gia),
+                hinhAnh: product.hinhAnh,
+                soLuong: quantity,
+                soLuongTon: tonKho,
+                noiDung: product.noiDung || ""
+            });
+        }
+
+        cart = normalizeCart(cart);
+        saveCart(cart);
+        updateBadge();
+        document.dispatchEvent(new CustomEvent("cartUpdated"));
+        return true;
+    }
+    
     function validateForm() {
-        const cart = getCart();
+        let cart = getCart();
+        cart = normalizeCart(cart);
 
         if (!isUserLoggedIn()) return "Vui lòng đăng nhập để đặt hàng.";
         if (cart.length === 0) return "Giỏ hàng đang trống.";
@@ -162,11 +306,21 @@ document.addEventListener("DOMContentLoaded", function () {
             return "Số điện thoại không hợp lệ.";
         }
 
+        for (const item of cart) {
+            const tonKho = getTonKho(item);
+            const soLuong = Number(item.soLuong || 0);
+
+            if (tonKho > 0 && soLuong > tonKho) {
+                return `Sản phẩm "${item.tenBanh}" chỉ còn ${tonKho} cái trong kho.`;
+            }
+        }
+
         return "";
     }
 
     async function apDungKhuyenMaiTheoMa(maGiamGia) {
-        const cart = getCart();
+        let cart = getCart();
+        cart = normalizeCart(cart);
         const tamTinh = tinhTamTinh(cart);
 
         try {
@@ -248,10 +402,24 @@ document.addEventListener("DOMContentLoaded", function () {
         const error = validateForm();
         if (error) {
             showMessage(error, "error");
+            renderOrderList();
             return;
         }
 
-        const cart = getCart();
+        let cart = getCart();
+        cart = normalizeCart(cart);
+
+        for (const item of cart) {
+            const tonKho = getTonKho(item);
+            const soLuong = Number(item.soLuong || 0);
+
+            if (tonKho > 0 && soLuong > tonKho) {
+                showMessage(`Sản phẩm "${item.tenBanh}" chỉ còn ${tonKho} cái trong kho.`, "error");
+                renderOrderList();
+                return;
+            }
+        }
+
         const phuongThucThanhToan =
             document.querySelector('input[name="phuongThucThanhToan"]:checked')?.value || "COD";
 
@@ -303,6 +471,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }, 1800);
             } else {
                 showMessage(result.message || "Đặt hàng thất bại.", "error");
+                renderOrderList();
                 btnDatHang.disabled = false;
                 btnDatHang.classList.remove("is-loading", "is-success");
                 btnDatHang.textContent = oldText;
@@ -310,6 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error(error);
             showMessage("Có lỗi xảy ra khi gửi đơn hàng.", "error");
+            renderOrderList();
             btnDatHang.disabled = false;
             btnDatHang.classList.remove("is-loading", "is-success");
             btnDatHang.textContent = oldText;
@@ -318,6 +488,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll('input[name="phuongThucThanhToan"]').forEach(radio => {
         radio.addEventListener("change", togglePaymentBoxes);
+    });
+
+    backToCartBtn?.addEventListener("click", function () {
+        localStorage.removeItem("buyNowItem");
     });
 
     if (btnDatHang) {

@@ -1,0 +1,124 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block title %}Quản lý liên hệ{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'app/css/QuanLyLienHe.css' %}">
+{% endblock %}
+
+{% block main_content %}
+<section class="admin-contact-page">
+    <div class="admin-contact-container">
+        <div class="admin-contact-header">
+            <div>
+                <p class="admin-label">SPRINTTEAM ADMIN</p>
+                <h1>Quản lý liên hệ</h1>
+                <p>Danh sách liên hệ khách hàng đã gửi đến cửa hàng</p>
+            </div>
+
+            <div class="header-actions">
+                <a href="{% url 'admin_dashboard' %}" class="back-btn">
+                    ← Về dashboard
+                </a>
+            </div>
+        </div>
+
+        {% if messages %}
+            <div class="message-wrap">
+                {% for message in messages %}
+                    <div class="contact-alert {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="GET" class="filter-form">
+            <input
+                type="text"
+                name="keyword"
+                value="{{ keyword }}"
+                placeholder="Tìm theo họ tên, email, số điện thoại, nội dung..."
+            >
+
+            <select name="trang_thai">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="Chưa xử lý" {% if trang_thai == 'Chưa xử lý' %}selected{% endif %}>Chưa xử lý</option>
+                <option value="Đang xử lý" {% if trang_thai == 'Đang xử lý' %}selected{% endif %}>Đang xử lý</option>
+                <option value="Đã xử lý" {% if trang_thai == 'Đã xử lý' %}selected{% endif %}>Đã xử lý</option>
+            </select>
+
+            <button type="submit">Lọc</button>
+        </form>
+
+        <div class="contact-table-wrap">
+            <table class="contact-table">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>SĐT</th>
+                        <th>Nội dung khách gửi</th>
+                        <th>Ngày gửi</th>
+                        <th>Trạng thái</th>
+                        <th>Phản hồi khách</th>
+                        <th>Cập nhật</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in ds_lien_he %}
+                    <tr>
+                        <td>#LH{{ item.MaLienHe }}</td>
+                        <td>{{ item.HoTen }}</td>
+                        <td>{{ item.Email }}</td>
+                        <td>{{ item.SoDienThoai|default:"-" }}</td>
+                        <td class="noi-dung">{{ item.NoiDung }}</td>
+                        <td>{{ item.NgayGui|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <span class="status-badge
+                                {% if item.TrangThaiXuLy == 'Chưa xử lý' %}status-pending{% endif %}
+                                {% if item.TrangThaiXuLy == 'Đang xử lý' %}status-processing{% endif %}
+                                {% if item.TrangThaiXuLy == 'Đã xử lý' %}status-done{% endif %}
+                            ">
+                                {{ item.TrangThaiXuLy }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'phan_hoi_lien_he' item.MaLienHe %}" class="reply-form">
+                                {% csrf_token %}
+                                <textarea
+                                    name="noi_dung_phan_hoi"
+                                    class="reply-textarea"
+                                    placeholder="Nhập nội dung phản hồi cho khách..."
+                                    required
+                                ></textarea>
+                                <button type="submit" class="reply-btn">Gửi phản hồi</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'cap_nhat_trang_thai_lien_he' item.MaLienHe %}">
+                                {% csrf_token %}
+                                <div class="update-box">
+                                    <select name="trang_thai_xu_ly">
+                                        <option value="Chưa xử lý" {% if item.TrangThaiXuLy == 'Chưa xử lý' %}selected{% endif %}>Chưa xử lý</option>
+                                        <option value="Đang xử lý" {% if item.TrangThaiXuLy == 'Đang xử lý' %}selected{% endif %}>Đang xử lý</option>
+                                        <option value="Đã xử lý" {% if item.TrangThaiXuLy == 'Đã xử lý' %}selected{% endif %}>Đã xử lý</option>
+                                    </select>
+                                    <button type="submit" class="save-btn">Lưu</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="empty-row">Chưa có liên hệ nào</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

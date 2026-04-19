@@ -7,8 +7,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const tongCongEl = document.getElementById("tongCong");
     const btnThanhToan = document.getElementById("btnThanhToan");
 
+    function parsePrice(value) {
+        if (value === null || value === undefined) return 0;
+
+        let raw = String(value).trim();
+        raw = raw.replace(/đ|vnd|vnđ/gi, "").trim();
+
+        if (/^\d{1,3}(\.\d{3})+$/.test(raw)) {
+            return parseInt(raw.replace(/\./g, ""), 10);
+        }
+
+        if (/^\d{1,3}(,\d{3})+$/.test(raw)) {
+            return parseInt(raw.replace(/,/g, ""), 10);
+        }
+
+        return parseInt(raw.replace(/[^\d]/g, ""), 10) || 0;
+    }
+
     function formatCurrency(value) {
-        return Number(value || 0).toLocaleString("vi-VN") + " đ";
+        return parsePrice(value).toLocaleString("vi-VN") + " đ";
     }
 
     function tinhPhiVanChuyen(tamTinh) {
@@ -28,8 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
             "";
 
         return ["true", "1", "yes"].includes(String(value).trim().toLowerCase()) ||
-            (String(value).trim() !== "" &&
-             !["false", "0", "none", "null", "undefined"].includes(String(value).trim().toLowerCase()));
+            (
+                String(value).trim() !== "" &&
+                !["false", "0", "none", "null", "undefined"].includes(String(value).trim().toLowerCase())
+            );
     }
 
     function getCart() {
@@ -45,12 +64,54 @@ document.addEventListener("DOMContentLoaded", function () {
     function saveCart(cart) {
         localStorage.setItem("cart", JSON.stringify(cart));
         window.dispatchEvent(new Event("cartUpdated"));
+        document.dispatchEvent(new CustomEvent("cartUpdated"));
+    }
+
+    function getTonKho(item) {
+        const tonKho = Number(
+            item.soLuongTon ??
+            item.so_luong_ton ??
+            item.tonKho ??
+            item.stock ??
+            0
+        );
+        return tonKho > 0 ? tonKho : 0;
+    }
+
+    function normalizeCart(cart) {
+        let changed = false;
+
+        cart = cart.map(item => {
+            let soLuong = Number(item.soLuong || 1);
+            const tonKho = getTonKho(item);
+
+            item.gia = parsePrice(item.gia);
+
+            if (soLuong < 1) {
+                soLuong = 1;
+                changed = true;
+            }
+
+            if (tonKho > 0 && soLuong > tonKho) {
+                soLuong = tonKho;
+                changed = true;
+            }
+
+            item.soLuong = soLuong;
+            return item;
+        });
+
+        if (changed) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+        return cart;
     }
 
     function updateSummary(cart) {
         const tongSanPham = cart.reduce((sum, item) => sum + Number(item.soLuong || 0), 0);
         const tamTinh = cart.reduce((sum, item) => {
-            return sum + Number(item.gia || 0) * Number(item.soLuong || 0);
+            return sum + parsePrice(item.gia) * Number(item.soLuong || 0);
         }, 0);
         const phiVanChuyen = tinhPhiVanChuyen(tamTinh);
         const tongCong = tamTinh + phiVanChuyen;
@@ -74,7 +135,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderCart() {
         if (!gioHangTableBody) return;
 
-        const cart = getCart();
+        let cart = getCart();
+        cart = normalizeCart(cart);
 
         if (cart.length === 0) {
             renderEmptyTable();
@@ -86,9 +148,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (gioHangEmpty) gioHangEmpty.style.display = "none";
 
         gioHangTableBody.innerHTML = cart.map((item, index) => {
-            const gia = Number(item.gia || 0);
+            const gia = parsePrice(item.gia);
             const soLuong = Number(item.soLuong || 1);
             const thanhTien = gia * soLuong;
+            const tonKho = getTonKho(item);
+            const hetTon = tonKho > 0 && soLuong >= tonKho;
 
             return `
                 <tr>
@@ -103,6 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div class="giohang-product-info">
                                 <h4>${item.tenBanh || 'Sản phẩm'}</h4>
                                 ${item.noiDung ? `<p>${item.noiDung}</p>` : ""}
+                                ${tonKho > 0 ? `<small>Còn lại: ${tonKho}</small>` : ""}
                             </div>
                         </div>
                     </td>
@@ -115,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="giohang-qty-box">
                             <button type="button" class="giohang-qty-btn qty-minus" data-index="${index}">-</button>
                             <span class="giohang-qty-number">${soLuong}</span>
-                            <button type="button" class="giohang-qty-btn qty-plus" data-index="${index}">+</button>
+                            <button type="button" class="giohang-qty-btn qty-plus" data-index="${index}" ${hetTon ? "disabled" : ""}>+</button>
                         </div>
                     </td>
 
@@ -160,7 +225,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (!cart[index]) return;
 
-                cart[index].soLuong = Number(cart[index].soLuong || 1) + 1;
+                const tonKho = getTonKho(cart[index]);
+                let soLuongMoi = Number(cart[index].soLuong || 1) + 1;
+
+                if (tonKho > 0 && soLuongMoi > tonKho) {
+                    alert(`Sản phẩm chỉ còn ${tonKho} cái trong kho`);
+                    soLuongMoi = tonKho;
+                }
+
+                cart[index].soLuong = soLuongMoi;
                 saveCart(cart);
                 renderCart();
             });
@@ -195,6 +268,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            localStorage.removeItem("buyNowItem");
             window.location.href = "/thanh-toan/";
         });
     }

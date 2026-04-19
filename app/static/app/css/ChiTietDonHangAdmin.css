@@ -8,6 +8,7 @@
     min-height: 100vh;
 }
 
+/* HEADER */
 .order-detail-header {
     display: flex;
     align-items: center;
@@ -30,6 +31,7 @@
     color: #6b7280;
 }
 
+/* BUTTON */
 .back-btn {
     display: inline-flex;
     align-items: center;
@@ -51,6 +53,7 @@
     color: #b91c1c;
 }
 
+/* GRID */
 .info-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -58,6 +61,7 @@
     margin-bottom: 24px;
 }
 
+/* CARD */
 .info-card,
 .detail-table-card {
     background: #ffffff;
@@ -84,6 +88,72 @@
 .info-card strong {
     color: #111827;
 }
+
+/* ========================= */
+/* 🔥 FORM TRẠNG THÁI */
+/* ========================= */
+
+.update-status-card {
+    margin-bottom: 24px;
+}
+
+.status-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.status-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-form label {
+    font-weight: 700;
+    color: #374151;
+}
+
+.status-form select {
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.status-form select:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+/* BUTTON LƯU */
+.status-form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-btn {
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 10px;
+    border: none;
+    background: #dc2626;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-btn:hover {
+    background: #b91c1c;
+}
+
+/* ========================= */
+/* TABLE */
+/* ========================= */
 
 .table-responsive {
     width: 100%;
@@ -119,6 +189,7 @@
     background: #fffafa;
 }
 
+/* IMAGE */
 .cake-thumb {
     width: 76px;
     height: 76px;
@@ -148,6 +219,7 @@
     font-style: italic;
 }
 
+/* RESPONSIVE */
 @media (max-width: 992px) {
     .info-grid {
         grid-template-columns: 1fr;

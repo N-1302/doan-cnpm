@@ -10,13 +10,13 @@
   <div class="order-detail-container">
     <div class="order-detail-head">
       <h1 class="order-detail-title">Chi tiết đơn hàng</h1>
-        <div class="order-detail-breadcrumb">
-            <a href="{% url 'home' %}" class="breadcrumb-link">Trang chủ</a>
-            <span>›</span>
-            <a href="{% url 'don_hang_cua_toi' %}" class="breadcrumb-link active">Đơn hàng của tôi</a>
-            <span>›</span>
-            <span class="breadcrumb-current">#DH{{ don_hang.MaDonHang }}</span>
-        </div>
+      <div class="order-detail-breadcrumb">
+        <a href="{% url 'home' %}" class="breadcrumb-link">Trang chủ</a>
+        <span>›</span>
+        <a href="{% url 'don_hang_cua_toi' %}" class="breadcrumb-link active">Đơn hàng của tôi</a>
+        <span>›</span>
+        <span class="breadcrumb-current">#DH{{ don_hang.MaDonHang }}</span>
+      </div>
     </div>
 
     <div class="order-summary-box">
@@ -50,7 +50,7 @@
 
         <div class="summary-item">
           <span class="summary-label">Tổng tiền</span>
-          <strong class="summary-value total-money">{{ don_hang.TongTien|floatformat:0 }}đ</strong>
+          <strong class="summary-value total-money format-price" data-price="{{ don_hang.TongTien }}">0 đ</strong>
         </div>
 
         <div class="summary-item full-width">
@@ -78,13 +78,13 @@
               <div class="order-product-info">
                 <h3>{{ item.TenBanh }}</h3>
                 <p>Số lượng: {{ item.SoLuong }}</p>
-                <p>Đơn giá: {{ item.DonGia|floatformat:0 }}đ</p>
+                <p>Đơn giá: <span class="format-price" data-price="{{ item.DonGia }}">0 đ</span></p>
               </div>
             </div>
 
             <div class="order-product-right">
               <span class="line-total-label">Thành tiền</span>
-              <strong class="line-total-value">{{ item.ThanhTien|floatformat:0 }}đ</strong>
+              <strong class="line-total-value format-price" data-price="{{ item.ThanhTien }}">0 đ</strong>
             </div>
           </div>
           {% endfor %}

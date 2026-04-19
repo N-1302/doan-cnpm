@@ -51,8 +51,14 @@ urlpatterns = [
     path('khoa-tai-khoan/<int:mataikhoan>/', views.khoa_tai_khoan, name='khoa_tai_khoan'),
     path('mo-tai-khoan/<int:mataikhoan>/', views.mo_tai_khoan, name='mo_tai_khoan'),
     path('thong-ke/', views.thong_ke, name='thong_ke'),
-    path('admin/chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang_admin, name='chi_tiet_don_hang_admin'),
-    path('admin/danh-gia/', views.quan_ly_danh_gia, name='quan_ly_danh_gia'),
+    path('quan-ly-lien-he/', views.quan_ly_lien_he, name='quan_ly_lien_he'),
+    path('cap-nhat-lien-he/<int:malienhe>/', views.cap_nhat_trang_thai_lien_he, name='cap_nhat_trang_thai_lien_he'),
+    path('phan-hoi-lien-he/<int:malienhe>/', views.phan_hoi_lien_he, name='phan_hoi_lien_he'),
+
+    # Chi tiết đơn hàng admin - KHÔNG dùng tiền tố /admin/
+    path('quan-tri/chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang_admin, name='chi_tiet_don_hang_admin'),
+
+    # Quản lý đánh giá
     path('quan-tri/danh-gia/', views.quan_ly_danh_gia, name='quan_ly_danh_gia'),
     path('quan-tri/danh-gia/xoa/<int:madanhgia>/', views.xoa_danh_gia, name='xoa_danh_gia'),
 

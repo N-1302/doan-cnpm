@@ -154,11 +154,10 @@
 }
 
 .qlb-thumb {
-    width: 68px;
-    height: 68px;
+    width: 70px;
+    height: 70px;
     object-fit: cover;
-    border-radius: 14px;
-    border: 1px solid #eee;
+    border-radius: 10px;
 }
 
 .qlb-no-image {
@@ -335,7 +334,6 @@
     background: #d8001d;
     color: #fff;
 }
-
 @media (max-width: 768px) {
     .qlb-title {
         font-size: 38px;

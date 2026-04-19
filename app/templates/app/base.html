@@ -63,7 +63,13 @@
             <div class="user-hover"> 
               <img src="{% static 'app/images/user.jpg' %}"  class="user-avatar"/> 
               <div class="user-menu"> 
-                <span class="user-name"> {{ request.session.ho_ten }} </span> 
+                <span class="user-name"> {{ request.session.ho_ten }} </span>
+                {% if ma_quyen != 1 %}
+                <a href="{% url 'don_hang_cua_toi' %}" class="menu-link">
+                  <span class="menu-icon">📦</span>
+                  <span>Đơn hàng của tôi</span>
+                </a>
+                {% endif %}
                 <a href="{% url 'logout' %}" class="logout-btn"> Đăng xuất </a> 
               </div> 
             </div> 
@@ -159,6 +165,19 @@
             <p class="mb-2"><strong>Hồ Chí Minh:</strong> 0944 630 055</p>
             <p class="mb-2"><strong>(028) 3979 7350</strong></p>
             <p class="mb-4"><strong>CSKH:</strong> 084 913 0206</p>
+            <div class="footer-social">
+            <h4 class="fw-bold mb-3">Kết nối</h4>
+            <div class="social-icons">
+              <a href="https://www.facebook.com/nguyen.dang.khoi.130206/" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://www.instagram.com/dangkhoi9925/" target="_blank">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="https://chat.zalo.me/" target="_blank" class="zalo-btn">
+                Zalo
+              </a>
+            </div>
           </div>
         </div>
 

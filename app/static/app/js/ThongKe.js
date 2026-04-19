@@ -7,11 +7,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!filterType) return;
 
         if (filterType.value === "day") {
-            dayWrap.style.display = "block";
-            monthWrap.style.display = "none";
+            if (dayWrap) dayWrap.style.display = "block";
+            if (monthWrap) monthWrap.style.display = "none";
+        } else if (filterType.value === "month") {
+            if (dayWrap) dayWrap.style.display = "none";
+            if (monthWrap) monthWrap.style.display = "block";
         } else {
-            dayWrap.style.display = "none";
-            monthWrap.style.display = "block";
+            if (dayWrap) dayWrap.style.display = "none";
+            if (monthWrap) monthWrap.style.display = "none";
         }
     }
 
@@ -20,56 +23,61 @@ document.addEventListener("DOMContentLoaded", function () {
         filterType.addEventListener("change", toggleFilterInputs);
     }
 
-    const ctx = document.getElementById("revenueChart");
-    if (ctx) {
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: window.chartLabels || [],
-                datasets: [{
-                    label: window.currentFilterType === "day" ? "Doanh thu theo ngày" : "Doanh thu theo tháng",
-                    data: window.chartData || [],
-                    borderWidth: 2,
-                    borderRadius: 10,
-                    backgroundColor: [
-                        "rgba(239, 68, 68, 0.75)",
-                        "rgba(249, 115, 22, 0.75)",
-                        "rgba(234, 179, 8, 0.75)",
-                        "rgba(16, 185, 129, 0.75)",
-                        "rgba(59, 130, 246, 0.75)",
-                        "rgba(139, 92, 246, 0.75)",
-                        "rgba(236, 72, 153, 0.75)"
-                    ],
-                    borderColor: "rgba(220, 38, 38, 1)"
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let value = context.raw || 0;
-                                return " " + value.toLocaleString("vi-VN") + " đ";
-                            }
+    const canvas = document.getElementById("revenueChart");
+    if (!canvas) return;
+
+    const labelText =
+        window.currentFilterType === "day"
+            ? "Doanh thu theo giờ"
+            : window.currentFilterType === "month"
+            ? "Doanh thu theo ngày"
+            : "Doanh thu tổng quan";
+
+    new Chart(canvas, {
+        type: "line",
+        data: {
+            labels: window.chartLabels || [],
+            datasets: [{
+                label: labelText,
+                data: window.chartData || [],
+                borderColor: "rgba(220, 38, 38, 1)",
+                backgroundColor: "rgba(239, 68, 68, 0.12)",
+                borderWidth: 3,
+                tension: 0.35,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: "rgba(220, 38, 38, 1)",
+                pointBorderColor: "#ffffff",
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let value = context.raw || 0;
+                            return " " + Number(value).toLocaleString("vi-VN") + " đ";
                         }
                     }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString("vi-VN") + " đ";
-                            }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return Number(value).toLocaleString("vi-VN") + " đ";
                         }
                     }
                 }
             }
-        });
-    }
+        }
+    });
 });
