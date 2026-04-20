@@ -46,9 +46,7 @@
             <div class="detail-right">
                 <h1 class="detail-title" id="detailProductName">{{ product.TenBanh }}</h1>
 
-                <div class="detail-price" id="detailProductPrice">
-                    {{ product.Gia }} đ
-                </div>
+                <div class="detail-price money-value" data-price="{{ product.Gia }}"></div>
 
                 <div class="detail-meta">
                     <p>
@@ -335,7 +333,7 @@
                         <img src="{% static 'app/images/looogoo.png' %}" alt="{{ item.TenBanh }}">
                     {% endif %}
                     <h3>{{ item.TenBanh }}</h3>
-                    <p class="related-price">{{ item.Gia }} đ</p>
+                    <p class="related-price money-value" data-price="{{ item.Gia }}"></p>
                 </a>
 
                 <div class="related-action">
@@ -415,5 +413,5 @@
 <input type="hidden" id="currentProductStock" value="{{ product.SoLuongTon }}">
 <input type="hidden" id="currentProductImage" value="{% static 'app/images/' %}{{ product.HinhAnh|default:'looogoo.png' }}">
 
-<script src="{% static 'app/js/ChiTietSanPham.js' %}"></script>
+<script src="{% static 'app/js/ChiTietSanPham.js' %}?v=2"></script>
 {% endblock %}

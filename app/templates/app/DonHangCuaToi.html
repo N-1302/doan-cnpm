@@ -26,7 +26,7 @@
 
       <div class="orders-list" id="ordersList">
         {% for don in don_hangs %}
-        <div class="order-card" data-order-code="DH{{ don.MaDonHang }}" data-order-status="{{ don.TrangThaiDonHang|lower }}">
+        <div class="order-card" data-`order-code="DH{{ don.MaDonHang }}" data-order-status="{{ don.TrangThaiDonHang|lower }}">
           <div class="order-card-top">
             <div class="order-code-wrap">
               <span class="order-label">Mã đơn</span>
@@ -90,5 +90,5 @@
   </div>
 </section>
 
-<script src="{% static 'app/js/DonHangCuaToi.js' %}"></script>
+<script src="{% static 'app/js/DonHangCuaToi.js' %}?v=2"></script>
 {% endblock %}

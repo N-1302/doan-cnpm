@@ -346,5 +346,10 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = url;
     });
 
+    document.querySelectorAll(".money-value").forEach(el => {
+        const price = el.getAttribute("data-price");
+        el.textContent = formatPrice(price);
+    });
+
     updateBadge();
 });

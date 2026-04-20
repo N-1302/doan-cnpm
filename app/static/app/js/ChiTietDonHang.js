@@ -19,14 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function applyFormatPrice() {
-        document.querySelectorAll(".format-price").forEach(function (el) {
-            const rawValue = el.getAttribute("data-price");
-            el.textContent = formatMoney(rawValue);
-        });
-    }
-    applyFormatPrice();
-    
-    function applyFormatPrice() {
         const priceElements = document.querySelectorAll(".format-price");
 
         priceElements.forEach(function (el) {

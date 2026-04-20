@@ -57,16 +57,14 @@
           <a href="{% url 'product_detail' product.ma_banh %}" class="product-card-link">
           {% endif %}
 
-            <div class="shopee-image-wrap">
+            <div class="product-image">
               {% if product.hinh_anh %}
                 <img
-                  class="shopee-image"
                   src="{% static 'app/images/' %}{{ product.hinh_anh }}"
                   alt="{{ product.ten_banh }}"
                 />
               {% else %}
                 <img
-                  class="shopee-image"
                   src="{% static 'app/images/looogoo.png' %}"
                   alt="{{ product.ten_banh }}"
                 />
@@ -79,17 +77,13 @@
               {% endif %}
             </div>
 
-            <div class="shopee-info">
-              <h5 class="shopee-name">{{ product.ten_banh }}</h5>
-
-              <p class="shopee-desc">
-                {{ product.mo_ta|default:"Ngon" }}
-              </p>
+            <div class="product-info">
+              <h3>{{ product.ten_banh }}</h3>
+              <p>{{ product.mo_ta|default:"Ngon" }}</p>
 
               <div class="shopee-price" data-price="{{ product.gia }}"></div>
-
-              <div class="shopee-stock">Số lượng tồn: {{ product.so_luong_ton }}</div>
-              <div class="product-status-text">Trạng thái: {{ product.trang_thai }}</div>
+              <div class="stock">Số lượng tồn: {{ product.so_luong_ton }}</div>
+              <div class="status">Trạng thái: {{ product.trang_thai }}</div>
             </div>
 
         {% if product.trang_thai == 'Tạm ngưng bán' or product.so_luong_ton == 0 %}

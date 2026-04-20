@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () { 
     const modal = document.getElementById("addCakeModal");
     const openBtn = document.getElementById("openAddModal");
     const closeBtn = document.getElementById("closeAddModal");
@@ -54,4 +54,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (searchInput) searchInput.addEventListener("input", filterTable);
     if (categoryFilter) categoryFilter.addEventListener("change", filterTable);
+
+    function formatPrice(price) {
+        let value = String(price ?? "").trim();
+
+        value = value.replace(/đ|vnd|vnđ/gi, "").trim();
+
+        if (/^\d{1,3}([.,]\d{3})+([.,]\d+)?$/.test(value)) {
+            value = value.replace(/[.,](?=\d{3}\b)/g, "");
+        }
+
+        value = value.replace(",", ".");
+
+        const number = parseFloat(value);
+        return (isNaN(number) ? 0 : number).toLocaleString("vi-VN") + " đ";
+    }
+
+    document.querySelectorAll(".money-value").forEach(el => {
+        const price = el.getAttribute("data-price");
+        el.textContent = formatPrice(price);
+    });
 });

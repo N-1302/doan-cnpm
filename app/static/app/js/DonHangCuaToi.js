@@ -6,16 +6,28 @@ document.addEventListener("DOMContentLoaded", function () {
     function parsePrice(value) {
         if (value === null || value === undefined) return 0;
 
-        const raw = String(value).trim();
+        let raw = String(value).trim();
         if (!raw) return 0;
 
-        const number = Number(raw);
-        if (!Number.isNaN(number)) {
-            return Math.round(number);
+        raw = raw.replace(/đ|vnd|vnđ/gi, "").trim();
+
+        const directNumber = Number(raw);
+        if (!Number.isNaN(directNumber)) {
+            return Math.round(directNumber);
         }
 
-        const cleaned = raw.replace(/[^\d]/g, "");
-        return cleaned ? parseInt(cleaned, 10) : 0;
+        if (/^\d{1,3}([.,]\d{3})+([.,]\d+)?$/.test(raw)) {
+            raw = raw.replace(/[.,](?=\d{3}\b)/g, "");
+        }
+
+        raw = raw.replace(",", ".");
+
+        const parsed = parseFloat(raw);
+        if (!Number.isNaN(parsed)) {
+            return Math.round(parsed);
+        }
+
+        return 0;
     }
 
     function formatMoney(value) {
@@ -25,40 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function applyFormatPrice() {
         document.querySelectorAll(".format-price").forEach(function (el) {
             const rawValue = el.getAttribute("data-price");
+            console.log("data-price =", rawValue);
             el.textContent = formatMoney(rawValue);
         });
     }
-
-    function filterOrders() {
-        if (!searchInput) return;
-
-        const keyword = searchInput.value.trim().toLowerCase();
-        let visibleCount = 0;
-
-        orderCards.forEach(function (card) {
-            const orderCode = (card.getAttribute("data-order-code") || "").toLowerCase();
-            const orderStatus = (card.getAttribute("data-order-status") || "").toLowerCase();
-
-            const matched =
-                orderCode.includes(keyword) ||
-                orderStatus.includes(keyword);
-
-            card.style.display = matched ? "" : "none";
-
-            if (matched) visibleCount++;
-        });
-
-        if (noResultBox) {
-            noResultBox.style.display = visibleCount === 0 ? "block" : "none";
-        }
-    }
-
-    applyFormatPrice();
-
-    if (searchInput) {
-        searchInput.addEventListener("input", filterOrders);
-    }
-
 
     function filterOrders() {
         if (!searchInput) return;

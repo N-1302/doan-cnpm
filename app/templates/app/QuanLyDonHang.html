@@ -64,7 +64,7 @@
                             {% endif %}
                         </td>
                         <td>{{ dh.ngay_dat|date:"d/m/Y H:i"|default:"-" }}</td>
-                        <td>{{ dh.tong_tien|floatformat:0|intcomma }} đ</td>
+                        <td class="money-value" data-price="{{ dh.tong_tien }}"></td>
                         <td>{{ dh.dia_chi_giao_hang }}</td>
                         <td class="order-status-cell">
                             <span class="qldh-status">{{ dh.trang_thai_don_hang|default:"Chờ xử lý" }}</span>
@@ -95,6 +95,6 @@
     </div>
 </section>
 
-<script src="{% static 'app/js/QuanLyDonHang.js' %}"></script>
+<script src="{% static 'app/js/QuanLyDonHang.js' %}?v=2"></script>
 
 {% endblock %}

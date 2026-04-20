@@ -4,7 +4,7 @@
 
 {% block main_content %}
 <link rel="stylesheet" href="{% static 'app/css/ChiTietDonHangAdmin.css' %}">
-<script src="{% static 'app/js/ChiTietDonHangAdmin.js' %}" defer></script>
+<script src="{% static 'app/js/ChiTietDonHangAdmin.js' %}?v=2" defer></script>
 
 <div class="order-detail-page">
     <div class="order-detail-header">
@@ -21,7 +21,10 @@
             <p><strong>Mã đơn:</strong> #{{ don_hang.ma_don_hang }}</p>
             <p><strong>Ngày đặt:</strong> {{ don_hang.ngay_dat|date:"d/m/Y H:i" }}</p>
             <p><strong>Trạng thái hiện tại:</strong> {{ don_hang.trang_thai_don_hang }}</p>
-            <p><strong>Tổng tiền:</strong> {{ don_hang.tong_tien|floatformat:0|intcomma }} đ</p>
+            <p>
+                <strong>Tổng tiền:</strong>
+                <span class="money-value" data-price="{{ don_hang.tong_tien }}"></span>
+            </p>
             <p><strong>Địa chỉ giao hàng:</strong> {{ don_hang.dia_chi_giao_hang }}</p>
         </div>
 
@@ -87,9 +90,9 @@
                             {% endif %}
                         </td>
                         <td>{{ item.TenBanh }}</td>
-                        <td>{{ item.DonGia|floatformat:0|intcomma }} đ</td>
+                        <td class="money-value" data-price="{{ item.DonGia }}"></td>
                         <td>{{ item.SoLuong }}</td>
-                        <td>{{ item.ThanhTien|floatformat:0|intcomma }} đ</td>
+                        <td class="money-value" data-price="{{ item.ThanhTien }}"></td>
                     </tr>
                     {% empty %}
                     <tr>
