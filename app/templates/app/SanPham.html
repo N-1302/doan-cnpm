@@ -2,7 +2,7 @@
     {% load static %}
 
     {% block main_content %}
-    <link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}?v=99">
+    <link rel="stylesheet" href="{% static 'app/css/GioHang.css' %}">
     <link rel="stylesheet" href="{% static 'app/css/SanPham.css' %}">
 
     <section class="product-page">
@@ -123,5 +123,6 @@
     <input type="hidden" id="buyNowProductId">
     <input type="hidden" id="buyNowCheckoutUrl" value="{% url 'checkout' %}">
 
-    <script src="{% static 'app/js/trangchu.js' %}?v=2"></script>
+    <script src="{% static 'app/js/trangchu.js' %}"></script>
+    <script src="{% static 'app/js/SanPham.js' %}"></script>
     {% endblock %}

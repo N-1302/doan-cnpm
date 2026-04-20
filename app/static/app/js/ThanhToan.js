@@ -382,7 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="sale-item-left">
                         <strong>${item.ten_khuyen_mai || item.ma_giam_gia}</strong>
                         <span>Mã: ${item.ma_giam_gia}</span>
-                        <small>Giảm ${item.phan_tram_giam}%${item.dieu_kien_ap_dung ? " • Đơn từ " + Number(item.dieu_kien_ap_dung).toLocaleString("vi-VN") + " đ" : ""}</small>
+                        <small>Giảm ${item.phan_tram_giam}%${item.don_toi_thieu ? " • Đơn từ " + Number(item.don_toi_thieu).toLocaleString("vi-VN") + " đ" : ""}</small>
                     </div>
                     <button type="button" class="sale-select-btn" data-code="${item.ma_giam_gia}">
                         Chọn

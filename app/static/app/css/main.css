@@ -703,13 +703,13 @@
 }
 
 .menu-link {
-  color: #2563eb;
-  background: #f8fbff;
+  color: #111827;
+  background: #fff;
 }
 
 .menu-link:hover {
-  background: #eef4ff;
-  color: #1d4ed8;
+  background: #fff1f2;
+  color: #c8102e;
   transform: translateY(-1px);
 }
 

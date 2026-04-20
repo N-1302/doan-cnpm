@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 import random
 import json
+import re
 
 from .models import (
     TaiKhoan, LoaiBanh, Banh, DonHang, KhuyenMai,
@@ -365,28 +366,23 @@ def product_detail(request, mabanh):
     # =========================
     # SẢN PHẨM LIÊN QUAN
     # =========================
+    related_products = []
+    selected_ids = set()
+
+    # 1. Lấy bánh cùng loại trước
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon
+            SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, TrangThai
             FROM banh
-            WHERE MaLoaiBanh = %s AND MaBanh != %s
+            WHERE MaLoaiBanh = %s
+            AND MaBanh != %s
+            AND SoLuongTon > 0
+            AND (TrangThai = 'Đang bán' OR TrangThai IS NULL OR TrangThai = '')
             ORDER BY MaBanh ASC
             LIMIT 4
         """, [product['MaLoaiBanh'], product['MaBanh']])
         related_rows = cursor.fetchall()
 
-    if not related_rows:
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon
-                FROM banh
-                WHERE MaBanh != %s
-                ORDER BY MaBanh ASC
-                LIMIT 4
-            """, [product['MaBanh']])
-            related_rows = cursor.fetchall()
-
-    related_products = []
     for item in related_rows:
         related_products.append({
             'MaBanh': item[0],
@@ -394,7 +390,39 @@ def product_detail(request, mabanh):
             'HinhAnh': item[2],
             'Gia': item[3],
             'SoLuongTon': item[4],
+            'TrangThai': item[5],
         })
+        selected_ids.add(item[0])
+
+    # 2. Nếu chưa đủ 4 thì lấy thêm bánh khác loại để bù
+    so_can_them = 4 - len(related_products)
+
+    if so_can_them > 0:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT MaBanh, TenBanh, HinhAnh, Gia, SoLuongTon, TrangThai
+                FROM banh
+                WHERE MaBanh != %s
+                AND SoLuongTon > 0
+                AND (TrangThai = 'Đang bán' OR TrangThai IS NULL OR TrangThai = '')
+                ORDER BY MaBanh ASC
+            """, [product['MaBanh']])
+            extra_rows = cursor.fetchall()
+
+        for item in extra_rows:
+            if item[0] not in selected_ids:
+                related_products.append({
+                    'MaBanh': item[0],
+                    'TenBanh': item[1],
+                    'HinhAnh': item[2],
+                    'Gia': item[3],
+                    'SoLuongTon': item[4],
+                    'TrangThai': item[5],
+                })
+                selected_ids.add(item[0])
+
+            if len(related_products) == 4:
+                break
 
     # =========================
     # LỌC ĐÁNH GIÁ THEO SỐ SAO
@@ -897,7 +925,16 @@ def ap_dung_khuyen_mai(tong, ma):
     if km.trang_thai and str(km.trang_thai).strip().lower() not in ['còn', 'con', 'đang áp dụng', 'dang ap dung', 'active']:
         return {'success': False, 'message': 'Mã không khả dụng'}
 
-    giam = tong * float(km.phan_tram_giam or 0) / 100
+    # 🔥 CHECK ĐƠN TỐI THIỂU
+    don_toi_thieu = lay_don_toi_thieu(km.dieu_kien_ap_dung)
+
+    if don_toi_thieu > 0 and float(tong) < don_toi_thieu:
+        return {
+            'success': False,
+            'message': f'Đơn hàng phải từ {int(don_toi_thieu):,}đ mới áp dụng được mã này'.replace(',', '.')
+        }
+
+    giam = float(tong) * float(km.phan_tram_giam or 0) / 100
 
     return {
         'success': True,
@@ -907,6 +944,24 @@ def ap_dung_khuyen_mai(tong, ma):
         'ma_giam_gia': km.ma_giam_gia
     }
 
+def parse_so_tien(value):
+    if value is None:
+        return 0
+
+    if isinstance(value, (int, float)):
+        return float(value)
+
+    text = str(value).strip()
+    digits = re.findall(r'\d+', text)
+
+    if not digits:
+        return 0
+
+    return float(''.join(digits))
+
+
+def lay_don_toi_thieu(dieu_kien):
+    return parse_so_tien(dieu_kien)
 
 def api_kiem_tra_khuyen_mai(request):
     if request.method != 'POST':
@@ -949,6 +1004,7 @@ def api_danh_sach_khuyen_mai(request):
                 'ten_khuyen_mai': km.ten_khuyen_mai,
                 'phan_tram_giam': float(km.phan_tram_giam or 0),
                 'dieu_kien_ap_dung': km.dieu_kien_ap_dung or '',
+                'don_toi_thieu': lay_don_toi_thieu(km.dieu_kien_ap_dung),
                 'so_luong': km.so_luong or 0,
                 'trang_thai': km.trang_thai or ''
             })

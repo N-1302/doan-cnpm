@@ -2,16 +2,28 @@ document.addEventListener("DOMContentLoaded", function () {
     function parsePrice(value) {
         if (value === null || value === undefined) return 0;
 
-        const raw = String(value).trim();
+        let raw = String(value).trim();
         if (!raw) return 0;
 
-        const number = Number(raw);
-        if (!Number.isNaN(number)) {
-            return Math.round(number);
+        raw = raw.replace(/đ|vnd|vnđ/gi, "").trim();
+
+        const directNumber = Number(raw);
+        if (!Number.isNaN(directNumber)) {
+            return Math.round(directNumber);
         }
 
-        const cleaned = raw.replace(/[^\d]/g, "");
-        return cleaned ? parseInt(cleaned, 10) : 0;
+        if (/^\d{1,3}([.,]\d{3})+([.,]\d+)?$/.test(raw)) {
+            raw = raw.replace(/[.,](?=\d{3}\b)/g, "");
+        }
+
+        raw = raw.replace(",", ".");
+
+        const parsed = parseFloat(raw);
+        if (!Number.isNaN(parsed)) {
+            return Math.round(parsed);
+        }
+
+        return 0;
     }
 
     function formatMoney(value) {
@@ -27,15 +39,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function applyJsMoney() {
-        const moneyElements = document.querySelectorAll(".js-money");
-
-        moneyElements.forEach(function (el) {
-            const rawValue = el.dataset.money || el.getAttribute("data-money") || el.textContent;
-            el.textContent = formatMoney(rawValue);
-        });
-    }
-
     applyFormatPrice();
-    applyJsMoney();
 });

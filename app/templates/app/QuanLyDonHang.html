@@ -49,7 +49,7 @@
                         <th>Tổng tiền</th>
                         <th>Địa chỉ</th>
                         <th>Trạng thái</th>
-                        <th>Cập nhật</th>
+                        <th>Chi tiết</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,17 +70,9 @@
                             <span class="qldh-status">{{ dh.trang_thai_don_hang|default:"Chờ xử lý" }}</span>
                         </td>
                         <td>
-                            <form method="POST" action="{% url 'cap_nhat_don_hang' dh.ma_don_hang %}" class="qldh-inline-form">
-                                {% csrf_token %}
-                                <select name="trang_thai_don_hang">
-                                    <option value="Chờ xử lý" {% if dh.trang_thai_don_hang == "Chờ xử lý" %}selected{% endif %}>Chờ xử lý</option>
-                                    <option value="Đã xác nhận" {% if dh.trang_thai_don_hang == "Đã xác nhận" %}selected{% endif %}>Đã xác nhận</option>
-                                    <option value="Đang giao" {% if dh.trang_thai_don_hang == "Đang giao" %}selected{% endif %}>Đang giao</option>
-                                    <option value="Hoàn thành" {% if dh.trang_thai_don_hang == "Hoàn thành" %}selected{% endif %}>Hoàn thành</option>
-                                    <option value="Đã hủy" {% if dh.trang_thai_don_hang == "Đã hủy" %}selected{% endif %}>Đã hủy</option>
-                                </select>
-                                <button type="submit">Lưu</button>
-                            </form>
+                            <a href="{% url 'chi_tiet_don_hang_admin' dh.ma_don_hang %}" class="btn-xem-chi-tiet">
+                                Xem chi tiết
+                            </a>
                         </td>
                     </tr>
                     {% empty %}

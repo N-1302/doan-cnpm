@@ -85,7 +85,6 @@
                         <th>Ngày đặt</th>
                         <th>Trạng thái</th>
                         <th>Tổng tiền</th>
-                        <th>Chi tiết</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,11 +115,6 @@
                             </span>
                         </td>
                         <td class="money-value" data-price="{{ don.tong_tien }}"></td>
-                        <td>
-                            <a href="{% url 'chi_tiet_don_hang_admin' don.ma_don_hang %}" class="detail-btn">
-                                Xem chi tiết
-                            </a>
-                        </td>
                     </tr>
                     {% empty %}
                     <tr>

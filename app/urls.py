@@ -54,6 +54,7 @@ urlpatterns = [
     path('quan-ly-lien-he/', views.quan_ly_lien_he, name='quan_ly_lien_he'),
     path('cap-nhat-lien-he/<int:malienhe>/', views.cap_nhat_trang_thai_lien_he, name='cap_nhat_trang_thai_lien_he'),
     path('phan-hoi-lien-he/<int:malienhe>/', views.phan_hoi_lien_he, name='phan_hoi_lien_he'),
+    
 
     # Chi tiết đơn hàng admin - KHÔNG dùng tiền tố /admin/
     path('quan-tri/chi-tiet-don-hang/<int:ma_don_hang>/', views.chi_tiet_don_hang_admin, name='chi_tiet_don_hang_admin'),

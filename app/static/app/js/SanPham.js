@@ -178,7 +178,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 noiDung: product.noiDung || ""
             });
         }
-
         localStorage.setItem("cart", JSON.stringify(cart));
     }
 
