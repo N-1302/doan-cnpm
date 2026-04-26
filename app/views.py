@@ -1747,7 +1747,11 @@ def quan_ly_khuyen_mai(request):
         return redirect('home')
 
     context = get_common_data(request)
-    context['ds_khuyen_mai'] = KhuyenMai.objects.all().order_by('-ma_khuyen_mai')
+
+    context['ds_khuyen_mai'] = KhuyenMai.objects.exclude(
+        trang_thai='Đã xóa'
+    ).order_by('-ma_khuyen_mai')
+
     return render(request, 'app/QuanLyKhuyenMai.html', context)
 
 
@@ -1771,11 +1775,17 @@ def them_khuyen_mai(request):
 
 
 def xoa_khuyen_mai(request, makhuyenmai):
-    if request.session.get('ma_quyen') != 1:
-        return redirect('home')
-
     km = KhuyenMai.objects.filter(ma_khuyen_mai=makhuyenmai).first()
-    if km:
+
+    if not km:
+        return redirect('quan_ly_khuyen_mai')
+
+    da_dung = DonHang.objects.filter(ma_khuyen_mai_id=makhuyenmai).exists()
+
+    if da_dung:
+        km.trang_thai = 'Đã xóa'
+        km.save()
+    else:
         km.delete()
 
     return redirect('quan_ly_khuyen_mai')
