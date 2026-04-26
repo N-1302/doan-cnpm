@@ -217,3 +217,18 @@
     background: #d8001d;
     color: #fff;
 }
+
+.status-active {
+    background: #e7f8ef;
+    color: #16834a;
+}
+
+.status-expired {
+    background: #fdecec;
+    color: #c62828;
+}
+
+.status-paused {
+    background: #fff3cd;
+    color: #9a6700;
+}

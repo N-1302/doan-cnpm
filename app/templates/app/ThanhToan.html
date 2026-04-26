@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}">
+<link rel="stylesheet" href="{% static 'app/css/ThanhToan.css' %}?v=5">
 {% endblock %}
 
 {% block main_content %}
@@ -166,6 +166,71 @@
         </div>
     </div>
 </section>
+
+<!-- POPUP XÁC NHẬN -->
+<div id="confirmOrderOverlay" class="confirm-order-overlay"></div>
+
+<div id="confirmOrderModal" class="confirm-order-modal">
+    <div class="confirm-order-box">
+        <button type="button" id="closeConfirmOrderModal" class="confirm-order-close">×</button>
+
+        <h2 class="confirm-order-title">Xác nhận đơn hàng</h2>
+
+        <div class="confirm-order-content">
+            <div class="confirm-order-row">
+                <span>Họ và tên</span>
+                <strong id="confirmHoTen"></strong>
+            </div>
+
+            <div class="confirm-order-row">
+                <span>Số điện thoại</span>
+                <strong id="confirmSoDienThoai"></strong>
+            </div>
+
+            <div class="confirm-order-row">
+                <span>Địa chỉ</span>
+                <strong id="confirmDiaChi"></strong>
+            </div>
+
+            <div class="confirm-order-row">
+                <span>Phương thức thanh toán</span>
+                <strong id="confirmPhuongThuc"></strong>
+            </div>
+
+            <div class="confirm-order-row">
+                <span>Ví điện tử</span>
+                <strong id="confirmViDienTu"></strong>
+            </div>
+
+            <div class="confirm-order-divider"></div>
+
+            <div class="confirm-order-row">
+                <span>Tạm tính</span>
+                <strong id="confirmTamTinh"></strong>
+            </div>
+
+            <div class="confirm-order-row">
+                <span>Phí vận chuyển</span>
+                <strong id="confirmPhiShip"></strong>
+            </div>
+
+            <div class="confirm-order-row">
+                <span>Giảm giá</span>
+                <strong id="confirmGiamGia"></strong>
+            </div>
+
+            <div class="confirm-order-row total">
+                <span>Tổng cộng</span>
+                <strong id="confirmTongCong"></strong>
+            </div>
+        </div>
+
+        <div class="confirm-order-actions">
+            <button type="button" id="cancelConfirmOrder" class="confirm-cancel-btn">Hủy</button>
+            <button type="button" id="confirmSubmitOrder" class="confirm-submit-btn">Xác nhận đặt hàng</button>
+        </div>
+    </div>
+</div>
 
 <script>
     document.body.dataset.loggedIn = "{{ da_dang_nhap|yesno:'true,false' }}";

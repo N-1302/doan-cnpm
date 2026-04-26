@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.db.models.functions import TruncDay, TruncMonth
 from datetime import timedelta, datetime
 from math import ceil
@@ -606,6 +606,11 @@ def loginPage(request):
             tai_khoan = TaiKhoan.objects.filter(email=username).first()
 
         if tai_khoan and check_password(password, tai_khoan.mat_khau):
+            if tai_khoan.random_key == "LOCKED":
+                return render(request, 'app/DangNhap.html', {
+                    'loi': 'Tài khoản của bạn đã bị khóa!'
+                })
+
             request.session['ma_tai_khoan'] = tai_khoan.ma_tai_khoan
             request.session['ten_dang_nhap'] = tai_khoan.ten_dang_nhap
             request.session['ho_ten'] = tai_khoan.ho_ten
@@ -911,108 +916,159 @@ def tinh_phi_ship(tong):
     return 15000
 
 
+def dong_bo_trang_thai_khuyen_mai():
+    """
+    Tự động cập nhật trạng thái khuyến mãi theo ngày.
+    - Hết hạn nếu ngày kết thúc đã qua
+    - Đang áp dụng nếu đang trong thời gian hợp lệ
+    """
+
+    now = timezone.now()
+
+    # Khuyến mãi hết hạn
+    KhuyenMai.objects.filter(
+        ngay_ket_thuc__isnull=False,
+        ngay_ket_thuc__lt=now
+    ).update(
+        trang_thai='Hết hạn'
+    )
+
+    # Khuyến mãi đang áp dụng
+    KhuyenMai.objects.filter(
+        Q(ngay_bat_dau__lte=now) | Q(ngay_bat_dau__isnull=True),
+        Q(ngay_ket_thuc__gte=now) | Q(ngay_ket_thuc__isnull=True)
+    ).exclude(
+        trang_thai='Tạm dừng'
+    ).exclude(
+        trang_thai='Hết hạn'
+    ).update(
+        trang_thai='Đang áp dụng'
+    )
+
+
+def khuyen_mai_con_hieu_luc():
+    """
+    Lấy danh sách khuyến mãi còn hiệu lực để hiển thị cho khách.
+    Khách chỉ thấy:
+    - Còn số lượng
+    - Đang trong thời gian áp dụng
+    - Trạng thái Đang áp dụng
+    """
+
+    dong_bo_trang_thai_khuyen_mai()
+    now = timezone.now()
+
+    return KhuyenMai.objects.filter(
+        Q(so_luong__gt=0) | Q(so_luong__isnull=True),
+        Q(ngay_bat_dau__lte=now) | Q(ngay_bat_dau__isnull=True),
+        Q(ngay_ket_thuc__gte=now) | Q(ngay_ket_thuc__isnull=True),
+        trang_thai='Đang áp dụng'
+    ).order_by('-ma_khuyen_mai')
+
+
 def ap_dung_khuyen_mai(tong, ma):
+    """
+    Kiểm tra mã giảm giá khi khách nhập mã.
+    """
+
     if not ma:
-        return {'success': False, 'message': 'Chưa nhập mã'}
-
-    km = KhuyenMai.objects.filter(ma_giam_gia__iexact=ma).first()
-    if not km:
-        return {'success': False, 'message': 'Mã không tồn tại'}
-
-    if km.so_luong is not None and km.so_luong <= 0:
-        return {'success': False, 'message': 'Mã đã hết lượt'}
-
-    if km.trang_thai and str(km.trang_thai).strip().lower() not in ['còn', 'con', 'đang áp dụng', 'dang ap dung', 'active']:
-        return {'success': False, 'message': 'Mã không khả dụng'}
-
-    # 🔥 CHECK ĐƠN TỐI THIỂU
-    don_toi_thieu = lay_don_toi_thieu(km.dieu_kien_ap_dung)
-
-    if don_toi_thieu > 0 and float(tong) < don_toi_thieu:
         return {
             'success': False,
-            'message': f'Đơn hàng phải từ {int(don_toi_thieu):,}đ mới áp dụng được mã này'.replace(',', '.')
+            'message': 'Chưa nhập mã giảm giá'
         }
 
-    giam = float(tong) * float(km.phan_tram_giam or 0) / 100
+    dong_bo_trang_thai_khuyen_mai()
+    now = timezone.now()
+
+    km = KhuyenMai.objects.filter(ma_giam_gia__iexact=ma.strip()).first()
+
+    if not km:
+        return {
+            'success': False,
+            'message': 'Mã giảm giá không tồn tại'
+        }
+
+    if km.trang_thai == 'Tạm dừng':
+        return {
+            'success': False,
+            'message': 'Mã giảm giá đang tạm dừng'
+        }
+
+    if km.ngay_bat_dau and km.ngay_bat_dau > now:
+        return {
+            'success': False,
+            'message': 'Mã giảm giá chưa đến thời gian áp dụng'
+        }
+
+    if km.ngay_ket_thuc and km.ngay_ket_thuc < now:
+        km.trang_thai = 'Hết hạn'
+        km.save(update_fields=['trang_thai'])
+
+        return {
+            'success': False,
+            'message': 'Mã giảm giá đã hết hạn'
+        }
+
+    if km.so_luong is not None and km.so_luong <= 0:
+        return {
+            'success': False,
+            'message': 'Mã giảm giá đã hết lượt sử dụng'
+        }
+
+    if km.trang_thai != 'Đang áp dụng':
+        return {
+            'success': False,
+            'message': 'Mã giảm giá không khả dụng'
+        }
+
+    phan_tram = float(km.phan_tram_giam or 0)
+    tien_giam = tong * phan_tram / 100
 
     return {
         'success': True,
         'khuyen_mai': km,
-        'tien_giam': giam,
-        'phan_tram_giam': float(km.phan_tram_giam or 0),
-        'ma_giam_gia': km.ma_giam_gia
+        'ma_giam_gia': km.ma_giam_gia,
+        'phan_tram_giam': phan_tram,
+        'tien_giam': tien_giam
     }
 
-def parse_so_tien(value):
-    if value is None:
-        return 0
-
-    if isinstance(value, (int, float)):
-        return float(value)
-
-    text = str(value).strip()
-    digits = re.findall(r'\d+', text)
-
-    if not digits:
-        return 0
-
-    return float(''.join(digits))
-
-
-def lay_don_toi_thieu(dieu_kien):
-    return parse_so_tien(dieu_kien)
 
 def api_kiem_tra_khuyen_mai(request):
+    """
+    API kiểm tra mã giảm giá khi khách bấm áp dụng.
+    """
+
     if request.method != 'POST':
-        return JsonResponse({'success': False})
+        return JsonResponse({
+            'success': False,
+            'message': 'Phương thức không hợp lệ'
+        })
 
     try:
         data = json.loads(request.body or '{}')
-        ma = data.get('ma_giam_gia')
-        tong = float(data.get('tam_tinh', 0))
+        ma_giam_gia = data.get('ma_giam_gia', '').strip()
+        tam_tinh = float(data.get('tam_tinh', 0))
 
-        kq = ap_dung_khuyen_mai(tong, ma)
-        if not kq['success']:
-            return JsonResponse(kq)
+        ket_qua = ap_dung_khuyen_mai(tam_tinh, ma_giam_gia)
 
-        phi = tinh_phi_ship(tong)
-        tong_tt = tong - kq['tien_giam'] + phi
+        if not ket_qua['success']:
+            return JsonResponse(ket_qua)
 
-        return JsonResponse({
-            'success': True,
-            'ma_giam_gia': kq['ma_giam_gia'],
-            'phan_tram_giam': kq['phan_tram_giam'],
-            'tien_giam': kq['tien_giam'],
-            'tong_thanh_toan': tong_tt
-        })
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        phi_ship = tinh_phi_ship(tam_tinh)
+        tong_thanh_toan = tam_tinh - ket_qua['tien_giam'] + phi_ship
 
-
-def api_danh_sach_khuyen_mai(request):
-    try:
-        ds = KhuyenMai.objects.filter(so_luong__gt=0).order_by('-ma_khuyen_mai')
-
-        data = []
-        for km in ds:
-            if km.trang_thai and str(km.trang_thai).strip().lower() not in ['còn', 'con', 'đang áp dụng', 'dang ap dung', 'active']:
-                continue
-
-            data.append({
-                'ma_giam_gia': km.ma_giam_gia,
-                'ten_khuyen_mai': km.ten_khuyen_mai,
-                'phan_tram_giam': float(km.phan_tram_giam or 0),
-                'dieu_kien_ap_dung': km.dieu_kien_ap_dung or '',
-                'don_toi_thieu': lay_don_toi_thieu(km.dieu_kien_ap_dung),
-                'so_luong': km.so_luong or 0,
-                'trang_thai': km.trang_thai or ''
-            })
+        if tong_thanh_toan < 0:
+            tong_thanh_toan = 0
 
         return JsonResponse({
             'success': True,
-            'items': data
+            'message': 'Áp dụng mã giảm giá thành công',
+            'ma_giam_gia': ket_qua['ma_giam_gia'],
+            'phan_tram_giam': ket_qua['phan_tram_giam'],
+            'tien_giam': ket_qua['tien_giam'],
+            'tong_thanh_toan': tong_thanh_toan
         })
+
     except Exception as e:
         return JsonResponse({
             'success': False,
@@ -1020,6 +1076,40 @@ def api_danh_sach_khuyen_mai(request):
         })
 
 
+def api_danh_sach_khuyen_mai(request):
+    """
+    API lấy danh sách khuyến mãi cho khách.
+    Chỉ trả về mã còn hiệu lực.
+    """
+
+    try:
+        ds = khuyen_mai_con_hieu_luc()
+
+        data = []
+
+        for km in ds:
+            data.append({
+                'ma_giam_gia': km.ma_giam_gia,
+                'ten_khuyen_mai': km.ten_khuyen_mai,
+                'phan_tram_giam': float(km.phan_tram_giam or 0),
+                'dieu_kien_ap_dung': km.dieu_kien_ap_dung or '',
+                'so_luong': km.so_luong or 0,
+                'trang_thai': km.trang_thai or '',
+                'ngay_bat_dau': km.ngay_bat_dau.strftime('%d/%m/%Y') if km.ngay_bat_dau else '',
+                'ngay_ket_thuc': km.ngay_ket_thuc.strftime('%d/%m/%Y') if km.ngay_ket_thuc else '',
+            })
+
+        return JsonResponse({
+            'success': True,
+            'items': data
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        })
+        
 # =========================
 # ĐẶT HÀNG (CHECKOUT)
 # =========================

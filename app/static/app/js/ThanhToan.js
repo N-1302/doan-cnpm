@@ -19,15 +19,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const viDienTuBox = document.getElementById("viDienTuBox");
     const backToCartBtn = document.querySelector(".thanhtoan-back-btn");
 
+    const confirmOrderOverlay = document.getElementById("confirmOrderOverlay");
+    const confirmOrderModal = document.getElementById("confirmOrderModal");
+    const closeConfirmOrderModal = document.getElementById("closeConfirmOrderModal");
+    const cancelConfirmOrder = document.getElementById("cancelConfirmOrder");
+    const confirmSubmitOrder = document.getElementById("confirmSubmitOrder");
+
+    const confirmHoTen = document.getElementById("confirmHoTen");
+    const confirmSoDienThoai = document.getElementById("confirmSoDienThoai");
+    const confirmDiaChi = document.getElementById("confirmDiaChi");
+    const confirmPhuongThuc = document.getElementById("confirmPhuongThuc");
+    const confirmViDienTu = document.getElementById("confirmViDienTu");
+    const confirmTamTinh = document.getElementById("confirmTamTinh");
+    const confirmPhiShip = document.getElementById("confirmPhiShip");
+    const confirmGiamGia = document.getElementById("confirmGiamGia");
+    const confirmTongCong = document.getElementById("confirmTongCong");
+
     let khuyenMaiDaApDung = null;
-
-    function formatPrice(price) {
-    return parsePrice(price).toLocaleString("vi-VN") + " đ";
-}
-
-    function formatCurrency(value) {
-        return formatPrice(value);
-    }
 
     function parsePrice(value) {
         if (!value) return 0;
@@ -44,6 +52,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         return parseInt(raw.replace(/[^\d]/g, ""), 10) || 0;
+    }
+
+    function formatPrice(price) {
+        return parsePrice(price).toLocaleString("vi-VN") + " đ";
+    }
+
+    function formatCurrency(value) {
+        return formatPrice(value);
     }
 
     function isUserLoggedIn() {
@@ -77,9 +93,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function saveCurrentCheckoutCart(cart) {
-        if (Array.isArray(JSON.parse(localStorage.getItem("buyNowItem") || "null"))) {
-            localStorage.setItem("buyNowItem", JSON.stringify(cart));
-        } else {
+        try {
+            const buyNowItem = JSON.parse(localStorage.getItem("buyNowItem") || "null");
+            if (Array.isArray(buyNowItem)) {
+                localStorage.setItem("buyNowItem", JSON.stringify(cart));
+            } else {
+                localStorage.setItem("cart", JSON.stringify(cart));
+            }
+        } catch (error) {
             localStorage.setItem("cart", JSON.stringify(cart));
         }
     }
@@ -228,73 +249,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function addToCart(product, quantity) {
-        let cart = normalizeCart(getCart());
-
-        const maBanh = String(product.maBanh || "").trim();
-        const tonKho = getStock(product);
-
-        quantity = Number(quantity || 1);
-        if (quantity < 1) quantity = 1;
-
-        if (!maBanh) {
-            showMessage("Không tìm thấy mã sản phẩm", "error");
-            return false;
-        }
-
-        if (tonKho <= 0) {
-            showMessage("Sản phẩm hiện đã hết hàng", "error");
-            return false;
-        }
-
-        if (quantity > tonKho) {
-            quantity = tonKho;
-        }
-
-        const index = cart.findIndex(
-            item => String(item.maBanh) === maBanh
-        );
-
-        if (index !== -1) {
-            const soLuongHienTai = Number(cart[index].soLuong || 0);
-            let tongSoLuongMoi = soLuongHienTai + quantity;
-
-            cart[index].soLuongTon = tonKho;
-            cart[index].gia = parsePrice(product.gia);
-            cart[index].tenBanh = product.tenBanh;
-            cart[index].hinhAnh = product.hinhAnh;
-            cart[index].noiDung = product.noiDung || cart[index].noiDung || "";
-
-            if (tongSoLuongMoi > tonKho) {
-                tongSoLuongMoi = tonKho;
-                cart[index].soLuong = tongSoLuongMoi;
-                saveCart(cart);
-                updateBadge();
-                document.dispatchEvent(new CustomEvent("cartUpdated"));
-                showMessage(`Sản phẩm chỉ còn ${tonKho} cái trong kho`, "error");
-                return false;
-            }
-
-            cart[index].soLuong = tongSoLuongMoi;
-        } else {
-            cart.push({
-                maBanh: maBanh,
-                tenBanh: product.tenBanh,
-                gia: parsePrice(product.gia),
-                hinhAnh: product.hinhAnh,
-                soLuong: quantity,
-                soLuongTon: tonKho,
-                noiDung: product.noiDung || ""
-            });
-        }
-
-        cart = normalizeCart(cart);
-        saveCart(cart);
-        updateBadge();
-        document.dispatchEvent(new CustomEvent("cartUpdated"));
-        return true;
-    }
-    
     function validateForm() {
         let cart = getCart();
         cart = normalizeCart(cart);
@@ -320,6 +274,46 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         return "";
+    }
+
+    function openConfirmOrderModal() {
+        confirmOrderOverlay?.classList.add("active");
+        confirmOrderModal?.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeConfirmOrderModalFn() {
+        confirmOrderOverlay?.classList.remove("active");
+        confirmOrderModal?.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    function fillConfirmOrderModal() {
+        let cart = getCart();
+        cart = normalizeCart(cart);
+
+        const tamTinh = tinhTamTinh(cart);
+        const phiVanChuyen = tinhPhiVanChuyen(tamTinh);
+        const tienGiam = khuyenMaiDaApDung ? Number(khuyenMaiDaApDung.tien_giam || 0) : 0;
+        const tongCong = Math.max(0, tamTinh - tienGiam + phiVanChuyen);
+
+        const phuongThucThanhToan =
+            document.querySelector('input[name="phuongThucThanhToan"]:checked')?.value || "COD";
+
+        const viDienTu =
+            document.querySelector('input[name="viDienTu"]:checked')?.value || "";
+
+        if (confirmHoTen) confirmHoTen.textContent = hoTenInput?.value.trim() || "";
+        if (confirmSoDienThoai) confirmSoDienThoai.textContent = soDienThoaiInput?.value.trim() || "";
+        if (confirmDiaChi) confirmDiaChi.textContent = diaChiInput?.value.trim() || "";
+        if (confirmPhuongThuc) confirmPhuongThuc.textContent = phuongThucThanhToan;
+        if (confirmViDienTu) {
+            confirmViDienTu.textContent = phuongThucThanhToan === "Ví điện tử" ? (viDienTu || "Không có") : "Không có";
+        }
+        if (confirmTamTinh) confirmTamTinh.textContent = formatCurrency(tamTinh);
+        if (confirmPhiShip) confirmPhiShip.textContent = formatCurrency(phiVanChuyen);
+        if (confirmGiamGia) confirmGiamGia.textContent = formatCurrency(tienGiam);
+        if (confirmTongCong) confirmTongCong.textContent = formatCurrency(tongCong);
     }
 
     async function apDungKhuyenMaiTheoMa(maGiamGia) {
@@ -382,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="sale-item-left">
                         <strong>${item.ten_khuyen_mai || item.ma_giam_gia}</strong>
                         <span>Mã: ${item.ma_giam_gia}</span>
-                        <small>Giảm ${item.phan_tram_giam}%${item.don_toi_thieu ? " • Đơn từ " + Number(item.don_toi_thieu).toLocaleString("vi-VN") + " đ" : ""}</small>
+                        <small>Giảm ${item.phan_tram_giam}%${item.dieu_kien_ap_dung ? " • Đơn từ " + Number(item.dieu_kien_ap_dung).toLocaleString("vi-VN") + " đ" : ""}</small>
                     </div>
                     <button type="button" class="sale-select-btn" data-code="${item.ma_giam_gia}">
                         Chọn
@@ -444,9 +438,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }))
         };
 
-console.log("CART localStorage =", cart);
-console.log("PAYLOAD GUI LEN =", payload);
-
         const oldText = btnDatHang.textContent;
         btnDatHang.disabled = true;
         btnDatHang.classList.add("is-loading");
@@ -502,8 +493,27 @@ console.log("PAYLOAD GUI LEN =", payload);
     });
 
     if (btnDatHang) {
-        btnDatHang.addEventListener("click", submitOrder);
+        btnDatHang.addEventListener("click", function () {
+            const error = validateForm();
+            if (error) {
+                showMessage(error, "error");
+                renderOrderList();
+                return;
+            }
+
+            fillConfirmOrderModal();
+            openConfirmOrderModal();
+        });
     }
+
+    closeConfirmOrderModal?.addEventListener("click", closeConfirmOrderModalFn);
+    cancelConfirmOrder?.addEventListener("click", closeConfirmOrderModalFn);
+    confirmOrderOverlay?.addEventListener("click", closeConfirmOrderModalFn);
+
+    confirmSubmitOrder?.addEventListener("click", function () {
+        closeConfirmOrderModalFn();
+        submitOrder();
+    });
 
     if (!isUserLoggedIn()) {
         showMessage("Vui lòng đăng nhập để thanh toán.", "error");

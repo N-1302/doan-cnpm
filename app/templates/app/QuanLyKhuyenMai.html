@@ -5,6 +5,22 @@
 <link rel="stylesheet" href="{% static 'app/css/QuanLyKhuyenMai.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+{% if messages %}
+  <div style="margin-bottom: 15px;">
+    {% for message in messages %}
+      <div style="
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 5px;
+        background: {% if message.tags == 'error' %}#f8d7da{% else %}#d4edda{% endif %};
+        color: {% if message.tags == 'error' %}#721c24{% else %}#155724{% endif %};
+      ">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
 <section class="qlkm-page">
     <div class="qlkm-container">
 
@@ -36,23 +52,38 @@
                         <th>Thao tác</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {% for km in ds_khuyen_mai %}
                     <tr>
                         <td>{{ km.ma_khuyen_mai }}</td>
                         <td>{{ km.ten_khuyen_mai }}</td>
                         <td>{{ km.ma_giam_gia|default:"-" }}</td>
-                        <td>{{ km.phan_tram_giam|default:"0" }}</td>
+                        <td>{{ km.phan_tram_giam|default:"0" }}%</td>
                         <td>{{ km.ngay_bat_dau|date:"d/m/Y"|default:"-" }}</td>
                         <td>{{ km.ngay_ket_thuc|date:"d/m/Y"|default:"-" }}</td>
-                        <td><span class="qlkm-status">{{ km.trang_thai|default:"Đang áp dụng" }}</span></td>
-                        <td>{{ km.so_luong|default:"0" }}</td>
+
                         <td>
-                            <a href="{% url 'xoa_khuyen_mai' km.ma_khuyen_mai %}" class="qlkm-delete" onclick="return confirm('Bạn có chắc muốn xóa khuyến mãi này?')">
+                            {% if km.trang_thai == 'Hết hạn' %}
+                                <span class="qlkm-status status-expired">Hết hạn</span>
+                            {% elif km.trang_thai == 'Tạm dừng' %}
+                                <span class="qlkm-status status-paused">Tạm dừng</span>
+                            {% else %}
+                                <span class="qlkm-status status-active">Đang áp dụng</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ km.so_luong|default:"0" }}</td>
+
+                        <td>
+                            <a href="{% url 'xoa_khuyen_mai' km.ma_khuyen_mai %}" 
+                               class="qlkm-delete" 
+                               onclick="return confirm('Bạn có chắc muốn xóa khuyến mãi này?')">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </td>
                     </tr>
+
                     {% empty %}
                     <tr>
                         <td colspan="9" class="qlkm-empty">Chưa có khuyến mãi nào</td>
@@ -71,6 +102,7 @@
 
                 <form method="POST" action="{% url 'them_khuyen_mai' %}" class="qlkm-form">
                     {% csrf_token %}
+
                     <div class="qlkm-form-grid">
                         <div class="qlkm-form-group">
                             <label>Tên khuyến mãi</label>
@@ -79,17 +111,17 @@
 
                         <div class="qlkm-form-group">
                             <label>Mã giảm giá</label>
-                            <input type="text" name="ma_giam_gia">
+                            <input type="text" name="ma_giam_gia" placeholder="VD: SALE30">
                         </div>
 
                         <div class="qlkm-form-group">
                             <label>% giảm</label>
-                            <input type="number" name="phan_tram_giam" min="0" max="100">
+                            <input type="number" name="phan_tram_giam" min="0" max="100" required>
                         </div>
 
                         <div class="qlkm-form-group">
                             <label>Số lượng</label>
-                            <input type="number" name="so_luong" min="0">
+                            <input type="number" name="so_luong" min="0" value="1">
                         </div>
 
                         <div class="qlkm-form-group">
@@ -102,18 +134,18 @@
                             <input type="date" name="ngay_ket_thuc">
                         </div>
 
-                        <div class="qlkm-form-group qlkm-full">
-                            <label>Điều kiện áp dụng</label>
-                            <textarea name="dieu_kien_ap_dung" rows="4"></textarea>
-                        </div>
-
                         <div class="qlkm-form-group">
                             <label>Trạng thái</label>
                             <select name="trang_thai">
                                 <option value="Đang áp dụng">Đang áp dụng</option>
                                 <option value="Tạm dừng">Tạm dừng</option>
-                                <option value="Kết thúc">Kết thúc</option>
+                                <option value="Hết hạn">Hết hạn</option>
                             </select>
+                        </div>
+
+                        <div class="qlkm-form-group qlkm-full">
+                            <label>Điều kiện áp dụng</label>
+                            <textarea name="dieu_kien_ap_dung" rows="4" placeholder="VD: Áp dụng cho đơn từ 200.000đ"></textarea>
                         </div>
                     </div>
 

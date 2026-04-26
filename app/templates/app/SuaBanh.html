@@ -27,7 +27,7 @@
             <div class="sb-card-left">
                 <div class="sb-image-box">
                     {% if banh.hinh_anh %}
-                        <img src="{{ banh.hinh_anh }}" alt="{{ banh.ten_banh }}">
+                        <img src="{% static 'app/images/' %}{{ banh.hinh_anh }}" alt="{{ banh.ten_banh }}">
                     {% else %}
                         <div class="sb-no-image">Chưa có hình ảnh</div>
                     {% endif %}
@@ -129,7 +129,6 @@
                             <select id="trang_thai" name="trang_thai">
                                 <option value="Đang bán" {% if banh.trang_thai == "Đang bán" %}selected{% endif %}>Đang bán</option>
                                 <option value="Tạm hết" {% if banh.trang_thai == "Tạm hết" %}selected{% endif %}>Tạm hết</option>
-                                <option value="Ngừng bán" {% if banh.trang_thai == "Ngừng bán" %}selected{% endif %}>Ngừng bán</option>
                             </select>
                         </div>
                     </div>
